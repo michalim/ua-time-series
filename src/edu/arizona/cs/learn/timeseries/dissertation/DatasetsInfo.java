@@ -70,7 +70,7 @@ public class DatasetsInfo {
 
 		List<SequenceType> types = new ArrayList<SequenceType>();
 		types.add(SequenceType.allen);
-		types.add(SequenceType.bpp);
+		types.add(SequenceType.cba);
 
 		System.out
 		.println("dataset,activity,num-examples,mean-steps,mean-num-intervals,mean-allen,mean-bpp");
@@ -133,7 +133,7 @@ public class DatasetsInfo {
 
 		List<SequenceType> types = new ArrayList<SequenceType>();
 		types.add(SequenceType.allen);
-		types.add(SequenceType.bpp);
+		types.add(SequenceType.cba);
 
 		for (File f : new File("data/input/").listFiles()) {
 			if ((f.getName().startsWith(prefix))
@@ -219,7 +219,7 @@ public class DatasetsInfo {
 							.get(SequenceType.allen)).getMean()));
 			cba.append(" & "
 					+ Utils.nf.format(((SummaryStatistics) sequenceMap
-							.get(SequenceType.bpp)).getMean()));
+							.get(SequenceType.cba)).getMean()));
 
 			numClasses++;
 		}
@@ -245,7 +245,7 @@ public class DatasetsInfo {
 
 		List<SequenceType> types = new ArrayList<SequenceType>();
 		types.add(SequenceType.allen);
-		types.add(SequenceType.bpp);
+		types.add(SequenceType.cba);
 
 		for (File f : new File("data/input/").listFiles()) {
 			if ((f.getName().startsWith(prefix))
@@ -310,7 +310,7 @@ public class DatasetsInfo {
 							.get(SequenceType.allen)).getMean()));
 			buf.append(" & "
 					+ Utils.nf.format(((SummaryStatistics) sequenceMap
-							.get(SequenceType.bpp)).getMean()));
+							.get(SequenceType.cba)).getMean()));
 
 			System.out.println(buf + " \\\\ \\hline");
 			numClasses++;
@@ -328,7 +328,7 @@ public class DatasetsInfo {
 
 		List<SequenceType> types = new ArrayList<SequenceType>();
 		types.add(SequenceType.allen);
-		types.add(SequenceType.bpp);
+		types.add(SequenceType.cba);
 
 		for (File f : new File("data/input/").listFiles()) {
 			if ((f.getName().startsWith(prefix))
@@ -373,7 +373,7 @@ public class DatasetsInfo {
 				mFluents.addValue(list.size());
 
 				mAllen.addValue(SequenceType.allen.getSequenceSize(list));
-				mCBA.addValue(SequenceType.bpp.getSequenceSize(list));
+				mCBA.addValue(SequenceType.cba.getSequenceSize(list));
 			}
 		}
 

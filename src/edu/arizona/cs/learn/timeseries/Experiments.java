@@ -475,7 +475,7 @@ public class Experiments {
 		writeTestFile(prefix, classNames, sets, k);
 
 		List<SequenceType> types = SequenceType.get("all");
-		types.add(SequenceType.bpp);
+		types.add(SequenceType.cba);
 		for (SequenceType type : SequenceType.get("all"))
 			for (int i = 0; i < k; i++) {
 				String f = "data/cross-validation/k" + k + "/fold-" + i + "/"

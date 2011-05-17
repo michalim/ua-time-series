@@ -189,7 +189,7 @@ public enum SequenceType {
 			return intervals.size();
 		}
 	}, 
-	bpp {
+	cba {
 		@Override
 		public List<Symbol> getSequence(List<Interval> intervals) {
 			List<Symbol> results = new ArrayList<Symbol>();
