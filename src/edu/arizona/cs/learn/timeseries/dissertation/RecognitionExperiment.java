@@ -10,11 +10,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import edu.arizona.cs.learn.algorithm.markov.BPPNode;
-import edu.arizona.cs.learn.algorithm.markov.FSMFactory;
-import edu.arizona.cs.learn.algorithm.markov.FSMRecognizer;
+import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
+import edu.arizona.cs.learn.algorithm.recognition.FSMFactory;
+import edu.arizona.cs.learn.algorithm.recognition.FSMRecognizer;
 import edu.arizona.cs.learn.timeseries.Experiments;
 import edu.arizona.cs.learn.timeseries.experiment.BitPatternGeneration;
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.Signature;
@@ -22,7 +23,6 @@ import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.recognizer.Recognizer;
 import edu.arizona.cs.learn.timeseries.recognizer.RecognizerStatistics;
-import edu.arizona.cs.learn.util.Utils;
 import edu.arizona.cs.learn.util.graph.Edge;
 import edu.uci.ics.jung.graph.DirectedGraph;
 
@@ -130,11 +130,11 @@ public class RecognitionExperiment {
 	 * @param recognizers
 	 */
 	public static void recognition(String input, List<FSMRecognizer> recognizers) {
-		Map<Integer,List<Interval>> map = Utils.load(new File(input));
+		List<Instance> instances = Instance.load(new File(input));
 
-		for (Integer id : map.keySet()) {
-			System.out.println("Episode ID: " + id);
-			List<Interval> intervals = map.get(id);
+		for (Instance instance : instances) {
+			System.out.println("Instance ID: " + instance.id());
+			List<Interval> intervals = instance.intervals();
 
 			int start = Integer.MAX_VALUE;
 			int end = 0;

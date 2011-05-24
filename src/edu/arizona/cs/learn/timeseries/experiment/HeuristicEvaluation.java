@@ -1,5 +1,6 @@
 package edu.arizona.cs.learn.timeseries.experiment;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
@@ -21,7 +22,7 @@ public class HeuristicEvaluation {
 
 		String name = "ww-jump-over";
 		
-    	List<Instance> instances = Utils.sequences(name, "data/input/" + name + ".lisp", SequenceType.allen);
+    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), SequenceType.allen);
     	Signature s = new Signature(name);
     	s.heuristicTraining(instances);
     	
@@ -31,7 +32,7 @@ public class HeuristicEvaluation {
 		params.setBonus(1, 0);
 		params.setPenalty(-1, 0);
 
-    	instances = Utils.sequences(name, "data/input/" + name + ".lisp", SequenceType.allen);
+    	instances = Instance.load(name, new File("data/input/" + name + ".lisp"), SequenceType.allen);
 		SummaryStatistics ss = new SummaryStatistics();
 		for (Instance instance : instances) { 
 			params.seq1 = s.signature();

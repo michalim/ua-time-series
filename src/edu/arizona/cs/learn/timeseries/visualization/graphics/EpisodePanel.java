@@ -14,7 +14,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
-import edu.arizona.cs.learn.timeseries.model.Episode;
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.visualization.Controller;
 import edu.arizona.cs.learn.timeseries.visualization.graphics.color.HeatModel;
 import edu.arizona.cs.learn.timeseries.visualization.model.DataModel;
@@ -47,7 +47,7 @@ public class EpisodePanel extends JPanel implements DataComponent {
 				// only process the selection event.
 				if (!_loading && e.getStateChange() == ItemEvent.SELECTED) { 					
 					_eId = (Integer) box.getSelectedItem();
-					_dataModel.setEpisode(_eId);
+					_dataModel.set(_eId);
 					
 					_rawCanvas.episodeChanged();
 					_bppCanvas.episodeChanged();
@@ -83,7 +83,7 @@ public class EpisodePanel extends JPanel implements DataComponent {
 		
 		_dataModel = new DataModel();
 		_dataModel.load(file);
-		_dataModel.setEpisode(0);
+		_dataModel.set(_dataModel.instances().get(0).id());
 		
 		_rawCanvas.modelChanged(_dataModel);
 		_bppCanvas.modelChanged(_dataModel);
@@ -92,8 +92,8 @@ public class EpisodePanel extends JPanel implements DataComponent {
 		_bppCanvas.episodeChanged();
 
 		_episodes.removeAllElements();
-		for (Episode e : _dataModel.episodes()) { 
-			_episodes.addElement(e.id());
+		for (Instance instance : _dataModel.instances()) { 
+			_episodes.addElement(instance.id());
 		}
 		
 		_loading = false;

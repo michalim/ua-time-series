@@ -53,9 +53,6 @@ public class Main {
 				.setShortFlag('f')
 				.setLongFlag("fromFile");
 
-		Switch liteSwitch = new Switch("lite")
-				.setLongFlag("lite");
-		
 		FlaggedOption pctOption = new FlaggedOption("min")
 				.setStringParser(JSAP.INTEGER_PARSER).setDefault("50")
 				.setRequired(false)
@@ -82,19 +79,6 @@ public class Main {
 				.setRequired(false)
 				.setLongFlag("folds");
 
-		FlaggedOption ablateOption = new FlaggedOption("ablate")
-				.setRequired(false)
-				.setDefault("none")
-				.setShortFlag('a')
-				.setLongFlag("ablate");
-
-		FlaggedOption testAblateOption = new FlaggedOption("testAblate")
-				.setRequired(false)
-				.setDefault("none")
-				.setShortFlag('t')
-				.setLongFlag("testAblate");
-		
-
 		jsap.registerParameter(helpSwitch);
 		jsap.registerParameter(taskOption);
 		jsap.registerParameter(dataOption);
@@ -105,12 +89,9 @@ public class Main {
 		jsap.registerParameter(threadsOption);
 		jsap.registerParameter(tmpOption);
 		jsap.registerParameter(foldsOption);
-		jsap.registerParameter(ablateOption);
-		jsap.registerParameter(testAblateOption);
 		jsap.registerParameter(pruneSwitch);
 		jsap.registerParameter(shuffleSwitch);
 		jsap.registerParameter(fromFileSwitch);
-		jsap.registerParameter(liteSwitch);
 
 		JSAPResult config = jsap.parse(args);
 
@@ -126,8 +107,6 @@ public class Main {
 
 		Utils.numThreads = config.getInt("threads");
 		Utils.tmpDir = config.getString("tmpdir");
-		Utils.excludeSet = Ablation.valueOf(config.getString("ablate")).getExcludeSet();
-		Utils.testExcludeSet = Ablation.valueOf(config.getString("testAblate")).getExcludeSet();
 
 		String task = config.getString("task");
 		if (task.equals("distance")) {
@@ -169,8 +148,7 @@ public class Main {
 						config.getString("sequence"), config.getInt("min"),
 						config.getInt("k"), config.getInt("folds"),
 						config.getBoolean("shuffle"),
-						config.getBoolean("fromFile"), 
-						config.getBoolean("lite"));
+						config.getBoolean("fromFile"));
 			}
 		}
 	}

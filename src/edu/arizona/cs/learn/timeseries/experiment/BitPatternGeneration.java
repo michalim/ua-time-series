@@ -1,5 +1,6 @@
 package edu.arizona.cs.learn.timeseries.experiment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,9 +13,8 @@ import org.apache.commons.collections15.bag.TreeBag;
 import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
-import edu.arizona.cs.learn.algorithm.markov.BPPNode;
-import edu.arizona.cs.learn.algorithm.markov.FSMFactory;
-import edu.arizona.cs.learn.algorithm.render.Paint;
+import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
+import edu.arizona.cs.learn.algorithm.recognition.FSMFactory;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
@@ -22,7 +22,6 @@ import edu.arizona.cs.learn.timeseries.model.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.visualization.TableFactory;
-import edu.arizona.cs.learn.util.Utils;
 import edu.arizona.cs.learn.util.graph.Edge;
 import edu.uci.ics.jung.graph.DirectedGraph;
 
@@ -38,7 +37,7 @@ public class BitPatternGeneration {
      * @return
      */
     public static List<Symbol[]> trainAndSubset(String name, SequenceType type, int min) { 
-    	List<Instance> instances = Utils.sequences(name, "data/input/" + name + ".lisp", type);
+    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
 		Signature signature = new Signature(name);
 		signature.train(instances);
 		
@@ -140,7 +139,7 @@ public class BitPatternGeneration {
     }
     
 	public static void generate(String name, SequenceType type, int min, boolean onlyStart) { 
-    	List<Instance> instances = Utils.sequences(name, "data/input/" + name + ".lisp", type);
+    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
 		Signature signature = new Signature(name);
 		signature.train(instances);
 		
@@ -193,7 +192,7 @@ public class BitPatternGeneration {
 		Signature signature = new Signature("super");
 		for (int i = 0; i < names.length; ++i) { 
 			String name = names[i];
-	    	List<Instance> instances = Utils.sequences(name, "data/input/" + name + ".lisp", type);
+	    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
 			Signature s = new Signature(name);
 			s.train(instances);
 

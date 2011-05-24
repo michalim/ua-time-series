@@ -102,6 +102,13 @@ public enum Similarity {
 				return 1;
 			return 0;
 		}
+	},
+	alignment {
+		@Override
+		public double similarity(Symbol A, Symbol B) {
+			throw new RuntimeException("NOT YET IMPLEMENTED!");
+		} 
+		
 	};
 
 	/**

@@ -31,7 +31,6 @@ import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.timeseries.model.Episode;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.visualization.graphics.DataComponent;
@@ -65,8 +64,8 @@ public class DataController extends Controller {
 		_dataModel = model;
 	
 		_episodes.removeAllElements();
-		for (Episode e : _dataModel.episodes()) { 
-			_episodes.addElement(e.id());
+		for (Instance instance : _dataModel.instances()) { 
+			_episodes.addElement(instance.id());
 		}
 		
 		for (DataComponent dc : _listeners) { 
@@ -82,7 +81,7 @@ public class DataController extends Controller {
 	}
 	
 	public void setEpisode(int id) { 
-		_dataModel.setEpisode(id);
+		_dataModel.set(id);
 		sendEpisodeChanged();
 		
 		Instance instance = _dataModel.instance();
@@ -129,7 +128,7 @@ public class DataController extends Controller {
 					DataModel model = new DataModel();
 					model.load(jf.getSelectedFile());
 					setModel(model);
-					setEpisode(0);
+					setEpisode(model.instances().get(0).id());
 					
 					fileLabel.setText(jf.getSelectedFile().getName());
 					

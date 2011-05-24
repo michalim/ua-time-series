@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import edu.arizona.cs.learn.algorithm.markov.FSMRecognizer;
+import edu.arizona.cs.learn.algorithm.recognition.FSMRecognizer;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 

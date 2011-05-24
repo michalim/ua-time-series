@@ -35,7 +35,7 @@ public class HeatRelativeModel extends HeatModel {
 		logger.debug("episodeChanged");
 		
 		_intensityMap = new HashMap<String,Float>();
-		_selected = _model.episode().get(i);
+		_selected = _model.intervals().get(i);
 		
 //		float maxSeen = 0;
 //		List<AllenObject>[] align = _model.getEpisodeAlignment();
@@ -87,7 +87,7 @@ public class HeatRelativeModel extends HeatModel {
 		if (_selected == null)  
 			return super.getColor(i);
 		
-		Interval interval = _model.episode().get(i);
+		Interval interval = _model.intervals().get(i);
 		if (interval == _selected) { 
 			return Color.red;
 		} else {

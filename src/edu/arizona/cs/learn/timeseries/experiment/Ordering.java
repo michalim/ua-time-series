@@ -18,7 +18,6 @@ import edu.arizona.cs.learn.timeseries.classification.Classifier;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyCallable;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyParams;
 import edu.arizona.cs.learn.timeseries.model.Instance;
-import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.util.Utils;
 
@@ -54,7 +53,7 @@ public class Ordering {
 		// Now train up the signatures...
 		for (String className : _classNames) { 
 			File dataFile = new File("data/input/" + className + ".lisp");
-			List<Instance> instances = Utils.sequences(className, dataFile.getAbsolutePath(), type);
+			List<Instance> instances = Instance.load(className, dataFile, type);
 			List<Integer> testSet = _testMap.get(className);
 			
 			for (Instance instance : instances) { 
@@ -147,17 +146,16 @@ public class Ordering {
 
 		for (String className : classNames) { 
 			String f = "data/input/" + className + ".lisp";
-			Map<Integer,List<Interval>> map = Utils.load(new File(f));
-			List<Integer> episodes = new ArrayList<Integer>(map.keySet());
-			Collections.shuffle(episodes, r);
+			List<Instance> instances = Instance.load(new File(f));
+			Collections.shuffle(instances, r);
 			
 			// 33% of the instances will be part of the test set
 			double pct = 1.0/3.0;
-			int number = (int) Math.round((double) episodes.size() * pct);
+			int number = (int) Math.round((double) instances.size() * pct);
 
 			List<Integer> list = new ArrayList<Integer>();
 			for (int i = 0; i < number; ++i) { 
-				list.add(episodes.get(i));
+				list.add(instances.get(i).id());
 			}
 			testSet.put(className, list);
 		}

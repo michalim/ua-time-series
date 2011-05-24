@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -17,10 +15,8 @@ import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
-import edu.arizona.cs.learn.timeseries.model.Episode;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Score;
-import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.Signature;
 import edu.arizona.cs.learn.timeseries.model.SignatureCallable;
 import edu.arizona.cs.learn.util.Utils;
@@ -80,21 +76,6 @@ public class CAVEClassifier extends Classifier {
 		}
 	}
 	
-	public void trainEpisodes(int x, List<Episode> training, SequenceType type, boolean shuffle) { 
-		_map = new HashMap<String,Signature>();
-
-		if (_params.method != null) 
-			throw new RuntimeException("Not yet implemented!!!");
-		else if (_params.fromFiles) {
-			Set<String> classNames = new HashSet<String>();
-			for (Episode episode : training) 
-				classNames.add(episode.name());
-			load(x, classNames);
-		} else {
-			throw new RuntimeException("Not yet implemented!!!!");
-		}
-	}
-
 	/**
 	 * Do the training which involves building the signatures for
 	 * each of the different class names (agglomeratively).
@@ -172,9 +153,5 @@ public class CAVEClassifier extends Classifier {
 	
 	public Map<String,Long> train(Map<String,List<Instance>> training) {
 		throw new RuntimeException("Not yet implemented!!");
-	}
-	
-	public void trainEpisodes(List<Episode> training, SequenceType type, boolean shuffle) { 
-		throw new RuntimeException("Not yet implemented!!!");
 	}
 }

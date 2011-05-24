@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.heatmap.HeatmapImage;
+import edu.arizona.cs.learn.algorithm.render.HeatmapImage;
 import edu.arizona.cs.learn.timeseries.model.Signature;
 import edu.arizona.cs.learn.timeseries.visualization.model.DataModel;
 
@@ -41,7 +41,7 @@ public class HeatModel implements TimelineColor {
 		int min = signature.trainingSize() / 2;
 
 		_intensityMap = HeatmapImage.intensityMap(signature.signature(), min, 
-				_model.episode(), _model.sequenceType());
+				_model.intervals(), _model.sequenceType());
 	}
 	
 	public Color getColor(int i) {
@@ -52,8 +52,8 @@ public class HeatModel implements TimelineColor {
 			return Color.red;
 		
 		logger.debug("Model: " + _model);
-		logger.debug(" Episode: " + _model.episode() + " index: " + i);
-		String name = _model.episode().get(i).toString();
+		logger.debug(" Episode: " + _model.intervals() + " index: " + i);
+		String name = _model.intervals().get(i).toString();
 		Double d = _intensityMap.get(name);
 		if (d == null) { 
 			return Color.white;

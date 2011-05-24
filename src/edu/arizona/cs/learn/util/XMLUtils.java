@@ -54,7 +54,9 @@ public class XMLUtils {
 				symbols.add(Symbol.fromXML(so));
 			}
 
-			results.add(new Instance(key, i+1, symbols));
+			Instance instance = new Instance(key, i+1);
+			instance.sequence(symbols);
+			results.add(instance);
 		}
 		return results;
 	}

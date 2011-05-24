@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
-import edu.arizona.cs.learn.algorithm.markov.BPPNode;
-import edu.arizona.cs.learn.algorithm.markov.FSMFactory;
+import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
+import edu.arizona.cs.learn.algorithm.recognition.FSMFactory;
 import edu.arizona.cs.learn.timeseries.experiment.BitPatternGeneration;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
@@ -29,27 +29,31 @@ public class FSMSequences {
 
 	public static DirectedGraph<BPPNode, Edge> posseFirstFour() {
 		SignatureExample.init();
-		Map<Integer,List<Interval>> map = Utils.load(new File("data/input/chpt1-approach.lisp"));
+		
+		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
 
 		Set<String> propSet = new TreeSet<String>();
-		for (List<Interval> list : map.values()) {
-			for (Interval interval : list) {
+		for (Instance instance : instances) {
+			for (Interval interval : instance.intervals()) {
 				propSet.add(interval.name);
 			}
 		}
 		List<String> props = new ArrayList<String>(propSet);
 
 		List<List<Interval>> all = new ArrayList<List<Interval>>();
-		for (Integer key : map.keySet()) { 
-			if (key != 5)
-				all.add(BPPFactory.compress(map.get(key), Interval.eff));
+		Instance instance5 = null;
+		for (Instance instance : instances) { 
+			if (instance.id() != 5)
+				all.add(BPPFactory.compress(instance.intervals(), Interval.eff));
+			else 
+				instance5 = instance;
 		}
 
 		DirectedGraph<BPPNode,Edge> graph = FSMFactory.makeGraph(props, all, false);
 		FSMFactory.toDot(graph, "data/graph/posse-1-4.dot", false);
 		
 		all = new ArrayList<List<Interval>>();
-		all.add(BPPFactory.compress(map.get(5), Interval.eff));
+		all.add(BPPFactory.compress(instance5.intervals(), Interval.eff));
 		
 		graph = FSMFactory.makeGraph(props, all, false);
 		FSMFactory.toDot(graph, "data/graph/posse-5.dot", false);
@@ -61,19 +65,19 @@ public class FSMSequences {
 	public static DirectedGraph<BPPNode, Edge> regularMarkovSequences() {
 		
 		SignatureExample.init();
-		Map<Integer,List<Interval>> map = Utils.load(new File("data/input/chpt1-approach.lisp"));
+		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
 
 		Set<String> propSet = new TreeSet<String>();
-		for (List<Interval> list : map.values()) {
-			for (Interval interval : list) {
+		for (Instance instance : instances) {
+			for (Interval interval : instance.intervals()) {
 				propSet.add(interval.name);
 			}
 		}
 		List<String> props = new ArrayList<String>(propSet);
 
 		List<List<Interval>> all = new ArrayList<List<Interval>>();
-		for (List<Interval> list : map.values()) {
-			all.add(BPPFactory.compress(list, Interval.eff));
+		for (Instance instance : instances) {
+			all.add(BPPFactory.compress(instance.intervals(), Interval.eff));
 		}
 
 		DirectedGraph<BPPNode,Edge> graph = FSMFactory.makeGraph(props, all, true);
@@ -88,14 +92,14 @@ public class FSMSequences {
 	public static void plainSequences(String prefix) {
 		SignatureExample.init();
 
-		Map<Integer,List<Interval>> map = Utils.load(new File("data/input/" + prefix + ".lisp"));
+		List<Instance> instances = Instance.load(new File("data/input/" + prefix + ".lisp"));
 		Set<String> propSet = new TreeSet<String>();
 
 		List<List<Interval>> all = new ArrayList<List<Interval>>();
-		for (List<Interval> episode : map.values()) {
-			all.add(BPPFactory.compress(episode, Interval.eff));
+		for (Instance instance : instances) {
+			all.add(BPPFactory.compress(instance.intervals(), Interval.eff));
 
-			for (Interval interval : episode) {
+			for (Interval interval : instance.intervals()) {
 				propSet.add(interval.name);
 			}
 		}

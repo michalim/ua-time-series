@@ -23,17 +23,16 @@ import java.util.concurrent.Future;
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.markov.BPPNode;
-import edu.arizona.cs.learn.algorithm.markov.FSMConverter;
-import edu.arizona.cs.learn.algorithm.markov.FSMFactory;
-import edu.arizona.cs.learn.algorithm.markov.FSMRecognizer;
-import edu.arizona.cs.learn.algorithm.markov.FSMUtil;
+import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
+import edu.arizona.cs.learn.algorithm.recognition.FSMConverter;
+import edu.arizona.cs.learn.algorithm.recognition.FSMFactory;
+import edu.arizona.cs.learn.algorithm.recognition.FSMRecognizer;
+import edu.arizona.cs.learn.algorithm.recognition.FSMUtil;
 import edu.arizona.cs.learn.timeseries.classification.Classifier;
 import edu.arizona.cs.learn.timeseries.classification.Classify;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyCallable;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyParams;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
-import edu.arizona.cs.learn.timeseries.model.Episode;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
@@ -117,63 +116,6 @@ public class Experiments {
 			e.printStackTrace();
 		}
 	}
-
-	public List<BatchStatistics> crossValidationLite(String activityName, Classifier c, 
-			SequenceType type, List<String> classNames) {
-		
-		logger.debug("Beginning cross validation [lite]");
-		_execute = Executors.newFixedThreadPool(Utils.numThreads);
-		
-		Map<String,List<Episode>> data = Utils.loadAllEpisodes(activityName);
-
-		List<BatchStatistics> foldStats = new ArrayList<BatchStatistics>();
-		for (int i = 0; i < _kFolds; i++) {
-			logger.debug("Fold --- " + i);
-			BatchStatistics fs = new BatchStatistics(c.getName(), classNames);
-
-			Map<String,List<Integer>> testMap = Utils.getTestSet(activityName, _kFolds, i);
-			
-			List<Episode> training = new ArrayList<Episode>();
-			List<Instance> test = new ArrayList<Instance>();
-			for (String key : data.keySet()) {
-				List<Episode> list = data.get(key);
-				List<Integer> ignore = testMap.get(key);
-
-				for (Episode episode : list) {
-					if (!ignore.contains(episode.id())) { 
-						training.add(episode);
-					} else { 
-						Instance instance = episode.toInstance(type);
-						if (Utils.testExcludeSet.size() > 0) { 
-							test.add(instance.copy());
-						} else { 
-							test.add(instance);
-						}
-					}
-				}
-
-			}
-
-			c.trainEpisodes(i, training, type, _shuffle);
-
-			List<Future<ClassifyCallable>> future = new ArrayList<Future<ClassifyCallable>>();
-			for (Instance instance : test) 
-				future.add(_execute.submit(new ClassifyCallable(c, instance)));
-
-			for (Future<ClassifyCallable> results : future) {
-				try {
-					ClassifyCallable callable = results.get();
-					fs.addTestDetail(callable.actual(), callable.predicted(), callable.duration());
-				} catch (Exception e) {
-					e.printStackTrace();
-				} 
-			}
-			foldStats.add(fs);
-		}
-
-		_execute.shutdown();
-		return foldStats;
-	}	
 	
 	public List<BatchStatistics> crossValidation(String activityName, Classifier c, 
 			SequenceType type, List<String> classNames) {
@@ -183,11 +125,9 @@ public class Experiments {
 
 		Map<String,List<Instance>> data = Utils.load(activityName, type);
 		if (_shuffle) {
-			for (List<Instance> list : data.values()) {
-				for (Instance instance : list) {
-					instance.shuffle();
-				}
-			}
+			for (List<Instance> list : data.values()) 
+				for (Instance instance : list) 
+					Collections.shuffle(instance.sequence());
 
 		}
 
@@ -263,9 +203,9 @@ public class Experiments {
 //		_execute = Executors.newFixedThreadPool(Utils.numThreads);
 
 		List<String> classes = Utils.getActivityNames(dataset);
-		Map<String,Map<Integer,List<Interval>>> data = new HashMap<String,Map<Integer,List<Interval>>>();
+		Map<String,List<Instance>> data = new HashMap<String,List<Instance>>();
 		for (String className : classes) {
-			data.put(className, Utils.load(new File("data/input/" + className + ".lisp")));
+			data.put(className, Instance.load(new File("data/input/" + className + ".lisp")));
 		}
 
 		Map<String,RecognizerStatistics> map = new HashMap<String,RecognizerStatistics>();
@@ -311,7 +251,15 @@ public class Experiments {
 				for (Integer id : testMap.get(className)) {
 					System.out.println("Test: " + className + " -- " + id);
 					
-					List<Interval> testItem = data.get(className).get(id);
+					Instance testInstance = null;
+					List<Instance> instances = data.get(className);
+					for (Instance instance : instances) { 
+						if (instance.id() == id) { 
+							testInstance = instance;
+							break;
+						}
+					}
+					List<Interval> testItem = testInstance.intervals();
 					RecognizeCallable rc = new RecognizeCallable(recognizers, id, className, testItem);
 					future.add(_execute.submit(rc));
 				}
@@ -359,7 +307,7 @@ public class Experiments {
 		return map;
 	}
 
-	public void runComparison(String prefix, boolean lite) {
+	public void runComparison(String prefix) {
 		Utils.LIMIT_RELATIONS = true;
 		Utils.WINDOW = 5;
 
@@ -390,10 +338,7 @@ public class Experiments {
 				
 				Classifier classifier = c.getClassifier(params);
 				List<BatchStatistics> values = new ArrayList<BatchStatistics>();
-				if (lite)
-					values = crossValidationLite(prefix, classifier, type, fileNames);
-				else
-					values = crossValidation(prefix, classifier, type, fileNames);
+				values = crossValidation(prefix, classifier, type, fileNames);
 				SummaryStatistics ss = new SummaryStatistics();
 				for (BatchStatistics fd : values) {
 					ss.addValue(fd.accuracy());
@@ -420,14 +365,14 @@ public class Experiments {
 	}
 
 	public static void init(String pre, String c, String s, int pct, int k,
-			int folds, boolean shuffle, boolean load, boolean light) {
+			int folds, boolean shuffle, boolean load) {
 		Experiments cv = new Experiments(s, c, folds, shuffle, load);
 		cv.setCAVEPercent(pct);
 		cv.setK(k);
 
 		List<String> prefixes = Utils.getPrefixes(pre);
 		for (String prefix : prefixes)
-			cv.runComparison(prefix, light);
+			cv.runComparison(prefix);
 	}
 
 	public static void selectCrossValidation(String prefix, int folds) {
@@ -463,12 +408,14 @@ public class Experiments {
 
 		for (String className : classNames) { 
 			String f = "data/input/" + className + ".lisp";
-			Map<Integer,List<Interval>> map = Utils.load(new File(f));
-			List<Integer> episodes = new ArrayList<Integer>(map.keySet());
-			Collections.shuffle(episodes, r);
+			List<Instance> instances = Instance.load(new File(f));
+			List<Integer> ids = new ArrayList<Integer>();
+			for (Instance i : instances) 
+				ids.add(i.id());
+			Collections.shuffle(ids, r);
 			
-			for (int i = 0; i < episodes.size(); ++i) {
-				sets.get(i % k).get(className).add(episodes.get(i));
+			for (int i = 0; i < ids.size(); ++i) {
+				sets.get(i % k).get(className).add(ids.get(i));
 			}
 		}
 
@@ -538,7 +485,7 @@ public class Experiments {
 				for (String activity : activityNames) { 
 					System.out.println("..Building signature for " + activity);
 					File dataFile = new File("data/input/" + activity + ".lisp");
-					List<Instance> instances = Utils.sequences(activity, dataFile.getAbsolutePath(), type);
+					List<Instance> instances = Instance.load(activity, dataFile, type);
 					Collections.shuffle(instances);
 					
 					String f = "data/cross-validation/k" + folds + "/fold-" + _fold + "/" + type + "/";
@@ -657,9 +604,9 @@ public class Experiments {
 		// Load data sets
 		final String mainKey = dataset + "-" + mainActivity;
 		final String subKey = dataset + "-" + subActivity;
-		final Map<String, Map<Integer,List<Interval>>> data = new HashMap<String,Map<Integer,List<Interval>>>();
-		data.put(mainKey, Utils.load(new File("data/input/" + mainKey + ".lisp")));
-		data.put(subKey, Utils.load(new File("data/input/" + subKey + ".lisp")));
+		final Map<String,List<Instance>> data = new HashMap<String,List<Instance>>();
+		data.put(mainKey, Instance.load(new File("data/input/" + mainKey + ".lisp")));
+		data.put(subKey, Instance.load(new File("data/input/" + subKey + ".lisp")));
 
 		// Load training instances & init test map
 		final Map<String, List<Instance>> instancesMap = Utils.load(dataset, type);
@@ -700,7 +647,8 @@ public class Experiments {
 				
 				// Randomly select test set for main activity
 				List<Integer> dataKeys = new ArrayList<Integer>();
-				dataKeys.addAll(data.get(mainKey).keySet());
+				for (Instance instance : data.get(mainKey))
+					dataKeys.add(instance.id());
 				int compTestSize = (int)(data.get(mainKey).size() * (decompPortions + testPortions) / partitions);
 				Set<Integer> mainDecompTestSet = new HashSet<Integer>();
 				for (int j = 0; j < compTestSize; j++) {
@@ -759,8 +707,16 @@ public class Experiments {
 				
 				// Decomposition
 				Set<BPPNode> actives = new HashSet<BPPNode>();
+				List<Instance> instances = data.get(mainKey);
 				for (Integer testID : decompTestMap.get(mainKey)) {
-					List<Interval> testItem = data.get(mainKey).get(testID);
+					Instance testInstance = null;
+					for (Instance instance : instances) { 
+						if (instance.id() == testID) {
+							testInstance = instance;
+							break;
+						}
+					}
+					List<Interval> testItem = testInstance.intervals();
 										
 					// Pre-process data
 					int start = Integer.MAX_VALUE;
@@ -848,8 +804,17 @@ public class Experiments {
 					double mainPrecision = 0;
 					double compPrecision = 0;
 					double totalSize = testMap.get(mainKey).size();
+					
+					instances = data.get(mainKey);
 					for (Integer testID : testMap.get(mainKey)) {
-						List<Interval> testItem = data.get(mainKey).get(testID);
+						Instance testInstance = null;
+						for (Instance instance : instances) {
+							if (instance.id() == testID) { 
+								testInstance = instance;
+								break;
+							}
+						}
+						List<Interval> testItem = testInstance.intervals();
 											
 						// Pre-process data
 						int start = Integer.MAX_VALUE;
@@ -940,16 +905,17 @@ public class Experiments {
 		final String suffix = (prune) ? "-prune" : "";
 		
 		// Load data sets
-		final Map<String, Map<Integer,List<Interval>>> data = new HashMap<String,Map<Integer,List<Interval>>>();
+		final Map<String,List<Instance>> data = new HashMap<String,List<Instance>>();
 		for (String activity : activities) {
 			String key = dataset + "-" + activity;
-			data.put(key, Utils.load(new File("data/input/" + key + ".lisp")));
+			data.put(key, Instance.load(new File("data/input/" + key + ".lisp")));
 		}
 
 		// Randomly select a test instance
 		Random rand = new Random(System.currentTimeMillis());
-		Map<Integer,List<Interval>> testData = data.get(dataset + "-" + testActivity);
-		final List<Interval> testInstance = testData.get(rand.nextInt(testData.size()));
+		List<Instance> testData = data.get(dataset + "-" + testActivity);
+		Instance instance = testData.get(rand.nextInt(testData.size()));
+		final List<Interval> testInstance = instance.intervals();
 
 		// Load training instances
 		final Map<String, List<Instance>> instancesMap = Utils.load(dataset, type);

@@ -1,20 +1,17 @@
 package edu.arizona.cs.learn.timeseries.experiment;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
-import edu.arizona.cs.learn.algorithm.heatmap.HeatmapImage;
+import edu.arizona.cs.learn.algorithm.render.HeatmapImage;
 import edu.arizona.cs.learn.algorithm.render.Paint;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchSignatures;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.Signature;
-import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
@@ -73,26 +70,21 @@ public class Visualize {
 	}
 	
 	public static void makeImages(String dataDir, String outputDir, String prefix, boolean compress) { 
-		Map<Integer,List<Interval>> map = Utils.load(new File(dataDir + prefix + ".lisp"));
+		List<Instance> instances = Instance.load(new File(dataDir + prefix + ".lisp"));
 		if (compress) { 
-			Map<Integer,List<Interval>> compressedMap = new TreeMap<Integer,List<Interval>>();
-			for (Integer key : map.keySet()) { 
-				compressedMap.put(key, BPPFactory.compress(map.get(key), Interval.eff));
-			}
-			map = compressedMap;
+			for (Instance instance : instances)  
+				instance.intervals(BPPFactory.compress(instance.intervals(), Interval.eff));
 		}
 		
-		Map<Integer,List<Symbol>> instances = new TreeMap<Integer,List<Symbol>>();
-		for (Integer key : map.keySet())  
-			instances.put(key, SequenceType.allen.getSequence(map.get(key)));
+		for (Instance instance : instances) 
+			instance.sequence(SequenceType.allen);
 
 		System.out.println("Making images...");
 		// build a signature....
-		List<Integer> eIds = new ArrayList<Integer>(map.keySet());
 		Signature s = new Signature(prefix);
-		for (int i = 1; i <= 20; ++i) { 
-			System.out.println("\t...i = " + i);
-			s.update(instances.get(eIds.get(i-1)));
+		for (int i = 0; i < 20; ++i) { 
+			System.out.println("\t...i = " + (i+1));
+			s.update(instances.get(i).sequence());
 			
 			if (i % 10 == 0)
 				s = s.prune(3);
@@ -100,11 +92,11 @@ public class Visualize {
 		System.out.println("\t...signature trained");
 		
 		// print all of the regular images 
-		for (int id : eIds) { 
-			String pre = outputDir + prefix + "-" + id;
+		for (Instance instance : instances) { 
+			String pre = outputDir + prefix + "-" + instance.id();
 			
-			Paint.render(map.get(id), pre + ".png");
-			HeatmapImage.makeHeatmap(pre + "-hm.png", s.signature(), 0, map.get(id), SequenceType.allen);
+			Paint.render(instance.intervals(), pre + ".png");
+			HeatmapImage.makeHeatmap(pre + "-hm.png", s.signature(), 0, instance.intervals(), SequenceType.allen);
 		}
 	}
 	

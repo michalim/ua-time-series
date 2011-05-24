@@ -1,5 +1,6 @@
 package edu.arizona.cs.learn.timeseries.experiment;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,7 @@ public class AverageDistance {
 		params.setPenalty(-1, 0);
 				
 		Set<String> seenSet = new HashSet<String>();
-    	List<Instance> instances = Utils.sequences(name, "data/input/" + name + ".lisp", type);
+    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
     	
 		SummaryStatistics ss = new SummaryStatistics();
 		while (ss.getN() < 200) { 

@@ -42,7 +42,7 @@ public class Clustering {
     			String name = f.getName();
     			String className = name.substring(0, name.indexOf(".lisp"));
 
-    			List<Instance> list = Utils.sequences(className, f.getAbsolutePath(), type);
+    			List<Instance> list = Instance.load(className, f, type);
     			System.out.print(className + " range " + all.size() + " to ");
     			all.addAll(list);
     			System.out.println(all.size());
@@ -176,7 +176,7 @@ public class Clustering {
     			String name = f.getName();
     			String className = name.substring(0, name.indexOf(".lisp"));
 
-    			List<Instance> list = Utils.sequences(className, f.getAbsolutePath(), SequenceType.starts);
+    			List<Instance> list = Instance.load(className, f, SequenceType.starts);
     			System.out.print(className + " range " + all.size() + " to ");
     			all.addAll(list);
     			System.out.println(all.size());

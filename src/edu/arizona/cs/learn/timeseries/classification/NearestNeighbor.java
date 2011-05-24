@@ -14,9 +14,7 @@ import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
-import edu.arizona.cs.learn.timeseries.model.Episode;
 import edu.arizona.cs.learn.timeseries.model.Instance;
-import edu.arizona.cs.learn.timeseries.model.SequenceType;
 
 public class NearestNeighbor extends Classifier {
 	private static Logger logger = Logger.getLogger(NearestNeighbor.class);
@@ -112,21 +110,5 @@ public class NearestNeighbor extends Classifier {
 			timing.put(key, 0L);
 		}
 		return timing;
-	}
-	
-	public void trainEpisodes(int x, List<Episode> training, SequenceType type, boolean shuffle) { 
-		trainEpisodes(training, type, shuffle);
-	}
-	
-	public void trainEpisodes(List<Episode> training, SequenceType type, boolean shuffle) { 
-		_trainingData = new ArrayList<Instance>();
-		
-		for (Episode e : training) { 
-			Instance instance = e.toInstance(type);
-			if (shuffle) 
-				instance.shuffle();
-
-			_trainingData.add(instance);
-		}
 	}
 }

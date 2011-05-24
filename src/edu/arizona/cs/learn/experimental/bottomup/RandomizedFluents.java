@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.util.Utils;
@@ -278,7 +279,10 @@ public class RandomizedFluents {
 	
 	public static void main(String[] args) { 
 		RandomizedFluents rf = new RandomizedFluents();
-		Map<Integer,List<Interval>> eMap = Utils.load(new File("data/input/chpt1-approach.lisp"));
+		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
+		Map<Integer,List<Interval>> eMap = new TreeMap<Integer,List<Interval>>();
+		for (Instance instance : instances) 
+			eMap.put(instance.id(), instance.intervals());
 		
 		rf.convert(eMap);
 		for (int i = 0; i < SAMPLES; ++i)  

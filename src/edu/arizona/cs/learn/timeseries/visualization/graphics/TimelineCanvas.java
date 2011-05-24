@@ -121,7 +121,7 @@ public class TimelineCanvas extends JPanel implements DataComponent, ScrollableP
 		int[] spec = new int[4];
 		boolean found = false;
 
-		List<Interval> intervals = _model.episode();
+		List<Interval> intervals = _model.intervals();
 		if (_compressed)
 			intervals = _model.compressed();
 		
@@ -220,7 +220,7 @@ public class TimelineCanvas extends JPanel implements DataComponent, ScrollableP
 	public void mouseClicked(MouseEvent e) {
 		// We are going to determine if this click was done on an
 		// interval.... 
-		if (_model == null || _model.episode() == null) { 
+		if (_model == null || _model.intervals() == null) { 
 			return;
 		}
 
@@ -239,7 +239,7 @@ public class TimelineCanvas extends JPanel implements DataComponent, ScrollableP
 		int index = 0;
 		_selected = null;
 		
-		List<Interval> intervals = _model.episode();
+		List<Interval> intervals = _model.intervals();
 		if (_compressed)
 			intervals = _model.compressed();
 		

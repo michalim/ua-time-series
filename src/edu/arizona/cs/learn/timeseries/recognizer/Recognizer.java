@@ -7,10 +7,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
-import edu.arizona.cs.learn.algorithm.markov.BPPNode;
-import edu.arizona.cs.learn.algorithm.markov.FSMFactory;
-import edu.arizona.cs.learn.algorithm.markov.FSMRecognizer;
+import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
+import edu.arizona.cs.learn.algorithm.recognition.FSMFactory;
+import edu.arizona.cs.learn.algorithm.recognition.FSMRecognizer;
 import edu.arizona.cs.learn.timeseries.experiment.BitPatternGeneration;
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
@@ -23,7 +24,7 @@ public enum Recognizer {
 		@Override
 		public FSMRecognizer build(
 				String key, String signatureFile,
-				Map<Integer, List<Interval>> training, List<Integer> test,
+				List<Instance> training, List<Integer> test,
 				int minPct, boolean onlyStart) {
 			Signature s = Signature.fromXML(signatureFile);
 			return build(key, s, minPct, onlyStart);
@@ -56,22 +57,22 @@ public enum Recognizer {
 		@Override
 		public FSMRecognizer build(
 				String key, String signatureFile,
-				Map<Integer, List<Interval>> training, List<Integer> test,
+				List<Instance> training, List<Integer> test,
 				int minPct, boolean onlyStart) {
 
 			List<List<Interval>> bpps = new ArrayList<List<Interval>>();
 			Set<String> propSet = new TreeSet<String>();
-			for (Integer id : training.keySet()) {
-				if (test.indexOf(id) != -1) {
+			for (Instance instance : training) { 
+				if (test.indexOf(instance.id()) != -1) {
 					continue;
 				}
 				
-				bpps.add(BPPFactory.compress(training.get(id), Interval.eff));
-				for (Interval interval : training.get(id)) {
+				// compress the instance .
+				bpps.add(BPPFactory.compress(instance.intervals(), Interval.eff));
+				for (Interval interval : instance.intervals()) {
 					propSet.add(interval.name);
 				}
 			}
-
 			List<String> props = new ArrayList<String>(propSet);
 			DirectedGraph<BPPNode, Edge> graph = FSMFactory.makeGraph(props, bpps, onlyStart);
 
@@ -90,6 +91,6 @@ public enum Recognizer {
 	public abstract FSMRecognizer build(String key, Signature s, int minPct, boolean onlyStart);
 
 	public abstract FSMRecognizer build(String key, String signatureFile,
-			Map<Integer, List<Interval>> training, List<Integer> test,
+			List<Instance> training, List<Integer> test,
 			int minPct, boolean onlyStart);
 }

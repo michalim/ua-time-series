@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.util.Utils;
 
@@ -37,13 +38,13 @@ public class IEConversion {
 //	    ...
 	    
 	public static void convert(String inputF, String outputF, boolean mapKeys) throws Exception { 
-		Map<Integer,List<Interval>> map = Utils.load(new File(inputF));
+		List<Instance> instances = Instance.load(new File(inputF));
 		
 		Map<String,Integer> keyMap = new HashMap<String,Integer>();
 		BufferedWriter out = new BufferedWriter(new FileWriter(outputF));
-		for (List<Interval> list : map.values()) { 
-			Collections.sort(list, Interval.esf);
-			for (Interval i : list) { 
+		for (Instance instance : instances) { 
+			Collections.sort(instance.intervals(), Interval.esf);
+			for (Interval i : instance.intervals()) { 
 				
 				if (mapKeys) {
 					Integer name = keyMap.get(i.name);
@@ -74,21 +75,23 @@ public class IEConversion {
 		Map<String,List<List<Interval>>> allMap = new HashMap<String,List<List<Interval>>>();
 		Map<String,Integer> keyMap = new HashMap<String,Integer>();
 		for (String key : activities) { 
-			Map<Integer,List<Interval>> map = Utils.load(new File(dataDir + key + ".lisp"));
+			List<Instance> instances = Instance.load(new File(dataDir + key + ".lisp"));
+			List<List<Interval>> intervals = new ArrayList<List<Interval>>();
 			
 			// Iterate over all of the intervals and add the names to the keyMap
-			for (List<Interval> list : map.values()) { 
-				Collections.sort(list, Interval.esf);
-				for (Interval i : list) { 
+			for (Instance instance : instances) { 
+				Collections.sort(instance.intervals(), Interval.esf);
+				for (Interval i : instance.intervals()) { 
 					Integer name = keyMap.get(i.name);
 					if (name == null) { 
 						name = keyMap.size();
 						keyMap.put(i.name, name);
 					}
 				}
+				intervals.add(instance.intervals());
 			}
 			
-			allMap.put(key, new ArrayList<List<Interval>>(map.values()));
+			allMap.put(key, new ArrayList<List<Interval>>(intervals));
 		}
 
 		for (String key : allMap.keySet()) { 

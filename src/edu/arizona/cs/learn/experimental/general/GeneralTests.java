@@ -98,18 +98,18 @@ public class GeneralTests {
 	}
 	
 	public static void buildSignature() { 
-		Map<Integer,List<Interval>> map = Utils.load(new File("data/input/chpt1-approach.lisp"));
+		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
 		Map<Integer,List<Symbol>> instanceMap = new TreeMap<Integer,List<Symbol>>();
 		
 		Set<String> propSet = new TreeSet<String>();
-		for (List<Interval> list : map.values()) { 
-			for (Interval interval : list)
+		for (Instance instance : instances) { 
+			for (Interval interval : instance.intervals())
 				propSet.add(interval.name);
 		}
 		List<String> props = new ArrayList<String>(propSet);
-		for (Integer key : map.keySet()) {
-			instanceMap.put(key, Utils.toSequence(props, BPPFactory.compress(map.get(key), Interval.eff)));
-			System.out.println("Key: " + key + " ---- " + instanceMap.get(key));
+		for (Instance instance : instances) {
+			instanceMap.put(instance.id(), Utils.toSequence(props, BPPFactory.compress(instance.intervals(), Interval.eff)));
+			System.out.println("Key: " + instance.id() + " ---- " + instanceMap.get(instance.id()));
 		}		
 
 		
@@ -123,21 +123,24 @@ public class GeneralTests {
 	 * process will work.
 	 */
 	public static void approach() { 
-		Map<Integer,List<Interval>> map = Utils.load(new File("data/input/chpt1-approach.lisp"));
+		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
 		Map<Integer,List<Symbol>> timelineMap = new TreeMap<Integer,List<Symbol>>();
 		
 		Set<String> propSet = new TreeSet<String>();
-		for (List<Interval> list : map.values()) { 
-			for (Interval interval : list)
+		for (Instance instance : instances) { 
+			for (Interval interval : instance.intervals())
 				propSet.add(interval.name);
 		}
 		List<String> props = new ArrayList<String>(propSet);
-		for (Integer key : map.keySet()) {
-			timelineMap.put(key, Utils.toSequence(props, BPPFactory.compress(map.get(key), Interval.eff)));
-			System.out.println("Key: " + key + " ---- " + timelineMap.get(key));
+		for (Instance instance : instances) {
+			timelineMap.put(instance.id(), Utils.toSequence(props, BPPFactory.compress(instance.intervals(), Interval.eff)));
+			System.out.println("Key: " + instance.id() + " ---- " + timelineMap.get(instance.id()));
 		}
 		
-		List<Integer> keys = new ArrayList<Integer>(map.keySet());
+		List<Integer> keys = new ArrayList<Integer>(instances.size());
+		for (Instance i : instances) 
+			keys.add(i.id());
+		
 		for (int i = 0; i < keys.size(); ++i) { 
 			Integer key1 = keys.get(i);
 			List<Symbol> sequence1 = timelineMap.get(key1);
@@ -175,21 +178,24 @@ public class GeneralTests {
 	}
 	
 	public static void jumpOver() { 
-		Map<Integer,List<Interval>> map = Utils.load(new File("data/input/ww3d-jump-over.lisp"));
+		List<Instance> instances = Instance.load(new File("data/input/ww3d-jump-over.lisp"));
 		Map<Integer,List<Symbol>> timelineMap = new TreeMap<Integer,List<Symbol>>();
 		
 		Set<String> propSet = new TreeSet<String>();
-		for (List<Interval> list : map.values()) { 
-			for (Interval interval : list)
+		for (Instance instance : instances) { 
+			for (Interval interval : instance.intervals())
 				propSet.add(interval.name);
 		}
 		List<String> props = new ArrayList<String>(propSet);
-		for (Integer key : map.keySet()) {
-			timelineMap.put(key, Utils.toSequence(props, BPPFactory.compress(map.get(key), Interval.eff)));
+		for (Instance instance : instances) {
+			timelineMap.put(instance.id(), Utils.toSequence(props, BPPFactory.compress(instance.intervals(), Interval.eff)));
 		}
 		
 		// Let's build a pretend signature ....
-		List<Integer> keys = new ArrayList<Integer>(map.keySet());
+		List<Integer> keys = new ArrayList<Integer>(instances.size());
+		for (Instance i : instances) 
+			keys.add(i.id());
+
 		List<Symbol> signature = timelineMap.get(keys.get(0));
 		for (int i = 1; i < keys.size(); ++i) { 
 			List<Symbol> seq = timelineMap.get(keys.get(i));
@@ -214,10 +220,10 @@ public class GeneralTests {
 				String name = f.getName().substring(0, f.getName().indexOf(".lisp"));
 				eMap.put(name, new ArrayList<List<Interval>>());
 				
-				Map<Integer,List<Interval>> map = Utils.load(f);
-				for (List<Interval> list : map.values()) { 
-					eMap.get(name).add(list);
-					for (Interval interval : list)
+				List<Instance> instances = Instance.load(f);
+				for (Instance instance : instances) { 
+					eMap.get(name).add(instance.intervals());
+					for (Interval interval : instance.intervals())
 						propSet.add(interval.name);
 				}
 			}

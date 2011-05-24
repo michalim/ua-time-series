@@ -8,7 +8,6 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
-import edu.arizona.cs.learn.timeseries.model.Episode;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
@@ -25,14 +24,14 @@ public class DataModel {
 	protected SequenceType _sequenceType;
 	
 	/** maps the episode id to the index in the episode list */
-	protected List<Episode> _episodes;
+	protected List<Instance> _instances;
 	protected Signature _signature;
 
 	protected int _currentId;
-	protected List<Interval> _episode;
-	protected List<Interval> _compressed;
 	protected Instance _instance;
 	protected Set<String> _propSet;
+
+	protected List<Interval> _compressed;
 	
 	public DataModel() {
 		// the default is Allen sequences.
@@ -44,8 +43,7 @@ public class DataModel {
 	 * @param file
 	 */
 	public void load(File file) { 
-		String name = file.getName();
-		_episodes = Utils.loadEpisodes(name, file);
+		_instances = Instance.load(file);
 	}
 	
 	/**
@@ -61,16 +59,14 @@ public class DataModel {
 	 * The the active episode for the DataModel
 	 * @param id
 	 */
-	public void setEpisode(int id) { 
+	public void set(int id) { 
 		_currentId = id;
-		
-		Episode e = _episodes.get(_currentId);
-		_episode = e.intervals();
-		_compressed = BPPFactory.compress(_episode, Interval.eff);
-		_instance = e.toInstance(_sequenceType);
+		_instance = getInstance(id);
+		_instance.sequence(_sequenceType);
+		_compressed = BPPFactory.compress(_instance.intervals(), Interval.eff);
 		
 		_propSet = new TreeSet<String>();
-		for (Interval interval : _episode)
+		for (Interval interval : _instance.intervals())
 			_propSet.add(interval.name);
 	}
 	
@@ -79,17 +75,22 @@ public class DataModel {
 	 * @param id
 	 * @return
 	 */
-	public Episode getEpisode(int id) { 
-		return _episodes.get(id);
+	public Instance getInstance(int id) { 
+		Instance result = null;
+		for (Instance instance : _instances) {
+			if (instance.id() == id) {
+				result = instance;
+				break;
+			}
+		}
+		return result;
 	}
 	
 	/**
-	 * Get the episodes found inside of this
-	 * world.
 	 * @return
 	 */
-	public List<Episode> episodes() { 
-		return _episodes;
+	public List<Instance> instances() { 
+		return _instances;
 	}
 	
 	/**
@@ -120,8 +121,8 @@ public class DataModel {
 	 * Retrieve the original list of Intervals for an episode
 	 * @return
 	 */
-	public List<Interval> episode() { 
-		return _episode;
+	public List<Interval> intervals() { 
+		return _instance.intervals();
 	}
 	
 	/**

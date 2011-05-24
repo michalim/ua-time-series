@@ -1,5 +1,6 @@
 package edu.arizona.cs.learn.timeseries.clustering.hierarchical;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,12 +23,12 @@ public class Agglomerative {
 	public static void main(String[] args) { 
 		// perform a test with a small subset of the total problem.
 		List<Instance> all = new ArrayList<Instance>();
-		List<Instance> set1 = Utils.sequences("A", "data/input/ww3d-jump-over.lisp", SequenceType.allen);
-		List<Instance> set2 = Utils.sequences("B", "data/input/ww3d-jump-on.lisp", SequenceType.allen);
-		List<Instance> set3 = Utils.sequences("C", "data/input/ww3d-left.lisp", SequenceType.allen);
-		List<Instance> set4 = Utils.sequences("D", "data/input/ww3d-right.lisp", SequenceType.allen);
-		List<Instance> set5 = Utils.sequences("E", "data/input/ww3d-push.lisp", SequenceType.allen);
-		List<Instance> set6 = Utils.sequences("F", "data/input/ww3d-approach.lisp", SequenceType.allen);
+		List<Instance> set1 = Instance.load("A", new File("data/input/ww3d-jump-over.lisp"), SequenceType.allen);
+		List<Instance> set2 = Instance.load("B", new File("data/input/ww3d-jump-on.lisp"), SequenceType.allen);
+		List<Instance> set3 = Instance.load("C", new File("data/input/ww3d-left.lisp"), SequenceType.allen);
+		List<Instance> set4 = Instance.load("D", new File("data/input/ww3d-right.lisp"), SequenceType.allen);
+		List<Instance> set5 = Instance.load("E", new File("data/input/ww3d-push.lisp"), SequenceType.allen);
+		List<Instance> set6 = Instance.load("F", new File("data/input/ww3d-approach.lisp"), SequenceType.allen);
 
 //		for (int i = 0; i < 5; ++i) { 
 //			all.add(set1.get(i));

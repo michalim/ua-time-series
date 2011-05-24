@@ -1,4 +1,4 @@
-package edu.arizona.cs.learn.algorithm.heatmap;
+package edu.arizona.cs.learn.algorithm.render;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
-import edu.arizona.cs.learn.algorithm.render.Paint;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;

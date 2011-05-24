@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.util.Utils;
 
@@ -16,7 +17,7 @@ public class Apriori {
 	private int _numEpisodes;
 	private double _minSupport;
 	
-	private Map<Integer,List<Interval>> _episodeMap;
+	private List<Instance> _instances;
 	private Map<Integer,List<Pattern>> _frequentMap;
 	private Map<String,Pattern> _patterns;
 
@@ -31,8 +32,8 @@ public class Apriori {
 		
 		// Add all of the initial patterns and 
 		// then add the frequent ones to the correct map...
-		for (Integer key : _episodeMap.keySet()) { 
-			for (Interval interval : _episodeMap.get(key)) { 
+		for (Instance instance : _instances) { 
+			for (Interval interval : instance.intervals()) { 
 				IntervalSet is = new IntervalSet();
 				is.add(interval);
 				
@@ -42,7 +43,7 @@ public class Apriori {
 					p = new Pattern(name, 1);
 					_patterns.put(name, p);
 				}
-				p.add(key, is);
+				p.add(instance.id(), is);
 			}
 		}
 		List<Pattern> frequent = findFrequent();
@@ -50,10 +51,10 @@ public class Apriori {
 		
 		// Now we grow all of frequent order two patterns
 		_patterns.clear();
-		for (int episodeId : _episodeMap.keySet()) { 
+		for (Instance instance : _instances)  {
 			List<IntervalSet> sets = new ArrayList<IntervalSet>();
 			for (Pattern p : frequent) { 
-				List<IntervalSet> set = p.getExamples(episodeId);
+				List<IntervalSet> set = p.getExamples(instance.id());
 				if (set != null)
 					sets.addAll(set);
 			}
@@ -66,7 +67,7 @@ public class Apriori {
 					p = new Pattern(name, 2);
 					_patterns.put(name, p);
 				}
-				p.add(episodeId, is);
+				p.add(instance.id(), is);
 			}
 		}
 		_frequentMap.put(2, findFrequent());
@@ -186,11 +187,11 @@ public class Apriori {
 		_patterns.clear();
 		
 		List<Pattern> k1Patterns = _frequentMap.get(k-1);
-		for (int episodeId : _episodeMap.keySet()) { 
-			System.out.println("Starting episode " + episodeId);
+		for (Instance instance : _instances) { 
+			System.out.println("Starting episode " + instance.id());
 			List<IntervalSet> sets = new ArrayList<IntervalSet>();
 			for (Pattern p : k1Patterns) {
-				List<IntervalSet> set = p.getExamples(episodeId);
+				List<IntervalSet> set = p.getExamples(instance.id());
 				if (set != null)
 					sets.addAll(set);
 			}
@@ -203,7 +204,7 @@ public class Apriori {
 					p = new Pattern(name, 2);
 					_patterns.put(name, p);
 				}
-				p.add(episodeId, is);
+				p.add(instance.id(), is);
 			}
 			System.out.println("  Patterns: " + _patterns.size());
 		}
@@ -219,8 +220,8 @@ public class Apriori {
 		
 		_patterns = new HashMap<String,Pattern>();
 		_frequentMap = new HashMap<Integer,List<Pattern>>();
-		_episodeMap = Utils.load(new File(file));
-		_numEpisodes = _episodeMap.keySet().size();
+		_instances = Instance.load(new File(file));
+		_numEpisodes = _instances.size();
 
 		init();
 		grow(3);

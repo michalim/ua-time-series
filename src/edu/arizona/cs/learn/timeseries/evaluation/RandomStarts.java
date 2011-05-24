@@ -1,5 +1,6 @@
 package edu.arizona.cs.learn.timeseries.evaluation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class RandomStarts {
 			}
 
 			for (int i = 0; i < 1000; ++i) { 
-				List<Instance> randList = Utils.sequences(className, "data/input/" + className + ".lisp", SequenceType.randomStarts);
+				List<Instance> randList = Instance.load(className, new File("data/input/" + className + ".lisp"), SequenceType.randomStarts);
 				
 				for (int j = 0; j < list.size(); ++j) { 
 					Instance i1 = list.get(j);

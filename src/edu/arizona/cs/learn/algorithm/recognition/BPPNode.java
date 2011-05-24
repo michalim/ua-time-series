@@ -1,4 +1,4 @@
-package edu.arizona.cs.learn.algorithm.markov;
+package edu.arizona.cs.learn.algorithm.recognition;
 
 import java.util.List;
 import java.util.Set;

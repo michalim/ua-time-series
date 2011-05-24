@@ -1,5 +1,6 @@
 package edu.arizona.cs.learn.timeseries.experiment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +27,7 @@ public class SignatureGeneration {
 		String name = "ww2d-fight";
 		String file = "data/input/" + name + ".lisp";
 
-    	List<Instance> instances = Utils.sequences(name, file, SequenceType.allen);
+    	List<Instance> instances = Instance.load(name, new File(file), SequenceType.allen);
 
     	// now construct a copy and randomly shuffle it.
     	Random r = new Random(System.currentTimeMillis());
@@ -61,7 +62,7 @@ public class SignatureGeneration {
 	public static void sequence() { 
 		for (int i = 1; i <= 5; ++i) { 
 			String name = "ww2d-test-" + i;
-			List<Instance> instances = Utils.sequences(name, "data/input/" + name + ".lisp", SequenceType.allen);
+			List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), SequenceType.allen);
 			logger.debug("Sequence Size: " + instances.get(0).sequence().size());
 		}
 	}

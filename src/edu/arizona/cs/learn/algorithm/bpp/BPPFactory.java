@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.markov.BPPNode;
+import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.util.graph.Edge;
 import edu.uci.ics.jung.graph.DirectedGraph;

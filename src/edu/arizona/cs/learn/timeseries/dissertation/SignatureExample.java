@@ -18,15 +18,16 @@ import edu.arizona.cs.learn.util.Utils;
 
 public class SignatureExample {
 	public static void init() {
-		Utils.propMap.put("collision(agent,box)", "c(a,b)");
-		Utils.propMap.put("distance-stable(agent,box2)", "ds(a,b2)");
-		Utils.propMap.put("distance-decreasing(agent,box)", "dd(a,b)");
-		Utils.propMap.put("forward(agent)", "f(a)");
-		Utils.propMap.put("distance-decreasing(agent,box2)", "dd(a,b2)");
-		Utils.propMap.put("speed-decreasing(agent)", "sd(a)");
-		Utils.propMap.put("turn-left(agent)", "tl(a)");
-		Utils.propMap.put("turn-right(agent)", "tr(a)");
-		Utils.propMap.put("distance-increasing(agent,box2)", "di(a,b2)");
+//		TODO: update for the rewrite parameter that is now part of the loading process
+//		Utils.propMap.put("collision(agent,box)", "c(a,b)");
+//		Utils.propMap.put("distance-stable(agent,box2)", "ds(a,b2)");
+//		Utils.propMap.put("distance-decreasing(agent,box)", "dd(a,b)");
+//		Utils.propMap.put("forward(agent)", "f(a)");
+//		Utils.propMap.put("distance-decreasing(agent,box2)", "dd(a,b2)");
+//		Utils.propMap.put("speed-decreasing(agent)", "sd(a)");
+//		Utils.propMap.put("turn-left(agent)", "tl(a)");
+//		Utils.propMap.put("turn-right(agent)", "tr(a)");
+//		Utils.propMap.put("distance-increasing(agent,box2)", "di(a,b2)");
 	}
 
 	public static void main(String[] args) {

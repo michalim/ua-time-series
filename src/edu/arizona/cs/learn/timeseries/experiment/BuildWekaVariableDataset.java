@@ -13,8 +13,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
-import edu.arizona.cs.learn.util.Utils;
 
 /**
  * @author wkerr
@@ -50,12 +50,12 @@ public class BuildWekaVariableDataset {
 			List<Set<String>> episodes = new ArrayList<Set<String>>();
 			map.put(className, episodes);
 			
-			Map<Integer,List<Interval>> intervalMap = Utils.load(new File("data/input/" + className + ".lisp"));
-			for (Integer id : intervalMap.keySet()) { 
+			List<Instance> instances = Instance.load(new File("data/input/" + className + ".lisp"));
+			for (Instance instance : instances) { 
 				Set<String> propSet = new HashSet<String>();
 				episodes.add(propSet);
 				
-				for (Interval i : intervalMap.get(id)) { 
+				for (Interval i : instance.intervals()) { 
 					variableSet.add(i.name);
 					propSet.add(i.name);
 				}

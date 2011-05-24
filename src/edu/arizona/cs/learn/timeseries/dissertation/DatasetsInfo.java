@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.util.Utils;
@@ -36,16 +37,16 @@ public class DatasetsInfo {
 					&& (f.getName().endsWith("lisp"))) {
 				String name = f.getName();
 				String className = name.substring(0, name.indexOf(".lisp"));
-				Map<Integer,List<Interval>> map = Utils.load(f);
+				List<Instance> instances = Instance.load(f);
 
-				System.out.println("[" + prefix + "] " + className + " " + map.size());
+				System.out.println("[" + prefix + "] " + className + " " + instances.size());
 
-				for (List<Interval> list : map.values()) {
+				for (Instance instance : instances) {
 					int minStart = Integer.MAX_VALUE;
 					int maxEnd = 0;
 
 					Set<String> props = new HashSet<String>();
-					for (Interval interval : list) {
+					for (Interval interval : instance.intervals()) {
 						minStart = Math.min(minStart, interval.start);
 						maxEnd = Math.max(maxEnd, interval.end);
 						props.add(interval.name);
@@ -53,8 +54,8 @@ public class DatasetsInfo {
 
 					propSize.addValue(props.size());
 					numSteps.addValue(maxEnd - minStart);
-					intervalSize.addValue(list.size());
-					sequenceSize.addValue(SequenceType.allen.getSequenceSize(list));
+					intervalSize.addValue(instance.intervals().size());
+					sequenceSize.addValue(SequenceType.allen.getSequenceSize(instance.intervals()));
 					System.gc();
 				}
 			}
@@ -81,10 +82,10 @@ public class DatasetsInfo {
 						&& (f.getName().endsWith("lisp"))) {
 					String name = f.getName();
 					String className = name.substring(0, name.indexOf(".lisp"));
-					Map<Integer,List<Interval>> map = Utils.load(f);
+					List<Instance> instances = Instance.load(f);
 
 					StringBuffer buf = new StringBuffer(prefix + ","
-							+ className + "," + map.size() + ",");
+							+ className + "," + instances.size() + ",");
 
 					SummaryStatistics numSteps = new SummaryStatistics();
 					SummaryStatistics intervalSize = new SummaryStatistics();
@@ -93,19 +94,19 @@ public class DatasetsInfo {
 					for (SequenceType type : types) {
 						sequenceMap.put(type, new SummaryStatistics());
 					}
-					for (List<Interval> list : map.values()) {
+					for (Instance instance : instances) {
 						int minStart = Integer.MAX_VALUE;
 						int maxEnd = 0;
 
-						for (Interval interval : list) {
+						for (Interval interval : instance.intervals()) {
 							minStart = Math.min(minStart, interval.start);
 							maxEnd = Math.max(maxEnd, interval.end);
 						}
 						numSteps.addValue(maxEnd - minStart);
-						intervalSize.addValue(list.size());
+						intervalSize.addValue(instance.intervals().size());
 
 						for (SequenceType type : types) {
-							sequenceMap.get(type).addValue(type.getSequenceSize(list));
+							sequenceMap.get(type).addValue(type.getSequenceSize(instance.intervals()));
 						}
 
 						System.gc();
@@ -129,7 +130,7 @@ public class DatasetsInfo {
 		int numClasses = 0;
 
 		List<String> activities = new ArrayList<String>();
-		List<Map<Integer,List<Interval>>> episodes = new ArrayList<Map<Integer,List<Interval>>>();
+		List<List<Instance>> episodes = new ArrayList<List<Instance>>();
 
 		List<SequenceType> types = new ArrayList<SequenceType>();
 		types.add(SequenceType.allen);
@@ -140,10 +141,10 @@ public class DatasetsInfo {
 					&& (f.getName().endsWith("lisp"))) {
 				String name = f.getName();
 				String className = name.substring(0, name.indexOf(".lisp"));
-				Map<Integer,List<Interval>> map = Utils.load(f);
+				List<Instance> instances = Instance.load(f);
 
 				activities.add(className.substring(prefix.length() + 1));
-				episodes.add(map);
+				episodes.add(instances);
 			}
 
 		}
@@ -163,8 +164,8 @@ public class DatasetsInfo {
 		System.out.println(buf + " \\\\ \\hline");
 
 		buf = new StringBuffer("Num. Examples ");
-		for (Map<Integer,List<Interval>> map : episodes)
-			buf.append(" & " + map.size());
+		for (List<Instance> instances : episodes)
+			buf.append(" & " + instances.size());
 		System.out.println(buf + " \\\\ \\hline");
 
 		StringBuffer timeBuf = new StringBuffer("Avg. Time  ");
@@ -178,7 +179,7 @@ public class DatasetsInfo {
 		StringBuffer cba = new StringBuffer("Avg. CBA ");
 
 		for (int i = 0; i < activities.size(); i++) {
-			Map<Integer,List<Interval>> map = episodes.get(i);
+			List<Instance> instances = episodes.get(i);
 
 			SummaryStatistics numSteps = new SummaryStatistics();
 			SummaryStatistics intervalSize = new SummaryStatistics();
@@ -187,20 +188,20 @@ public class DatasetsInfo {
 			for (SequenceType type : types) {
 				sequenceMap.put(type, new SummaryStatistics());
 			}
-			for (List<Interval> list : map.values()) {
+			for (Instance instance : instances) {
 				int minStart = Integer.MAX_VALUE;
 				int maxEnd = 0;
 
-				for (Interval interval : list) {
+				for (Interval interval : instance.intervals()) {
 					minStart = Math.min(minStart, interval.start);
 					maxEnd = Math.max(maxEnd, interval.end);
 				}
 				numSteps.addValue(maxEnd - minStart);
-				intervalSize.addValue(list.size());
+				intervalSize.addValue(instance.intervals().size());
 
 				for (SequenceType type : types) {
 					((SummaryStatistics) sequenceMap.get(type)).addValue(type
-							.getSequenceSize(list));
+							.getSequenceSize(instance.intervals()));
 				}
 
 				System.gc();
@@ -241,7 +242,7 @@ public class DatasetsInfo {
 		int numClasses = 0;
 
 		List<String> activities = new ArrayList<String>();
-		List<Map<Integer,List<Interval>>> episodes = new ArrayList<Map<Integer,List<Interval>>>();
+		List<List<Instance>> episodes = new ArrayList<List<Instance>>();
 
 		List<SequenceType> types = new ArrayList<SequenceType>();
 		types.add(SequenceType.allen);
@@ -252,10 +253,10 @@ public class DatasetsInfo {
 					&& (f.getName().endsWith("lisp"))) {
 				String name = f.getName();
 				String className = name.substring(0, name.indexOf(".lisp"));
-				Map<Integer,List<Interval>> map = Utils.load(f);
+				List<Instance> instances = Instance.load(f);
 
 				activities.add(className.substring(prefix.length() + 1));
-				episodes.add(map);
+				episodes.add(instances);
 			}
 
 		}
@@ -272,8 +273,8 @@ public class DatasetsInfo {
 			StringBuffer buf = new StringBuffer("{\\it "
 					+ (String) activities.get(i) + "} ");
 
-			Map<Integer,List<Interval>> map = episodes.get(i);
-			buf.append(" & " + map.size());
+			List<Instance> instances = episodes.get(i);
+			buf.append(" & " + instances.size());
 
 			SummaryStatistics numSteps = new SummaryStatistics();
 			SummaryStatistics intervalSize = new SummaryStatistics();
@@ -283,20 +284,20 @@ public class DatasetsInfo {
 				sequenceMap.put(type, new SummaryStatistics());
 			}
 
-			for (List<Interval> list : map.values()) {
+			for (Instance instance : instances) {
 				int minStart = Integer.MAX_VALUE;
 				int maxEnd = 0;
 
-				for (Interval interval : list) {
+				for (Interval interval : instance.intervals()) {
 					minStart = Math.min(minStart, interval.start);
 					maxEnd = Math.max(maxEnd, interval.end);
 				}
 				numSteps.addValue(maxEnd - minStart);
-				intervalSize.addValue(list.size());
+				intervalSize.addValue(instance.intervals().size());
 
 				for (SequenceType type : types) {
 					((SummaryStatistics) sequenceMap.get(type)).addValue(type
-							.getSequenceSize(list));
+							.getSequenceSize(instance.intervals()));
 				}
 
 				System.gc();
@@ -324,7 +325,7 @@ public class DatasetsInfo {
 		int numClasses = 0;
 
 		List<String> activities = new ArrayList<String>();
-		List<Map<Integer,List<Interval>>> episodes = new ArrayList<Map<Integer,List<Interval>>>();
+		List<List<Instance>> episodes = new ArrayList<List<Instance>>();
 
 		List<SequenceType> types = new ArrayList<SequenceType>();
 		types.add(SequenceType.allen);
@@ -335,10 +336,10 @@ public class DatasetsInfo {
 					&& (f.getName().endsWith("lisp"))) {
 				String name = f.getName();
 				String className = name.substring(0, name.indexOf(".lisp"));
-				Map<Integer,List<Interval>> map = Utils.load(f);
+				List<Instance> instances = Instance.load(f);
 
 				activities.add(className.substring(prefix.length() + 1));
-				episodes.add(map);
+				episodes.add(instances);
 			}
 
 		}
@@ -358,22 +359,22 @@ public class DatasetsInfo {
 		SummaryStatistics mCBA = new SummaryStatistics();
 
 		for (int i = 0; i < episodes.size(); i++) {
-			Map<Integer,List<Interval>> map = episodes.get(i);
+			List<Instance> instances = episodes.get(i);
 
-			mExamples.addValue(map.size());
-			for (List<Interval> list : map.values()) {
+			mExamples.addValue(instances.size());
+			for (Instance instance : instances) {
 				int minStart = Integer.MAX_VALUE;
 				int maxEnd = 0;
 
-				for (Interval interval : list) {
+				for (Interval interval : instance.intervals()) {
 					minStart = Math.min(minStart, interval.start);
 					maxEnd = Math.max(maxEnd, interval.end);
 				}
 				mTime.addValue(maxEnd - minStart);
-				mFluents.addValue(list.size());
+				mFluents.addValue(instance.intervals().size());
 
-				mAllen.addValue(SequenceType.allen.getSequenceSize(list));
-				mCBA.addValue(SequenceType.cba.getSequenceSize(list));
+				mAllen.addValue(SequenceType.allen.getSequenceSize(instance.intervals()));
+				mCBA.addValue(SequenceType.cba.getSequenceSize(instance.intervals()));
 			}
 		}
 

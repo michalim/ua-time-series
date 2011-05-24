@@ -1,5 +1,6 @@
 package edu.arizona.cs.learn.timeseries.visualization;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class SignatureGraphs {
 	}
 	
 	public static void singleGraph(String name, SequenceType type, int min) {
-    	List<Instance> instances = Utils.sequences(name, "data/input/" + name + ".lisp", type);
+    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
 		Signature signature = new Signature(name);
 		signature.train(instances);
 
@@ -59,7 +60,7 @@ public class SignatureGraphs {
 		
 		int min = 0;
 		for (String name : names) {  
-	    	List<Instance> instances = Utils.sequences(name, "data/input/" + name + ".lisp", type);
+	    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
 			Signature signature = new Signature(name);
 			signature.train(instances);
 			signatures.add(signature.prune(signature.trainingSize()/2));

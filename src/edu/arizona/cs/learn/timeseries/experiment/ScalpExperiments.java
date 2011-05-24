@@ -43,10 +43,10 @@ public class ScalpExperiments {
 		params.type = SequenceType.allen;
 		params.prunePct = 1;
 		params.incPrune = false;
-		Classifier c = Classify.prune.getClassifier(params);
+//		Classifier c = Classify.prune.getClassifier(params);
 
-//		params.k = 1;
-//		Classifier c = Classify.knn.getClassifier(params);
+		params.k = 1;
+		Classifier c = Classify.knn.getClassifier(params);
 
 		LeaveOneOut loo = new LeaveOneOut();
 		List<BatchStatistics> stats = loo.run(System.currentTimeMillis(), classNames, data, c);

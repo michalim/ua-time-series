@@ -8,19 +8,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
-import edu.arizona.cs.learn.algorithm.markov.BPPNode;
-import edu.arizona.cs.learn.algorithm.markov.FSMRecognizer;
+import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
+import edu.arizona.cs.learn.algorithm.recognition.FSMRecognizer;
+import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.recognizer.Recognizer;
-import edu.arizona.cs.learn.util.Utils;
 
 public class CompareFSMandSequences {
 
@@ -31,9 +30,14 @@ public class CompareFSMandSequences {
 	
 	public static void test(String prefix, String className, double pct) throws Exception {
 		File dataFile = new File("data/input/" + prefix + "-" + className + ".lisp");
-		Map<Integer,List<Interval>> map = Utils.load(dataFile);
-
-		List<List<Interval>> training = new ArrayList<List<Interval>>(map.values());
+		List<Instance> instances = Instance.load(dataFile);
+		
+		// Add all of the instances to the training set and we will selectively
+		// remove some of them to be part of the test set.
+		List<List<Interval>> training = new ArrayList<List<Interval>>();
+		for (Instance instance : instances)
+			training.add(instance.intervals());
+		
 		List<List<Interval>> testing = new ArrayList<List<Interval>>();
 		
 		Collections.shuffle(training);

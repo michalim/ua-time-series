@@ -9,10 +9,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
-import edu.arizona.cs.learn.algorithm.markov.BPPNode;
-import edu.arizona.cs.learn.algorithm.markov.FSMConverter;
-import edu.arizona.cs.learn.algorithm.markov.FSMFactory;
-import edu.arizona.cs.learn.algorithm.markov.FSMRecognizer;
+import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
+import edu.arizona.cs.learn.algorithm.recognition.FSMConverter;
+import edu.arizona.cs.learn.algorithm.recognition.FSMFactory;
+import edu.arizona.cs.learn.algorithm.recognition.FSMRecognizer;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Signature;
 import edu.arizona.cs.learn.timeseries.model.SignatureCallable;

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
-import edu.arizona.cs.learn.algorithm.heatmap.HeatmapImage;
+import edu.arizona.cs.learn.algorithm.render.HeatmapImage;
 import edu.arizona.cs.learn.algorithm.render.Paint;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
@@ -34,63 +34,65 @@ public class Heatmaps {
 	}
 
 	public static void ww3d() {
-		Signature jumpOver = Signature
-				.fromXML("data/cross-validation/k10/fold-0/allen/ww3d-jump-over.xml");
-
-		int min = (int) Math.round(0.5D * jumpOver.trainingSize());
-		System.out.println("min: " + min);
-		jumpOver = jumpOver.prune(min);
-
-		Map<Integer, List<Interval>> jumpOverMap = Utils.load(new File(
-				"data/input/ww3d-jump-over.lisp"));
-		Map<Integer, List<Interval>> jumpOnMap = Utils.load(new File(
-				"data/input/ww3d-jump-on.lisp"));
-		Map<Integer, List<Interval>> approachMap = Utils.load(new File(
-				"data/input/ww3d-approach.lisp"));
-
-		List<Interval> c1 = BPPFactory.compress(
-				jumpOverMap.get(Integer.valueOf(1)), Interval.eff);
-		List<Interval> c2 = BPPFactory.compress(
-				jumpOnMap.get(Integer.valueOf(2)), Interval.eff);
-		List<Interval> c3 = BPPFactory.compress(
-				approachMap.get(Integer.valueOf(1)), Interval.eff);
-
-		HeatmapImage.makeHeatmap("data/images/jump-over.png",
-				jumpOver.signature(), min, c1, SequenceType.allen);
-		HeatmapImage.makeHeatmap("data/images/jump-on.png",
-				jumpOver.signature(), min, c2, SequenceType.allen);
-		HeatmapImage.makeHeatmap("data/images/approach.png",
-				jumpOver.signature(), min, c3, SequenceType.allen);
+//		 TODO: update if needed -- was working before 
+//		Signature jumpOver = Signature
+//				.fromXML("data/cross-validation/k10/fold-0/allen/ww3d-jump-over.xml");
+//
+//		int min = (int) Math.round(0.5D * jumpOver.trainingSize());
+//		System.out.println("min: " + min);
+//		jumpOver = jumpOver.prune(min);
+//
+//		Map<Integer, List<Interval>> jumpOverMap = Utils.load(new File(
+//				"data/input/ww3d-jump-over.lisp"));
+//		Map<Integer, List<Interval>> jumpOnMap = Utils.load(new File(
+//				"data/input/ww3d-jump-on.lisp"));
+//		Map<Integer, List<Interval>> approachMap = Utils.load(new File(
+//				"data/input/ww3d-approach.lisp"));
+//
+//		List<Interval> c1 = BPPFactory.compress(
+//				jumpOverMap.get(Integer.valueOf(1)), Interval.eff);
+//		List<Interval> c2 = BPPFactory.compress(
+//				jumpOnMap.get(Integer.valueOf(2)), Interval.eff);
+//		List<Interval> c3 = BPPFactory.compress(
+//				approachMap.get(Integer.valueOf(1)), Interval.eff);
+//
+//		HeatmapImage.makeHeatmap("data/images/jump-over.png",
+//				jumpOver.signature(), min, c1, SequenceType.allen);
+//		HeatmapImage.makeHeatmap("data/images/jump-on.png",
+//				jumpOver.signature(), min, c2, SequenceType.allen);
+//		HeatmapImage.makeHeatmap("data/images/approach.png",
+//				jumpOver.signature(), min, c3, SequenceType.allen);
 	}
 
 	public static void ww2d() {
-		Signature chase = Signature
-				.fromXML("data/cross-validation/k10/fold-0/allen/ww2d-chase-prune.xml");
-
-		int min = (int) Math.round(0.5D * chase.trainingSize());
-		System.out.println("min: " + min);
-		chase = chase.prune(min);
-
-		Map<Integer, List<Interval>> chaseMap = Utils.load(new File(
-				"data/input/ww2d-chase.lisp"));
-		Map<Integer, List<Interval>> fightMap = Utils.load(new File(
-				"data/input/ww2d-fight.lisp"));
-		Map<Integer, List<Interval>> ballMap = Utils.load(new File(
-				"data/input/ww2d-ball.lisp"));
-
-		List<Interval> c1 = BPPFactory.compress(
-				chaseMap.get(Integer.valueOf(1)), Interval.eff);
-		List<Interval> c2 = BPPFactory.compress(
-				fightMap.get(Integer.valueOf(2)), Interval.eff);
-		List<Interval> c3 = BPPFactory.compress(
-				ballMap.get(Integer.valueOf(1)), Interval.eff);
-
-		HeatmapImage.makeHeatmap("data/images/chase.png", chase.signature(),
-				min, c1, SequenceType.allen);
-		HeatmapImage.makeHeatmap("data/images/fight.png", chase.signature(),
-				min, c2, SequenceType.allen);
-		HeatmapImage.makeHeatmap("data/images/ball.png", chase.signature(),
-				min, c3, SequenceType.allen);
+//		 TODO: update if needed -- was working before 
+//		Signature chase = Signature
+//				.fromXML("data/cross-validation/k10/fold-0/allen/ww2d-chase-prune.xml");
+//
+//		int min = (int) Math.round(0.5D * chase.trainingSize());
+//		System.out.println("min: " + min);
+//		chase = chase.prune(min);
+//
+//		Map<Integer, List<Interval>> chaseMap = Utils.load(new File(
+//				"data/input/ww2d-chase.lisp"));
+//		Map<Integer, List<Interval>> fightMap = Utils.load(new File(
+//				"data/input/ww2d-fight.lisp"));
+//		Map<Integer, List<Interval>> ballMap = Utils.load(new File(
+//				"data/input/ww2d-ball.lisp"));
+//
+//		List<Interval> c1 = BPPFactory.compress(
+//				chaseMap.get(Integer.valueOf(1)), Interval.eff);
+//		List<Interval> c2 = BPPFactory.compress(
+//				fightMap.get(Integer.valueOf(2)), Interval.eff);
+//		List<Interval> c3 = BPPFactory.compress(
+//				ballMap.get(Integer.valueOf(1)), Interval.eff);
+//
+//		HeatmapImage.makeHeatmap("data/images/chase.png", chase.signature(),
+//				min, c1, SequenceType.allen);
+//		HeatmapImage.makeHeatmap("data/images/fight.png", chase.signature(),
+//				min, c2, SequenceType.allen);
+//		HeatmapImage.makeHeatmap("data/images/ball.png", chase.signature(),
+//				min, c3, SequenceType.allen);
 	}
 
 	public static void heatmap(String prefix, SequenceType type, int k,
@@ -103,10 +105,15 @@ public class Heatmaps {
 		System.out.println("min: " + min);
 		s = s.prune(min);
 
-		Map<Integer, List<Interval>> map = Utils.load(new File("data/input/"
-				+ prefix + "-" + activity2 + ".lisp"));
-		List<Interval> c1 = BPPFactory.compress(map.get(Integer.valueOf(id)),
-				Interval.eff);
+		List<Instance> instances = Instance.load(new File("data/input/" + prefix + "-" + activity2 + ".lisp"));
+		Instance selected = null;
+		for (Instance instance : instances) { 
+			if (id == instance.id()) { 
+				selected = instance;
+				break;
+			}
+		}
+		List<Interval> c1 = BPPFactory.compress(selected.intervals(), Interval.eff);
 
 		HeatmapImage.makeHeatmap(
 				"data/images/" + activity2 + "-" + id + ".png", s.signature(),
@@ -121,12 +128,14 @@ public class Heatmaps {
 		Signature sA = Signature.fromXML("data/cross-validation/k3/fold-0/allen/niall-a-prune.xml");
 		Signature sB = Signature.fromXML("data/cross-validation/k3/fold-0/allen/niall-b-prune.xml");
 
-		Map<Integer, List<Interval>> map = Utils.load(new File("data/input/niall-a.lisp"));
+		List<Instance> instances = Instance.load(new File("data/input/niall-a.lisp"));
 
 		String prefix = "/tmp/heatmap-";
 		String suffix = ".png";
-		for (int key : map.keySet()) { 
-			Map<String,Double> mapA = HeatmapImage.intensityMap(sA.signature(), 10, map.get(key), SequenceType.allen);
+		for (Instance instance : instances) { 
+			int key = instance.id();
+			
+			Map<String,Double> mapA = HeatmapImage.intensityMap(sA.signature(), 10, instance.intervals(), SequenceType.allen);
 			// remove all of the zero intensity intervals from the map
 			Set<String> keySet = new HashSet<String>(mapA.keySet());
 			for (String s : keySet) { 
@@ -134,7 +143,7 @@ public class Heatmaps {
 					mapA.remove(s);
 			}
 			
-			Map<String,Double> mapB = HeatmapImage.intensityMap(sB.signature(), 10, map.get(key), SequenceType.allen);
+			Map<String,Double> mapB = HeatmapImage.intensityMap(sB.signature(), 10, instance.intervals(), SequenceType.allen);
 			keySet = new HashSet<String>(mapB.keySet());
 			for (String s : keySet) { 
 				if (Double.compare(0.0, mapB.get(s)) == 0)
@@ -150,8 +159,8 @@ public class Heatmaps {
 			mapA = HeatmapImage.scale(mapA, maxValue);
 			mapB = HeatmapImage.scale(mapB, maxValue);
 			
-			Paint.render(map.get(key), mapA, prefix + key + "-A" + suffix);
-			Paint.render(map.get(key), mapB, prefix + key + "-B" + suffix);
+			Paint.render(instance.intervals(), mapA, prefix + key + "-A" + suffix);
+			Paint.render(instance.intervals(), mapB, prefix + key + "-B" + suffix);
 			
 //			HeatmapImage.makeHeatmap(prefix + "A-" + key + suffix,
 //					sA.signature(), 10, map.get(key), SequenceType.allen);

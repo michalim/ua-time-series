@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.markov.FSMRecognizer;
+import edu.arizona.cs.learn.algorithm.recognition.FSMRecognizer;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchSignatures;
 import edu.arizona.cs.learn.timeseries.evaluation.CrossValidation;
 import edu.arizona.cs.learn.timeseries.evaluation.SplitAndTest;
