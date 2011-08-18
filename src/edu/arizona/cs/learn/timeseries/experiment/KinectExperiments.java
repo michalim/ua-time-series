@@ -2,19 +2,25 @@ package edu.arizona.cs.learn.timeseries.experiment;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
+import edu.arizona.cs.learn.algorithm.alignment.Normalize;
+import edu.arizona.cs.learn.algorithm.alignment.Params;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.timeseries.classification.Classifier;
 import edu.arizona.cs.learn.timeseries.classification.Classify;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyCallable;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyParams;
+import edu.arizona.cs.learn.timeseries.classification.Distance;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
 import edu.arizona.cs.learn.timeseries.evaluation.LeaveOneOut;
 import edu.arizona.cs.learn.timeseries.model.Instance;
@@ -132,39 +138,108 @@ public class KinectExperiments {
 		Utils.LIMIT_RELATIONS = true;
 		Utils.WINDOW = 5;
 		
+		int k = 6;
+		
 		SequenceType type = SequenceType.allen;
-		Map<String,List<Instance>> training = Utils.load("<directory>", "<prefix>", type);
+		Map<String,List<Instance>> trainingMap = Utils.load("<directory>", "<prefix>", type);
+		// combine all of the training data into a single list
+		List<Instance> training = new ArrayList<Instance>();
+		for (List<Instance> tmp : trainingMap.values()) 
+			training.addAll(tmp);
+		
 		Map<String,List<Instance>> test = Utils.load("<directory>", "<prefix>", type);
-		
-		List<String> classNames = new ArrayList<String>(training.keySet());
-		Collections.sort(classNames);
-		
-		ClassifyParams params = new ClassifyParams();
-		params.type = type;
-		params.k = 1;
-		Classifier c = Classify.knn.getClassifier(params);
-
-		// Perform the training.
-		c.train(training);
 		
 		// Now let's do a test....
 		ExecutorService execute = Executors.newFixedThreadPool(Utils.numThreads);;
 
-		BatchStatistics fs = new BatchStatistics(c.getName(), classNames);
-		List<Future<ClassifyCallable>> futureList = new ArrayList<Future<ClassifyCallable>>();
+		List<Future<ACallable>> futureList = new ArrayList<Future<ACallable>>();
 		for (List<Instance> instances : test.values())
 			for (Instance instance : instances) 
-				futureList.add(execute.submit(new ClassifyCallable(c, instance)));
+				futureList.add(execute.submit(new ACallable(training, instance, k)));
 		
-		for (Future<ClassifyCallable> future : futureList) {
+		for (Future<ACallable> future : futureList) {
 			try {
-				ClassifyCallable results = future.get();
-				fs.addTestDetail(results.actual(), results.predicted(), results.duration());
+				ACallable results = future.get();
+				
+				// Here is where you output the information that you want
+				// to output for each test....
+				System.out.println("Test Class: " + results.test().name());
+				for (Distance d : results.results()) { 
+					// print out the class name and the distance to the class being tested
+					System.out.println("   " + d.instance.name() + " -- " + d.d);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
 		}	
-		System.out.println("Accuracy: " + fs.accuracy());
+		
+		// no computation of accuracy since there isn't really a test.
+	}
+}
+
+/**
+ * Allows us to multithread the KNN classifier.  Each ACallable
+ * represents a single test.
+ * @author wkerr
+ *
+ */
+class ACallable implements Callable<ACallable> {
+
+	private List<Instance> _training;
+	private Instance _test;
+	
+	private int _k;
+	
+	private List<Distance> _results;
+	
+	public ACallable(List<Instance> training, Instance test, int k) { 
+		_training = training;
+		_test = test;
+		_k = k;
 	}
 	
+	@Override
+	public ACallable call() throws Exception {
+		Params params = new Params();
+		params.setMin(0, 0);
+		params.setBonus(1.0D, 1.0D);
+		params.setPenalty(0.0D, 0.0D);
+		params.normalize = Normalize.regular;
+
+		_results = new ArrayList<Distance>();
+		for (Instance tmp : _training) {
+			params.seq1 = _test.sequence();
+			params.seq2 = tmp.sequence();
+
+			double distance = SequenceAlignment.distance(params);
+			_results.add(new Distance(tmp, distance));
+		}
+
+		Collections.sort(_results, new Comparator<Distance>() {
+			public int compare(Distance o1, Distance o2) {
+				return Double.compare(o1.d, o2.d);
+			}
+		});
+		
+		while (_results.size() > _k) { 
+			_results.remove(_results.size()-1);
+		}
+		return this;
+	} 
+	
+	/**
+	 * Return the test instance.
+	 * @return
+	 */
+	public Instance test() { 
+		return _test;
+	}
+	
+	/**
+	 * Return the results after computing the nearest neighbors.
+	 * @return
+	 */
+	public List<Distance> results() { 
+		return _results;
+	}
 }
