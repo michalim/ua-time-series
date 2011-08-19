@@ -1,5 +1,6 @@
 package edu.arizona.cs.learn.timeseries.experiment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,7 +19,6 @@ import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.timeseries.classification.Classifier;
 import edu.arizona.cs.learn.timeseries.classification.Classify;
-import edu.arizona.cs.learn.timeseries.classification.ClassifyCallable;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyParams;
 import edu.arizona.cs.learn.timeseries.classification.Distance;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
@@ -144,18 +144,22 @@ public class KinectExperiments {
 		Map<String,List<Instance>> trainingMap = Utils.load("<directory>", "<prefix>", type);
 		// combine all of the training data into a single list
 		List<Instance> training = new ArrayList<Instance>();
-		for (List<Instance> tmp : trainingMap.values()) 
+		for (List<Instance> tmp : trainingMap.values()) {
 			training.addAll(tmp);
+		}
 		
-		Map<String,List<Instance>> test = Utils.load("<directory>", "<prefix>", type);
-		
-		// Now let's do a test....
-		ExecutorService execute = Executors.newFixedThreadPool(Utils.numThreads);;
+		List<String> testingFiles = new ArrayList<String>();
+		testingFiles.add("SQ_APPRACh_BLAH_BLAH");		
 
+		// Now let's test all of the files.
+		ExecutorService execute = Executors.newFixedThreadPool(Utils.numThreads);;
+		
 		List<Future<ACallable>> futureList = new ArrayList<Future<ACallable>>();
-		for (List<Instance> instances : test.values())
-			for (Instance instance : instances) 
-				futureList.add(execute.submit(new ACallable(training, instance, k)));
+		for (String file : testingFiles) { 
+			// Based on conversations with Maria and Raquel -- There is only a single test per file.
+			Instance test = Instance.load(new File(file)).get(0);
+			futureList.add(execute.submit(new ACallable(training, file, test, k)));
+		}
 		
 		for (Future<ACallable> future : futureList) {
 			try {
@@ -163,7 +167,7 @@ public class KinectExperiments {
 				
 				// Here is where you output the information that you want
 				// to output for each test....
-				System.out.print(results.test().name() + " ");
+				System.out.print(results.file() + " ");
 				for (Distance d : results.results()) { 
 					// print out the class name and the distance to the class being tested
 					System.out.print(" " + d.instance.name() + " ");
@@ -186,6 +190,8 @@ public class KinectExperiments {
  */
 class ACallable implements Callable<ACallable> {
 
+	private String _file;
+
 	private List<Instance> _training;
 	private Instance _test;
 	
@@ -193,8 +199,10 @@ class ACallable implements Callable<ACallable> {
 	
 	private List<Distance> _results;
 	
-	public ACallable(List<Instance> training, Instance test, int k) { 
+	
+	public ACallable(List<Instance> training, String testFile, Instance test, int k) { 
 		_training = training;
+		_file = testFile;
 		_test = test;
 		_k = k;
 	}
@@ -229,11 +237,11 @@ class ACallable implements Callable<ACallable> {
 	} 
 	
 	/**
-	 * Return the test instance.
+	 * Return the file that contains this test instance.
 	 * @return
 	 */
-	public Instance test() { 
-		return _test;
+	public String file() { 
+		return _file;
 	}
 	
 	/**
