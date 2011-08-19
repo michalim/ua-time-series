@@ -22,7 +22,7 @@ import edu.arizona.cs.learn.timeseries.classification.Classify;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyParams;
 import edu.arizona.cs.learn.timeseries.classification.Distance;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
-import edu.arizona.cs.learn.timeseries.evaluation.LeaveOneOut;
+import edu.arizona.cs.learn.timeseries.evaluation.CrossValidation;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.util.Utils;
