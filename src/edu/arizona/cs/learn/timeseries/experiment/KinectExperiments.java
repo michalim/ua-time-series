@@ -76,14 +76,14 @@ public class KinectExperiments {
 	 * for this piece of code to work.
 	 * @param prefix
 	 */
-	public static void performance() { 
+	public static void performance(String dataName) { 
 		Utils.LIMIT_RELATIONS = true;
 		Utils.WINDOW = 5;
-		
+
 		SequenceType type = SequenceType.allen;
 		
-		Map<String,List<Instance>> data = Utils.load("/Users/wkerr/psi/maria/fluents/", "Deva", type);
-		data = subset(data, 10);
+		Map<String,List<Instance>> data = Utils.load("/data/input/", dataName, type);
+//		data = subset(data, 10);
 		
 		List<String> classNames = new ArrayList<String>(data.keySet());
 		Collections.sort(classNames);
@@ -103,8 +103,12 @@ public class KinectExperiments {
 
 //		SplitAndTest sat = new SplitAndTest(10, 2.0/3.0);
 //		List<BatchStatistics> stats = sat.run(System.currentTimeMillis(), classNames, data, c);
-		LeaveOneOut loo = new LeaveOneOut();
-		List<BatchStatistics> stats = loo.run(System.currentTimeMillis(), classNames, data, c);
+//		LeaveOneOut loo = new LeaveOneOut();
+//		List<BatchStatistics> stats = loo.run(System.currentTimeMillis(), classNames, data, c);
+		
+		
+		CrossValidation cv = new CrossValidation(5);
+		List<BatchStatistics> stats = cv.run(System.currentTimeMillis(), classNames, data, c);
 		
 		// For now let's print out some informative stuff and build
 		// one confusion matrix
@@ -128,20 +132,32 @@ public class KinectExperiments {
 		
 		// Now print out the confusion matrix (in csv format)
 		System.out.println(Utils.toCSV(classNames, matrix));
+
 	}
 	
 	public static void main(String[] args) throws Exception { 
-		performance();
+		String option=args[0];
+		String TrainName=args[1];
+		String TestName=args[2];
+		String oc="C";
+		if (option.toUpperCase().equals(oc)) {
+			// do cross validation
+			performance(TrainName);
+		}
+		else {	
+			// do classification
+			darpaEvaluation(TrainName,TestName);
+		}	
 	}
 	
-	public static void darpaEvaluation() {
+	public static void darpaEvaluation(String trainName, String testName) {
 		Utils.LIMIT_RELATIONS = true;
 		Utils.WINDOW = 5;
 		
 		int k = 6;
 		
 		SequenceType type = SequenceType.allen;
-		Map<String,List<Instance>> trainingMap = Utils.load("<directory>", "<prefix>", type);
+		Map<String,List<Instance>> trainingMap = Utils.load("data/input","DevaSmooth1" , type);
 		// combine all of the training data into a single list
 		List<Instance> training = new ArrayList<Instance>();
 		for (List<Instance> tmp : trainingMap.values()) {
@@ -149,7 +165,8 @@ public class KinectExperiments {
 		}
 		
 		List<String> testingFiles = new ArrayList<String>();
-		testingFiles.add("SQ_APPRACh_BLAH_BLAH");		
+		testingFiles.add("data/input/T2C_10_LEAVE10_A1_C1_id1.prop18.lisp");		
+		testingFiles.add("data/input/T2C_10_LEAVE10_A1_C2_id1.prop10.lisp");	
 
 		// Now let's test all of the files.
 		ExecutorService execute = Executors.newFixedThreadPool(Utils.numThreads);;
@@ -158,6 +175,7 @@ public class KinectExperiments {
 		for (String file : testingFiles) { 
 			// Based on conversations with Maria and Raquel -- There is only a single test per file.
 			Instance test = Instance.load(new File(file)).get(0);
+			test.sequence(SequenceType.allen.getSequence(test.intervals()));
 			futureList.add(execute.submit(new ACallable(training, file, test, k)));
 		}
 		
