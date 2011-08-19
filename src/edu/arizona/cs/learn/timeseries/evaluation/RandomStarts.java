@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.timeseries.distance.Distances;
@@ -45,7 +45,7 @@ public class RandomStarts {
 				params.normalize = Normalize.none;
 				params.seq1 = list.get(i).sequence();
 				params.seq2 = list.get(i).sequence();
-				selfDistance.add(GeneralAlignment.distance(params));
+				selfDistance.add(SequenceAlignment.distance(params));
 			}
 
 			for (int i = 0; i < 1000; ++i) { 
@@ -66,7 +66,7 @@ public class RandomStarts {
 					params.seq1 = i1.sequence();
 					params.seq2 = i2.sequence();
 					
-					double d = GeneralAlignment.distance(params);
+					double d = SequenceAlignment.distance(params);
 					listSS.get(j).addValue(d);
 				}
 			}

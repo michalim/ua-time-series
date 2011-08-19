@@ -5,5 +5,9 @@ public class Score {
 	public double distance;
 	
 	public Signature signature;
+	
+	public String toString() { 
+		return key + " - " + distance;
+	}
 }
 

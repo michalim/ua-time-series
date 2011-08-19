@@ -3,7 +3,7 @@ package edu.arizona.cs.learn.timeseries.dissertation;
 import java.util.List;
 import java.util.Map;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
@@ -28,8 +28,8 @@ public class SequenceAlignmentTable {
 	public void latexTable(Params params) { 
 		StringBuilder buf = new StringBuilder("\\begin{tabular}{|c|c|c|");
 		
-		List<Symbol> seq1 = GeneralAlignment.subset(params.seq1, params.min1);
-		List<Symbol> seq2 = GeneralAlignment.subset(params.seq2, params.min2);
+		List<Symbol> seq1 = SequenceAlignment.subset(params.seq1, params.min1);
+		List<Symbol> seq2 = SequenceAlignment.subset(params.seq2, params.min2);
 		
 		int m = seq1.size();
 		int n = seq2.size();

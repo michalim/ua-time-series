@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
@@ -190,7 +190,7 @@ class Variable {
 		p.normalize = Normalize.knn;
 		
 		
-		return GeneralAlignment.distance(p);
+		return SequenceAlignment.distance(p);
 	}
 }
 

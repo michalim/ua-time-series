@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.apache.log4j.Logger;
 
+import edu.arizona.cs.learn.algorithm.alignment.Similarity;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.Signature;
@@ -19,29 +20,30 @@ public class SignatureGeneration {
 	public static void main(String[] args) { 
 		Utils.LIMIT_RELATIONS = true;
 		Utils.WINDOW = 5;
-		signature();
+//		signature("chpt1-approach", SequenceType.tree, Similarity.alignment);
+		signature("chpt1-approach", SequenceType.starts, Similarity.strings);
 //		sequence();
 	}
 	
-	public static void signature() { 
-		String name = "ww2d-fight";
+	public static void signature(String name, SequenceType type, Similarity sim) { 
 		String file = "data/input/" + name + ".lisp";
 
-    	List<Instance> instances = Instance.load(name, new File(file), SequenceType.allen);
+    	List<Instance> instances = Instance.load(name, new File(file), type);
+		logger.debug("Training signature on " + instances.size() + " sequences");
 
     	// now construct a copy and randomly shuffle it.
-    	Random r = new Random(System.currentTimeMillis());
-    	List<Instance> random = new ArrayList<Instance>(instances);
-    	Collections.shuffle(random, r);
+//    	Random r = new Random(System.currentTimeMillis());
+//    	List<Instance> random = new ArrayList<Instance>(instances);
+//    	Collections.shuffle(random, r);
     	
-    	Signature s1 = new Signature(name);
-		logger.debug("Training signature on " + random.size() + " sequences");
-    	for (Instance instance : random) { 
+    	Signature s1 = new Signature(name, sim);
+    	for (Instance instance : instances) { 
     		logger.debug("  Instance " + instance.id());
     		s1.update(instance.sequence());
     	}
-    	s1 = s1.prune(s1.trainingSize() / 2);
-    	s1.toXML("/tmp/" + name + "-signature.xml");
+    	
+//    	s1 = s1.prune(s1.trainingSize() / 2);
+    	s1.toXML(name + "-" + type + "-" + sim + ".xml");
 
 //    	for (String method : new String[] { "single", "complete", "average" }) { 
 //        	Signature s2 = Signature.agglomerativeTraining(method, instances);

@@ -24,6 +24,10 @@ public enum Normalize {
 		}
 	}, 
 	regular {
+		//TODO: technically not correct.  You cannot match all of the objects.  You
+		// can only match all of those in the shorter sequence with potentially the highest values
+		// in the longer sequence.
+		
 		@Override
 		public double normalize(Params params, List<Symbol> seq1,
 				List<Symbol> seq2, double score) {

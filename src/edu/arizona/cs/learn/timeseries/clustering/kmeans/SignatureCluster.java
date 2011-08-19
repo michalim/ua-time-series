@@ -1,6 +1,6 @@
 package edu.arizona.cs.learn.timeseries.clustering.kmeans;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
@@ -60,7 +60,7 @@ public class SignatureCluster extends Cluster {
 		p.normalize = normalize;
 		p.similarity = Similarity.strings;
 		
-		Report report = GeneralAlignment.align(p);
+		Report report = SequenceAlignment.align(p);
 		if (Double.compare(report.score, Double.NaN) == 0) { 
 			System.out.println("WTF?: " + _signature.signature().size() + " -- " + instance.sequence().size());
 		}

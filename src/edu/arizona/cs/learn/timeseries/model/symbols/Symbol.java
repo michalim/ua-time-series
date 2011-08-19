@@ -42,6 +42,16 @@ public abstract class Symbol {
 	public abstract Symbol copy();
 	
 	/**
+	 * Some symbols will be more complex and you can
+	 * get far by pruning within them.
+	 * 	-- the default is to do nothing.
+	 * @param min
+	 */
+	public void prune(int min) {
+		
+	}
+	
+	/**
 	 * Add an XML representation of this symbol
 	 * to the given XML element.
 	 * @param e

@@ -10,6 +10,14 @@ import edu.arizona.cs.learn.timeseries.classification.Classifier;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.util.Utils;
 
+/**
+ * LeaveOneOut is a performance evaluation technique.  The dataset
+ * is split between training and testing --- 1 instance from each class
+ * is kept out as part of the test set and all others are part of the 
+ * training set.
+ * @author wkerr
+ *
+ */
 public class LeaveOneOut extends ClassificationTest {
 	
 	public LeaveOneOut() { 

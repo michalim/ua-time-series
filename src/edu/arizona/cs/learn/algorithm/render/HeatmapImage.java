@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.timeseries.model.Interval;
@@ -38,7 +38,7 @@ public class HeatmapImage {
 		params.setBonus(1, 0);
 		params.setPenalty(-1, 0);
 		
-		Report report = GeneralAlignment.align(params);
+		Report report = SequenceAlignment.align(params);
 		logger.debug("Matches: " + report.numMatches + " Score: " + report.score);
 		
 		for (int i = 0; i < report.results1.size(); ++i) { 

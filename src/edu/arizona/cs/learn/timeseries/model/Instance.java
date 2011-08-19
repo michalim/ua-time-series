@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.PushbackReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,9 +22,11 @@ public class Instance implements Clusterable<Instance> {
 	private static Logger logger = Logger.getLogger(Instance.class);
 	private int _id;
 	private int _uniqueId;
-	
+		
 	/** The classification label for this instance */
 	private String _label;
+	
+	private String _stringId;
 	
 	private List<Interval> _intervals;
 	private List<Symbol> _sequence;
@@ -45,6 +46,11 @@ public class Instance implements Clusterable<Instance> {
 		_intervals = intervals;
 	}
 	
+	public Instance(String label, String stringId, List<Interval> intervals) { 
+		this(label, 1, intervals);
+		_stringId = stringId;
+	}
+	
 	public String name() {
 		return _label;
 	}
@@ -59,6 +65,14 @@ public class Instance implements Clusterable<Instance> {
 
 	public void uniqueId(int uniqueId) {
 		_uniqueId = uniqueId;
+	}
+	
+	public String stringId() { 
+		return _stringId;
+	}
+	
+	public void stringId(String stringId) {
+		_stringId = stringId;
 	}
 
 	/**

@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
@@ -38,7 +38,7 @@ public class HeuristicEvaluation {
 			params.seq1 = s.signature();
 			params.seq2 = instance.sequence();
 			
-			ss.addValue(GeneralAlignment.distance(params));
+			ss.addValue(SequenceAlignment.distance(params));
 		}
 		logger.debug("Statistics: " + ss.getMean() + " " + ss.getStandardDeviation() + " [" + ss.getMin() + "," + ss.getMax() + "]");
 	}

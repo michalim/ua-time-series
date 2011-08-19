@@ -3,7 +3,7 @@ package edu.arizona.cs.learn.timeseries.dissertation;
 import java.util.List;
 import java.util.Map;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.timeseries.model.Instance;
@@ -54,8 +54,8 @@ public class SignatureExample {
 		params.setMin(0, 0);
 		params.setBonus(1.0D, 0.0D);
 		params.setPenalty(-1.0D, 0.0D);
-		Report report = GeneralAlignment.align(params);
-		List<Symbol> results = GeneralAlignment.combineAlignments(report.results1, report.results2);
+		Report report = SequenceAlignment.align(params);
+		List<Symbol> results = SequenceAlignment.combineAlignments(report.results1, report.results2);
 		for (int i = 0; i < report.results1.size(); ++i) { 
 			StringBuffer buf = new StringBuffer();
 			Symbol obj1 = report.results1.get(i);
@@ -145,9 +145,9 @@ public class SignatureExample {
 			p.setBonus(1.0D, 0.0D);
 			p.setPenalty(-1.0D, 0.0D);
 
-			Report report = GeneralAlignment.align(p);
+			Report report = SequenceAlignment.align(p);
 
-			List<Symbol> combined = GeneralAlignment.combineAlignments(report.results1, report.results2);
+			List<Symbol> combined = SequenceAlignment.combineAlignments(report.results1, report.results2);
 			for (int i = 0; i < report.results1.size(); i++) {
 				Symbol left = report.results1.get(i);
 				Symbol right = report.results2.get(i);

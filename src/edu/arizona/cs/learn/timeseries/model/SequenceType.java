@@ -9,6 +9,7 @@ import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.timeseries.model.symbols.CBA;
 import edu.arizona.cs.learn.timeseries.model.symbols.Event;
+import edu.arizona.cs.learn.timeseries.model.symbols.IntervalAndSequence;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.util.Utils;
 
@@ -272,6 +273,22 @@ public enum SequenceType {
 			return 0;
 		} 
 		
+	},
+	tree {
+		@Override
+		public List<Symbol> getSequence(List<Interval> intervals) {
+			Collections.sort(intervals, Interval.esf);
+			List<Symbol> symbols = new ArrayList<Symbol>();
+			for (int i = 0; i < intervals.size(); ++i) { 
+				symbols.add(new IntervalAndSequence(intervals, i));
+			}
+			return symbols;
+		}
+
+		@Override
+		public int getSequenceSize(List<Interval> intervals) {
+			return intervals.size();
+		} 
 	};
 
 	public abstract List<Symbol> getSequence(List<Interval> intervals);

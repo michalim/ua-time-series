@@ -14,7 +14,7 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
@@ -60,8 +60,8 @@ public class GeneralSignature {
 		_params.seq1 = _signature;
 		_params.seq2 = seq;
 		
-		Report report = GeneralAlignment.alignCheckp(_params);
-		_signature = GeneralAlignment.combineAlignments(report.results1, report.results2);
+		Report report = SequenceAlignment.align(_params);
+		_signature = SequenceAlignment.combineAlignments(report.results1, report.results2);
 	}
 	
 	public void train(List<List<Symbol>> sequences) {

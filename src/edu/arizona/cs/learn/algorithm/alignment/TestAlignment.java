@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.timeseries.model.Instance;
+import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
@@ -24,6 +25,7 @@ public class TestAlignment {
 		test3();
 		test4();
 		test5();
+		test6();
 	}
 	
 	/**
@@ -97,10 +99,10 @@ public class TestAlignment {
 	}	
 
 	private static void compareOutput(Params p) { 
-		double d1 = GeneralAlignment.distance(p);
+		double d1 = SequenceAlignment.distance(p);
 		
-		Report r1 = GeneralAlignment.alignWithCons(p);
-		Report r2 = GeneralAlignment.alignCheckp(p);
+		Report r1 = SequenceAlignment.alignWithCons(p);
+		Report r2 = SequenceAlignment.alignCheckp(p);
 		
 		
 		logger.debug("Distances - " + d1 + " - " + r1.score + " - " + r2.score);
@@ -140,7 +142,7 @@ public class TestAlignment {
 					p.seq2 = seq2;
 
 					logger.debug("Distance[" + i + "," + j + "] : "
-							+ GeneralAlignment.distance(p));
+							+ SequenceAlignment.distance(p));
 				}
 			}
 		}
@@ -330,5 +332,36 @@ public class TestAlignment {
 		p1.setPenalty(-1.0D, -1.0D);
 
 		compareOutput(p1);
+	}
+	
+	
+	public static void test6() { 
+		List<Interval> i1 = new ArrayList<Interval>();
+		i1.add(Interval.make("distance-decreasing(agent,box)", 1, 20));
+		i1.add(Interval.make("forward(agent)", 0, 11));
+		i1.add(Interval.make("speed-decreasing(agent)", 11, 20));
+		i1.add(Interval.make("collision(agent,box)", 20, 21));
+		List<Symbol> s1 = SequenceType.tree.getSequence(i1);
+		
+		List<Interval> i2 = new ArrayList<Interval>();
+  		i2.add(Interval.make("distance-decreasing(agent,box)", 1, 16));
+  		i2.add(Interval.make("forward(agent)", 0, 8));
+  		i2.add(Interval.make("speed-decreasing(agent)", 8, 16));
+  		i2.add(Interval.make("collision(agent,box)", 16, 17));
+  		i2.add(Interval.make("distance-decreasing(agent,box2)", 1, 7));
+  		i2.add(Interval.make("distance-stable(agent,box2)", 7, 9));
+  		i2.add(Interval.make("distance-increasing(agent,box2)", 9, 16));		
+		List<Symbol> s2 = SequenceType.tree.getSequence(i2);
+		
+		Params p1 = new Params();
+		p1.seq1 = s1;
+		p1.seq2 = s2;
+		p1.setMin(0, 0);
+		p1.setBonus(1.0D, 1.0D);
+		p1.setPenalty(-1.0D, -1.0D);
+		p1.similarity = Similarity.alignment;
+		
+		compareOutput(p1);
+
 	}
 }

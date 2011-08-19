@@ -3,12 +3,16 @@ package edu.arizona.cs.learn.algorithm.alignment;
 import java.util.List;
 
 import edu.arizona.cs.learn.timeseries.model.symbols.ComplexSymbol;
+import edu.arizona.cs.learn.timeseries.model.symbols.IntervalAndSequence;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.model.values.Value;
 
 public enum Similarity {
 
+	// TODO: ensure that tanimoto and cosine are returning 1 when it is a perfect match
+	// and zero when it is a complete mismatch.
+	
 	tanimoto {
 		@Override
 		public double similarity(Symbol A, Symbol B) {
@@ -106,14 +110,38 @@ public enum Similarity {
 	alignment {
 		@Override
 		public double similarity(Symbol A, Symbol B) {
-			throw new RuntimeException("NOT YET IMPLEMENTED!");
+			// for the time being alignment similarity is only defined for IntervalAndSequence symbols
+			if (!(A instanceof IntervalAndSequence) || !(B instanceof IntervalAndSequence))
+				throw new RuntimeException("alignment similarity is only defined for sequences of IntervalAndSequence symbols :  " + 
+						A.getClass().getSimpleName() + " -- " + B.getClass().getSimpleName());
+			
+			IntervalAndSequence iasA = (IntervalAndSequence) A;
+			IntervalAndSequence iasB = (IntervalAndSequence) B;
+			
+			if (!iasA.proposition().equals(iasB.proposition()))
+				return 0;
+			
+			Params p = new Params(iasA.sequence(), iasB.sequence());
+			p.setMin(0, 0);
+			p.setBonus(1, 1);
+			p.setPenalty(-1, -1);
+			p.similarity = Similarity.strings;
+			p.normalize = Normalize.regular;
+			
+			Report r = SequenceAlignment.align(p);
+			
+			// Test the score so that I can ensure that the values returned are
+			// between 0 and 1.
+			if (r.score < 0 || r.score > 1)
+				throw new RuntimeException("Score is out of bounds: " + r.score);
+			return 1-r.score;
 		} 
 		
 	};
 
 	/**
 	 * The method will return the similarity of the two objects.
-	 * A value of 0 is identical and a value of 1 is maximally
+	 * A value of 1 is identical and a value of 0 is maximally
 	 * dissimilar
 	 * @param A
 	 * @param B

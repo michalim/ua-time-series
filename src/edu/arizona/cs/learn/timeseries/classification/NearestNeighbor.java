@@ -10,7 +10,7 @@ import java.util.Map;
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
@@ -47,7 +47,7 @@ public class NearestNeighbor extends Classifier {
 			params.seq2 = tmp.sequence();
 
 			long start = System.currentTimeMillis();
-			double distance = GeneralAlignment.distance(params);
+			double distance = SequenceAlignment.distance(params);
 
 			long end = System.currentTimeMillis();
 

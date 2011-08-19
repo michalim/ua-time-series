@@ -1,6 +1,7 @@
 package edu.arizona.cs.learn.timeseries.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -32,6 +33,13 @@ public class Interval {
 		return time >= start && time < end;
 	}
 
+	/**
+	 * Does this interval overlap with the given interval or does
+	 * either interval start within some time period of the other?
+	 * @param i
+	 * @param window
+	 * @return
+	 */
 	public boolean overlaps(Interval i, int window) {
 		if (end + window <= i.start)
 			return false;
@@ -301,6 +309,16 @@ public class Interval {
 		return false;
 	}
 	
+	/**
+	 * Given the starting and ending times of two intervals, determine if
+	 * they overlap with each other.  
+	 * @param s1
+	 * @param e1
+	 * @param s2
+	 * @param e2
+	 * @param window
+	 * @return
+	 */
 	public static boolean overlaps(int s1, int e1, int s2, int e2, int window) { 
 		if (e2 + window <= s1)
 			return false;

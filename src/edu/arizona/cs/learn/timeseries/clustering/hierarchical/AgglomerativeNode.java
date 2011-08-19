@@ -3,7 +3,7 @@ package edu.arizona.cs.learn.timeseries.clustering.hierarchical;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
@@ -228,7 +228,7 @@ public class AgglomerativeNode {
 		p.normalize = Normalize.signature;
 		p.similarity = Similarity.strings;
 		
-		Report r = GeneralAlignment.align(p);
+		Report r = SequenceAlignment.align(p);
 		return r.score;
 	}
 }

@@ -65,12 +65,14 @@ public class Event extends StringSymbol {
 	
 	@Override
 	public Symbol copy() { 
-		throw new RuntimeException("Not yet implemented!");
+		return new Event(_key, _intervals.get(0), _weight);
 	}
 	
 	@Override
 	public Symbol merge(Symbol B) { 
-		throw new RuntimeException("Not yet implemented!");
+		if (!(B instanceof Event))
+			throw new RuntimeException("Must combine events with other events: " + B.getClass().getName());
+		return new Event(_key, _intervals.get(0), _weight+B.weight());
 	}	
 
 	public void toXML(Element e) {

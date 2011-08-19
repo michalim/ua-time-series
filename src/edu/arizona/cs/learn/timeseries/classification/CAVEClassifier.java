@@ -13,8 +13,9 @@ import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
+import edu.arizona.cs.learn.algorithm.alignment.Report;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Score;
 import edu.arizona.cs.learn.timeseries.model.Signature;
@@ -40,8 +41,8 @@ public class CAVEClassifier extends Classifier {
 	public String test(Instance instance) {
 		Params params = new Params();
 		params.setMin(0, 0);
-		params.setBonus(1.0D, 0.0D);
-		params.setPenalty(-1.0D, 0.0D);
+		params.setBonus(1.0D, 1.0D);
+		params.setPenalty(0.0D, 0.0D);
 		params.similarity = _params.similarity;
 
 		List<Score> scores = new ArrayList<Score>();
@@ -52,7 +53,7 @@ public class CAVEClassifier extends Classifier {
 
 			Score score = new Score();
 			score.key = signature.key();
-			score.distance = GeneralAlignment.distance(params);
+			score.distance = SequenceAlignment.distance(params);
 			scores.add(score);
 		}
 
@@ -61,6 +62,7 @@ public class CAVEClassifier extends Classifier {
 				return Double.compare(o1.distance, o2.distance);
 			}
 		});
+		
 		return scores.get(0).key;
 	}
 

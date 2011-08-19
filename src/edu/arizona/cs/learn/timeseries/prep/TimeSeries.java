@@ -85,7 +85,7 @@ public class TimeSeries {
 		
 		return map;
 	}
-
+	
 	/**
 	 * standardize the time series by subtracting the mean
 	 * and dividing by the standard deviation

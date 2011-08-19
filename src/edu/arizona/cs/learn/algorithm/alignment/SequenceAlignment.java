@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 
-public class GeneralAlignment {
-	private static Logger logger = Logger.getLogger(GeneralAlignment.class);
+public class SequenceAlignment {
+	private static Logger logger = Logger.getLogger(SequenceAlignment.class);
 
 	
 	/**
@@ -72,7 +72,8 @@ public class GeneralAlignment {
 	 * @return
 	 */
 	public static Report align(Params params) {
-		return alignCheckp(params);
+		return alignWithCons(params);
+//		return alignCheckp(params);
 	}
 	
 	
@@ -82,7 +83,8 @@ public class GeneralAlignment {
 	 * @param params
 	 * @return
 	 */
-	public static Report alignWithCons(Params params) {
+	protected static Report alignWithCons(Params params) {
+		
 		class Cons {
 			public char value;
 			public Cons next;
@@ -114,7 +116,7 @@ public class GeneralAlignment {
 
 		int m = seq1.size();
 		int n = seq2.size();
-
+		
 		Cell[] nextRow = new Cell[m + 1];
 		Cell[] lastRow = new Cell[m + 1];
 		lastRow[0] = new Cell(0.0D);
@@ -187,10 +189,10 @@ public class GeneralAlignment {
 				Cell c = new Cell(Math.max(choice1, Math.max(choice2, choice3)));
 				if ((choice1 >= choice2) && (choice1 >= choice3)) {
 					c.directions = new Cons('d', diag.directions);
+				} else if ((choice3 >= choice2) && (choice3 > choice1)) {
+					c.directions = new Cons('l', left.directions);
 				} else if ((choice2 >= choice3) && (choice2 > choice1)) {
 					c.directions = new Cons('u', up.directions);
-				} else if ((choice3 > choice2) && (choice3 > choice1)) {
-					c.directions = new Cons('l', left.directions);
 				} else {
 					logger.error("Error occurred [" + i + "," + j + "] "
 							+ item1.toString() + " " + item2.toString());
@@ -252,11 +254,10 @@ public class GeneralAlignment {
 	 * @param params
 	 * @return
 	 */
-	public static Report alignCheckp(Params params) { 
+	protected static Report alignCheckp(Params params) { 
 		List<Symbol> A = subset(params.seq1, params.min1);
 		List<Symbol> B = subset(params.seq2, params.min2);
 		
-//		logger.debug("Sizes: " + A.size() + " " + B.size());
 		Status status = new Status();
 		status.alignment = new int[A.size() + B.size() + 1];
 		status.alignPos = 0;
@@ -405,19 +406,18 @@ public class GeneralAlignment {
 					if (i==splitRow+1)
 						exitPoint[modi][j] = j;
 					
-				} else if (insertCost > matchCost && insertCost >= deleteCost) { 
-					D[modi][j] = insertCost;
-					
-					splitPoint[modi][j] = splitPoint[modi][j-1];
-					exitPoint[modi][j] = exitPoint[modi][j-1];
-					
-				} else { 
+				} else if (deleteCost > matchCost && deleteCost >= insertCost) { 
 					D[modi][j] = deleteCost;
 
 					splitPoint[modi][j] = splitPoint[modi1][j];
 					exitPoint[modi][j] = exitPoint[modi1][j];
 					if (i==splitRow+1)
 						exitPoint[modi][j] = j;
+				} else {
+					D[modi][j] = insertCost;
+					
+					splitPoint[modi][j] = splitPoint[modi][j-1];
+					exitPoint[modi][j] = exitPoint[modi][j-1];
 				}
 			}
 

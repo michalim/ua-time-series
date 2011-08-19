@@ -16,7 +16,7 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
@@ -45,8 +45,8 @@ public class Signature {
 
 		_params = new Params();
 		_params.setMin(0, 0);
-		_params.setBonus(1.0D, 0.0D);
-		_params.setPenalty(-1.0D, 0.0D);
+		_params.setBonus(1.0D, 1D);
+		_params.setPenalty(0.0D, 0D);
 		_params.similarity = similarity;
 	}
 
@@ -72,10 +72,10 @@ public class Signature {
 		_params.seq1 = _signature;
 		_params.seq2 = seq;
 		
-		Report report = GeneralAlignment.alignCheckp(_params);
+		Report report = SequenceAlignment.align(_params);
 		updateTable(report);
 
-		_signature = GeneralAlignment.combineAlignments(report.results1, report.results2);
+		_signature = SequenceAlignment.combineAlignments(report.results1, report.results2);
 //		System.out.println("Signature...." + _signature);
 	}
 
@@ -137,7 +137,7 @@ public class Signature {
 			for (int j = i + 1; j < sequences.size(); j++) {
 				params.seq1 = ((Instance) sequences.get(i)).sequence();
 				params.seq2 = ((Instance) sequences.get(j)).sequence();
-				double d = GeneralAlignment.distance(params);
+				double d = SequenceAlignment.distance(params);
 
 				if (d < distance) {
 					i1 = (Instance) sequences.get(i);
@@ -163,7 +163,7 @@ public class Signature {
 				params.seq1 = _signature;
 				params.seq2 = i.sequence();
 
-				double d = GeneralAlignment.distance(params);
+				double d = SequenceAlignment.distance(params);
 				if (d < distance) {
 					instance = i;
 					distance = d;
@@ -202,7 +202,7 @@ public class Signature {
 		params.seq1 = s1.signature();
 		params.seq2 = s2.signature();
 
-		Report report = GeneralAlignment.align(params);
+		Report report = SequenceAlignment.align(params);
 		List<Symbol[]> table = new ArrayList<Symbol[]>();
 
 		int newLength = report.results1.size();
@@ -249,7 +249,7 @@ public class Signature {
 
 		_rows = table;
 		_count = this._rows.size();
-		_signature = GeneralAlignment.combineAlignments(report.results1, report.results2);
+		_signature = SequenceAlignment.combineAlignments(report.results1, report.results2);
 	}
 
 	/**
@@ -340,9 +340,11 @@ public class Signature {
 		List<Symbol> sequence = new ArrayList<Symbol>();
 		for (int i = 0; i < _signature.size(); i++) {
 			Symbol obj = _signature.get(i);
-			if (obj.weight() > min)
-				sequence.add(obj.copy());
-			else {
+			if (obj.weight() > min) {
+				Symbol copy = obj.copy();
+				copy.prune(min);
+				sequence.add(copy);
+			} else {
 				ignore.add(Integer.valueOf(i));
 			}
 		}

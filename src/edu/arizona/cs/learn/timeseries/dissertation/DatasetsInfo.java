@@ -21,9 +21,9 @@ public class DatasetsInfo {
 
 		//		AllenRelation.MARGIN = 1;
 		//		Utils.WINDOW = 1;
-		getStats("data/input/", "ww3d");
-		getStats("data/input/", "global-ww2d");
-		getStats("/Users/wkerr/Sync/data/handwriting/wes/lisp/original/", "wes-pen");
+		getStats("/Users/wkerr/psi/maria/fluents", "Deva");
+//		getStats("data/input/", "global-ww2d");
+//		getStats("/Users/wkerr/Sync/data/handwriting/wes/lisp/original/", "wes-pen");
 	}
 
 	public static void getStats(String dir, String prefix) { 

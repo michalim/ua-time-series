@@ -1,6 +1,6 @@
 package edu.arizona.cs.learn.timeseries.clustering.kmeans;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
@@ -60,7 +60,7 @@ public class InstanceCluster extends Cluster {
 		p.normalize = normalize;
 		p.similarity = Similarity.strings;
 		
-		Report report = GeneralAlignment.align(p);
+		Report report = SequenceAlignment.align(p);
 		if (Double.compare(report.score, Double.NaN) == 0) { 
 			System.out.println("WTF?: " + _mediod.sequence().size() + " -- " + instance.sequence().size());
 		}

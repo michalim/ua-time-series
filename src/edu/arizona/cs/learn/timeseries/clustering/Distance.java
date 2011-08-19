@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
@@ -77,7 +77,7 @@ class DistanceCallable implements Callable<DistanceCallable> {
 		p.normalize = Normalize.signature;
 		p.similarity = Similarity.strings;
 		
-		_report = GeneralAlignment.align(p);
+		_report = SequenceAlignment.align(p);
 
 		return this;
 	}

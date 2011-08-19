@@ -39,7 +39,7 @@ public class Classification {
 		List<String> classNames = new ArrayList<String>(data.keySet());
 		Collections.sort(classNames);
 				
-		SplitAndTest sad = new SplitAndTest(10, 2.0/3.0);
+		SplitAndTest sad = new SplitAndTest(30, 2.0/3.0);
 		List<BatchStatistics> stats = sad.run(System.currentTimeMillis(), classNames, data, c);
 		
 		// For now let's print out some informative stuff and build
@@ -173,6 +173,42 @@ public class Classification {
 		
 //		lispPerformance(Utils.load("wes-pen", SequenceType.allen));
 		
+		
+		String prefix = "derek-pen";
+		
+		Utils.LIMIT_RELATIONS = true;
+		Utils.WINDOW = 10;
+		
+		ClassifyParams rParams = new ClassifyParams();
+		rParams.prunePct = 0.5;
+		rParams.incPrune = true;
+		rParams.type = SequenceType.tree;
+		rParams.similarity = Similarity.alignment;
+		Classifier c1 = Classify.prune.getClassifier(rParams);
+		performance(Utils.load(prefix, SequenceType.tree), c1, "logs/tree.csv");
+		
+		ClassifyParams oParams = new ClassifyParams();
+		oParams.prunePct = 0.5;
+		oParams.incPrune = true;
+		oParams.similarity = Similarity.strings;
+		Classifier c2 = Classify.prune.getClassifier(oParams);
+		performance(Utils.load(prefix, SequenceType.allen), c2, "logs/allen.csv");
+		
+		
+		
+//		List<String> activities = Utils.getActivityNames("ww3d");
+//		for (String s : activities) { 
+//			map.put(s, "data/input/" + s + ".lisp");
+//		}
+//		
+//		performance(Utils.convert(map));
+		
+//		performance("ww3d");
+//		learningCurve("ww3d");
+//		learningCurve("ww2d");
+	}
+	
+	public static void ida() { 
 		// IDA 2011 Experiments are done using this bit of code
 		// ----- BEGIN CODE -------
 		// Relational Experiment
@@ -203,16 +239,5 @@ public class Classification {
 		
 		
 		// ----- END CODE   -------
-		
-//		List<String> activities = Utils.getActivityNames("ww3d");
-//		for (String s : activities) { 
-//			map.put(s, "data/input/" + s + ".lisp");
-//		}
-//		
-//		performance(Utils.convert(map));
-		
-//		performance("ww3d");
-//		learningCurve("ww3d");
-//		learningCurve("ww2d");
 	}
 }

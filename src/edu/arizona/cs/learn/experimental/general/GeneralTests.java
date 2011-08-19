@@ -13,7 +13,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
-import edu.arizona.cs.learn.algorithm.alignment.GeneralAlignment;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
@@ -90,7 +90,7 @@ public class GeneralTests {
 				p.seq1 = a.get(i).sequence();
 				p.seq2 = b.get(i).sequence();
 				
-				Report report = GeneralAlignment.alignCheckp(p);
+				Report report = SequenceAlignment.align(p);
 				ss.addValue(report.score);
 			}
 		}
@@ -155,7 +155,7 @@ public class GeneralTests {
 				params.normalize = Normalize.none;
 				params.similarity = Similarity.tanimoto;
 				
-				Report r = GeneralAlignment.alignCheckp(params);
+				Report r = SequenceAlignment.align(params);
 				r.print();
 			}
 		}
@@ -169,8 +169,8 @@ public class GeneralTests {
 			params.setMin(0, 0);
 			params.setBonus(1, 1);
 			
-			Report r = GeneralAlignment.alignCheckp(params);
-			signature = GeneralAlignment.combineAlignments(r.results1, r.results2);
+			Report r = SequenceAlignment.align(params);
+			signature = SequenceAlignment.combineAlignments(r.results1, r.results2);
 		}
 		
 		for (Symbol s : signature)
@@ -204,8 +204,8 @@ public class GeneralTests {
 			params.setMin(0, 0);
 			params.setBonus(1, 1);
 			
-			Report r = GeneralAlignment.alignCheckp(params);
-			signature = GeneralAlignment.combineAlignments(r.results1, r.results2);
+			Report r = SequenceAlignment.align(params);
+			signature = SequenceAlignment.combineAlignments(r.results1, r.results2);
 		}
 		
 		for (Symbol s : signature)
@@ -301,7 +301,7 @@ public class GeneralTests {
 						Params params = new Params(instance, i2);
 						params.setMin(0, 0);
 						params.setBonus(1, 1);
-						Report report = GeneralAlignment.alignCheckp(params);
+						Report report = SequenceAlignment.align(params);
 						if (report.score < min) { 
 							min = report.score;
 							minClass = className;

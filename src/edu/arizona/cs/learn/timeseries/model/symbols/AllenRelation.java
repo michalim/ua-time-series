@@ -272,9 +272,9 @@ public class AllenRelation extends StringSymbol {
 			return (shortVersion ? "im" : "i-meets");
 	
 		if (i1.start < i2.start && i1.end > i2.end)
-			return (shortVersion ? "d" : "during");
+			return (shortVersion ? "d" : "i-during");
 		if (i2.start < i1.start && i2.end > i1.end)
-			return (shortVersion ? "id" : "i-during");
+			return (shortVersion ? "id" : "during");
 		
 		if (i1.end < i2.start)
 			return (shortVersion ? "b" : "before");

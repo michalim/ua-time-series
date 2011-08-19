@@ -92,9 +92,9 @@ public class Apriori {
 		}
 		
 		System.out.println("Patterns: " + _patterns.size() + " -- Frequent: " + frequent.size());
-//		for (Pattern p : frequent) {
-//			System.out.println("  " + p.name());
-//		}
+		for (Pattern p : frequent) {
+			System.out.println("  " + p.name());
+		}
 		
 		return frequent;
 	}
@@ -232,8 +232,8 @@ public class Apriori {
 	
 	public static void main(String[] args) { 
 		Apriori apriori = new Apriori();
-//		apriori.apriori("data/input/chpt1-approach.lisp", 0.5);		
-		apriori.apriori("data/input/ww3d-jump-over.lisp", 0.5);
+		apriori.apriori("data/input/chpt1-approach.lisp", 0.5);		
+//		apriori.apriori("data/input/ww3d-jump-over.lisp", 0.5);
 //		apriori.apriori("data/input/ww3d-jump-on.lisp", 0.5);
 	}
 }
