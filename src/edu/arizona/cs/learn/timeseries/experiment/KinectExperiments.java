@@ -163,11 +163,12 @@ public class KinectExperiments {
 				
 				// Here is where you output the information that you want
 				// to output for each test....
-				System.out.println("Test Class: " + results.test().name());
+				System.out.print(results.test().name() + " ");
 				for (Distance d : results.results()) { 
 					// print out the class name and the distance to the class being tested
-					System.out.println("   " + d.instance.name() + " -- " + d.d);
+					System.out.print(" " + d.instance.name() + " ");
 				}
+				System.out.println();
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
