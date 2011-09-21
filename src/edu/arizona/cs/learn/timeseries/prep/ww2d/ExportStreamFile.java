@@ -15,7 +15,7 @@ import java.util.TreeMap;
 public class ExportStreamFile {
 	
 	public static String[] classes = new String[] { 
-//		"eat", "chase", "fight", "flee", "kick-ball", "kick-column"
+//		"chase", "eat", "fight", "flee", "kick-ball", "kick-column"
 //		"collide", "pass", "talk-a", "talk-b"
 		"fight"
 	};
@@ -52,14 +52,14 @@ public class ExportStreamFile {
 			if (!f.exists()) 
 				f.mkdir();
 
-			for (int i = 1; i <= 100; ++i) { 
-				String inputFile = inPrefix + "/" + className + "-" + i + db;
+			for (int i = 1; i <= numEpisodes; ++i) { 
+				String inputFile = inPrefix + className + "-" + i + db;
 				String outputFile = out + className + "/" + className + "-" + i + ".csv";
 				convert(inputFile, outputFile);
 			}
 		}
 	}
-
+	
 	
 	public static void convert(String inputDb, String outputFile) { 
 		Map<String,List<Row>> map = getRows(inputDb);
