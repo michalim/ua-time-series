@@ -32,25 +32,31 @@ public class ExportStreamFile {
 	public static void main(String[] args) { 
 //		convertActivities();
 
-		convert(false);
-		convert(true);
+//		convert(DataType.Global);
+//		convert(DataType.Agent);
+		convert(WubbleWorld2d.DBType.Object);
 	}
 	
-	public static void convert(boolean agent) { 
-
-		String out = outPrefix + "global/";
-		String db = "/state-global.db";
-		if (agent) {
+	public static void convert(WubbleWorld2d.DBType dtype) {
+		
+		String out, db;
+		if (dtype.equals(WubbleWorld2d.DBType.Global)) {
+			out = outPrefix + "global/";
+			db = "/state-global.db";
+		} else if (dtype.equals(WubbleWorld2d.DBType.Agent)) {
 			out = outPrefix + "agent/";
 			db = "/state-agent1.db";
-		} 
+		} else {
+			out = outPrefix + "object/";
+			db = "/state-obj1.db";
+		}
 		
 		for (String className : classes) { 
 			
 			// Ensure that the output directory exists.
 			File f = new File(out + className + "/");
 			if (!f.exists()) 
-				f.mkdir();
+				f.mkdirs();
 
 			for (int i = 1; i <= numEpisodes; ++i) { 
 				String inputFile = inPrefix + className + "-" + i + db;
@@ -194,8 +200,9 @@ public class ExportStreamFile {
 			for (String name : streamMap.keySet()) { 
 				header.append(name + ",");
 				maxTime = Math.max(maxTime, streamMap.get(name).length);
-			}	
-			header.deleteCharAt(header.length()-1);
+			}
+			if (header.length() > 0 && header.charAt(header.length()-1) == ',')
+				header.deleteCharAt(header.length()-1);
 			out.write(header + "\n");
 
 			// time starts at 1 so we should too.
@@ -209,7 +216,7 @@ public class ExportStreamFile {
 				out.write(row + "\n");
 			}
 			out.close();
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
