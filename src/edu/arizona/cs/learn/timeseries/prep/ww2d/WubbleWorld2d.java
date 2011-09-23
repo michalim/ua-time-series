@@ -321,7 +321,11 @@ public class WubbleWorld2d {
 			}
 		}
 		
-		for (String suffix : entities) { 
+		for (String suffix : entities) {
+
+			if (_ignoreWalls && suffix.matches(".*wall.*"))
+				continue;
+			
 			List<Double> x = _doubleMap.get(dType).get("x" + suffix);
 			List<Double> y = _doubleMap.get(dType).get("y" + suffix);
 			
