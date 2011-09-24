@@ -167,8 +167,9 @@ public class WubbleWorld2d {
 	 * @param dType
 	 * @param prefixes
 	 * @param mapped
+	 * @param type
 	 */
-	public void doBooleanStream(DBType dType, String[] prefixes, String[] mapped) {
+	public void doBooleanStream(DBType dType, String[] prefixes, String[] mapped, String type) {
 		if (prefixes == null)	// if no prefixes, then do all
 			prefixes = _booleanMap.get(dType).keySet().toArray(new String[0]);
 		if (mapped == null)
@@ -176,10 +177,12 @@ public class WubbleWorld2d {
 		for (int i = 0; i < prefixes.length; i++) {
 			String prefix = prefixes[i];
 			for (String key : _booleanMap.get(dType).keySet()) {
+				
 				if (!key.startsWith(prefix)) 
 					continue;
-				
 				if (_ignoreWalls && key.matches(".*wall.*"))
+					continue;
+				if (type != null && !key.matches(".*" + type + ".*"))
 					continue;
 
 				String suffix = key.substring(prefix.length());
@@ -194,17 +197,20 @@ public class WubbleWorld2d {
 	 * @param dType
 	 * @param prefixes - Non-empty list of prefixes
 	 * @param mapped
+	 * @param type
 	 */
-	public void doStringStream(DBType dType, String[] prefixes, String[] mapped) {
+	public void doStringStream(DBType dType, String[] prefixes, String[] mapped, String type) {
 		if (mapped == null)
 			mapped = prefixes;
 		for (int i = 0; i < prefixes.length; i++) {
 			String prefix = prefixes[i];
 			for (String key : _stringMap.get(dType).keySet()) {
+				
 				if (!key.startsWith(prefix)) 
 					continue;
-				
 				if (_ignoreWalls && key.matches(".*wall.*"))
+					continue;
+				if (type != null && !key.matches(".*" + type + ".*"))
 					continue;
 
 				String suffix = key.substring(prefix.length());
@@ -225,17 +231,20 @@ public class WubbleWorld2d {
 	 * @param dType
 	 * @param prefixes - Non-empty list of prefixes.
 	 * @param mapped
+	 * @param type
 	 */
-	public void doSDL(DBType dType, String[] prefixes, String[] mapped) {
+	public void doSDL(DBType dType, String[] prefixes, String[] mapped, String type) {
 		if (mapped == null)		// if no mapped, use same as prefixes
 			mapped = prefixes;
 		for (int i = 0; i < prefixes.length; ++i) { 
 			String prefix = prefixes[i];
 			for (String key : _doubleMap.get(dType).keySet()) {
+				
 				if (!key.startsWith(prefix)) 
 					continue;
-				
 				if (_ignoreWalls && key.matches(".*wall.*"))
+					continue;
+				if (type != null && !key.matches(".*" + type + ".*"))
 					continue;
 				
 				String suffix = key.substring(prefix.length());
@@ -267,18 +276,21 @@ public class WubbleWorld2d {
 	 * @param dType
 	 * @param prefixes - Non-empty list of prefixes.
 	 * @param mapped
+	 * @param type
 	 * @param numBreaks
 	 */
-	public void doSAX(DBType dType, String[] prefixes, String[] mapped, int numBreaks) {
+	public void doSAX(DBType dType, String[] prefixes, String[] mapped, String type, int numBreaks) {
 		if (mapped == null)		// if no mapped, use same as prefixes
 			mapped = prefixes;
 		for (int i = 0; i < prefixes.length; ++i) { 
 			String prefix = prefixes[i];
 			for (String key : _doubleMap.get(dType).keySet()) {
+				
 				if (!key.startsWith(prefix)) 
 					continue;
-				
 				if (_ignoreWalls && key.matches(".*wall.*"))
+					continue;
+				if (type != null && !key.matches(".*" + type + ".*"))
 					continue;
 				
 				String suffix = key.substring(prefix.length());
@@ -313,7 +325,7 @@ public class WubbleWorld2d {
 	 *  
 	 *  Note: For now there is no smoothing going on.
 	 */
-	public void doMoving(DBType dType) { 
+	public void doMoving(DBType dType, String type) { 
 		Set<String> entities = new HashSet<String>();
 		for (String key : _doubleMap.get(dType).keySet()) {
 			if (key.startsWith("x(") || key.startsWith("y(")) { 
@@ -324,6 +336,8 @@ public class WubbleWorld2d {
 		for (String suffix : entities) {
 
 			if (_ignoreWalls && suffix.matches(".*wall.*"))
+				continue;
+			if (type != null && !suffix.matches(".*" + type + ".*"))
 				continue;
 			
 			List<Double> x = _doubleMap.get(dType).get("x" + suffix);
@@ -366,8 +380,8 @@ public class WubbleWorld2d {
 	public void doRelative(DBType dType) { 
 		String[] prefixes = new String[] { "relativeVx", "relativeVy", "relativeX", "relativeY" };
 		String[] mapped = new String[] { "rvx", "rvy", "rx" ,"ry" };
-		doSDL(dType, prefixes, mapped);
-		doSAX(dType, prefixes, mapped, 5);
+		doSDL(dType, prefixes, mapped, null);
+		doSAX(dType, prefixes, mapped, null, 5);
 	}
 	
 	/**
@@ -378,47 +392,69 @@ public class WubbleWorld2d {
 	public void doInternalStates(DBType dType) { 
 		String[] dblPrefixes = new String[] { "energy", "arousal", "valence", "novel" };
 		String[] strPrefixes = new String[] { "goal", "state" };
-		doSDL(dType, dblPrefixes, null);
-		doSAX(dType, dblPrefixes, null, 3);
-		doStringStream(dType, strPrefixes, null);
+		String type = null;
+		if (dType.equals(DBType.Agent))
+			type = "agent";
+		else if (dType.equals(DBType.Object))
+			type = "obj";
+		doSDL(dType, dblPrefixes, null, type);
+		doSAX(dType, dblPrefixes, null, type, 3);
+		doStringStream(dType, strPrefixes, null, type);
 	}
 	
-	public List<Interval> getIntervals(DBType dType) { 
+	public List<Interval> getIntervals(DBType dType) {
+		// TODO: should check to make sure the intervals don't have clashing values
 		return _intervalMap.get(dType);
 	}
 
-	public static void main(String[] args) { 
-		String[] activities = {"chase", "eat", "fight", "flee", "kick-ball", "kick-column"};
+	public static void main(String[] args) {
+		String dataDir = "data/raw-data/ww2d/";
 		
+		String[] activities = {"chase", "eat", "fight", "flee", "kick-ball", "kick-column"};
 //		String[] activities = {"eat"};
 
-		global(30, activities, true);
+		globalWithInternalStates(30, activities, true, dataDir);
 	} 
 	
-	public static void global(int n, String[] activities, boolean ignoreWalls) { 
+	public static void globalWithInternalStates(int n, String[] activities, boolean ignoreWalls, String dataDir) {
+		String outDir = "data/raw-data/ww2d/lisp/";
+		globalWithInternalStates(n, activities, ignoreWalls, dataDir, outDir);
+	}
+
+	public static void globalWithInternalStates(int n, String[] activities, boolean ignoreWalls, String dataDir,
+			String outDir) {
+		String prefix = "global-internal-ww2d";
+		globalWithInternalStates(n, activities, ignoreWalls, dataDir, outDir, prefix);
+	}
+	
+	public static void globalWithInternalStates(int n, String[] activities, boolean ignoreWalls, String dataDir,
+			String outDir, String prefix) {
+		
+		if (outDir.charAt(outDir.length()-1) != '/') outDir += "/";
+		if (dataDir.charAt(dataDir.length()-1) != '/') dataDir += "/";
+		
 		WubbleWorld2d ww2d = new WubbleWorld2d(ignoreWalls);
-		String prefix = "data/raw-data/ww2d/";
 
 		for (String act : activities) { 
 			try { 
-				BufferedWriter out = new BufferedWriter(new FileWriter(prefix + "lisp/ww2d-" + act + ".lisp"));
+				BufferedWriter out = new BufferedWriter(new FileWriter(outDir + prefix + "-" + act + ".lisp"));
 				for (int i = 1; i <= n; ++i) {
 					String filename = act + "/" + act + "-" + i + ".csv";
 					System.out.println("Activity: " + filename);
 					
 					// Load global
-					ww2d.load(prefix + "global/" + filename, DBType.Global);
-					ww2d.doBooleanStream(DBType.Global, null, null);
-					ww2d.doSDL(DBType.Global, new String[]{"distance"}, null);
-					ww2d.doMoving(DBType.Global);
-					ww2d.doRelative(DBType.Global);
+					ww2d.load(dataDir + "global/" + filename, DBType.Global);
+					ww2d.doBooleanStream(DBType.Global, null, null, null);
+					ww2d.doSDL(DBType.Global, new String[]{"distance"}, null, null);
+					ww2d.doMoving(DBType.Global, null);
+//					ww2d.doRelative(DBType.Global);		// Ignore relative for now
 					
 					// Load agent
-					ww2d.load(prefix + "agent/" + filename, DBType.Agent);
+					ww2d.load(dataDir + "agent/" + filename, DBType.Agent);
 					ww2d.doInternalStates(DBType.Agent);
 					
 					// Load obj
-					ww2d.load(prefix + "object/" + filename, DBType.Object);
+					ww2d.load(dataDir + "object/" + filename, DBType.Object);
 					ww2d.doInternalStates(DBType.Object);
 					
 					// Convert to intervals
