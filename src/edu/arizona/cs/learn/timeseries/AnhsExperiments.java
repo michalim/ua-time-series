@@ -7,23 +7,59 @@ import java.util.Date;
 import java.util.Map;
 
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
+import edu.arizona.cs.learn.timeseries.prep.ww2d.ExportStreamFile;
+import edu.arizona.cs.learn.timeseries.prep.ww2d.WubbleWorld2d;
 import edu.arizona.cs.learn.timeseries.recognizer.Recognizer;
 import edu.arizona.cs.learn.timeseries.recognizer.RecognizerStatistics;
 
 public class AnhsExperiments {
 	
 	public static void main(String[] args) {
+		int n = 30;
+		String[] activities = {"chase", "eat", "fight", "flee", "kick-ball", "kick-column"};
+		
+		// NOTE: uncomment the following lines to run the respective pre-processing
+//		exportWW2DStateDBToCSV(n, activities);
+//		extractWW2DFluents(n, activities);
+		
+		boolean setup = true;	/* only need to set up once, turn to false for subsequent runs */
+		runRecognitionExperiment("global-internal-ww2d", setup);
+		
+		System.out.println("Done");
+	}
+	
+	@SuppressWarnings("unused")
+	private static void extractWW2DFluents(int n, String[] activities) {
+		boolean ignoreWalls = true;
+		String dataDir = "data/raw-data/ww2d/";
+		String outDir = "data/input/";	//"data/raw-data/ww2d/lisp/";
+		String prefix = "global-internal-ww2d";
+		WubbleWorld2d.globalWithInternalStates(n, activities, ignoreWalls, dataDir, outDir, prefix);
+	}
 
-//		runDecompositionExperiment();
-		runRecognitionExperiment();
-//		runInformationDepthExperiment();
+	@SuppressWarnings("unused")
+	private static void exportWW2DStateDBToCSV(int n, String[] activities) {
+		ExportStreamFile.inPrefix = "data/raw-data/ww2d/states/";
+		ExportStreamFile.outPrefix = "data/raw-data/ww2d/";
+		ExportStreamFile.numEpisodes = n;
+		ExportStreamFile.classes = activities;
+		
+		ExportStreamFile.convert(WubbleWorld2d.DBType.Global);		// global
+		ExportStreamFile.convert(WubbleWorld2d.DBType.Agent);		// agent
+		ExportStreamFile.convert(WubbleWorld2d.DBType.Object);		// obj
 	}
 	
 	
-	private static void runInformationDepthExperiment() {
+	/*
+	 **************************************************************
+	 *  ================ IJCAI 2011 Experiments ================
+	 **************************************************************
+	 */
+
+	@SuppressWarnings("unused")
+	private static void runInformationDepthExperiment(String prefix) {
 		int[] pcts = { 80 }; //{ 95 };
 		boolean[] prunes = { true };
-		String prefix = "ww3d"; // "wes-pen";
 		String[] activities = { "approach", "jump-over", "jump-on", "push" };  //{ "left", "right" }; //{"d", "l", "a", "h" };
 		String testActivity = "jump-over"; //"d"; 
 		SequenceType type = SequenceType.allen;
@@ -41,12 +77,12 @@ public class AnhsExperiments {
 	}
 
 
-	private static void runDecompositionExperiment() {
+	@SuppressWarnings("unused")
+	private static void runDecompositionExperiment(String prefix) {
 		try {
 			int[] pcts = { 80 };
 			boolean[] prunes = { true };
 			int experimentsCount = 20;
-			String prefix = "ww3d";
 			String[] activities = { "jump-over" }; //, "jump-on", "left", "push", "right" };
 			String subActivity = "approach";
 			SequenceType type = SequenceType.allen;
@@ -75,17 +111,15 @@ public class AnhsExperiments {
 	}
 
 
-	private static void runRecognitionExperiment() {
+	@SuppressWarnings("unused")
+	private static void runRecognitionExperiment(String prefix, boolean setup) {
 		try {
 			int experiments = 15;
-			String prefix = "ww3d";
 //			int[] folds = { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 			int[] folds = { 6 };
 			int[] pcts = { 80 };
 			boolean[] prunes = { true };
 			boolean[] optimizeRecognizers = { true };
-
-			boolean setup = true;
 			
 			SequenceType type = SequenceType.allen;
 			Recognizer recognizer = Recognizer.cave;
