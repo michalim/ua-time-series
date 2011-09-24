@@ -22,8 +22,8 @@ public class AnhsExperiments {
 //		exportWW2DStateDBToCSV(n, activities);
 //		extractWW2DFluents(n, activities);
 		
-		boolean setup = true;	/* only need to set up once, turn to false for subsequent runs */
-		runRecognitionExperiment("global-internal-ww2d", setup);
+		boolean setup = false;	/* only need to set up once, turn to false for subsequent runs */
+		runRecognitionExperiment("global-internal-ww2d", setup, 1 /* num of experiments */ );
 		
 		System.out.println("Done");
 	}
@@ -112,9 +112,8 @@ public class AnhsExperiments {
 
 
 	@SuppressWarnings("unused")
-	private static void runRecognitionExperiment(String prefix, boolean setup) {
+	private static void runRecognitionExperiment(String prefix, boolean setup, int experiments) {
 		try {
-			int experiments = 15;
 //			int[] folds = { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 			int[] folds = { 6 };
 			int[] pcts = { 80 };
