@@ -1,12 +1,9 @@
 package edu.arizona.cs.learn.timeseries;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
@@ -14,7 +11,6 @@ import edu.arizona.cs.learn.timeseries.classification.Classifier;
 import edu.arizona.cs.learn.timeseries.classification.Classify;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyParams;
 import edu.arizona.cs.learn.timeseries.experiment.Classification;
-import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.prep.ww2d.ExportStreamFile;
 import edu.arizona.cs.learn.timeseries.prep.ww2d.WubbleWorld2d;
@@ -30,8 +26,8 @@ public class AnhsExperiments {
 		
 		boolean exportFromDB, extractFluents, runRecognition, runClassification;
 		exportFromDB = false;
-		extractFluents = false;
-		runRecognition = false;
+		extractFluents = true;
+		runRecognition = true;
 		runClassification = true;
 		
 		if (exportFromDB)
@@ -67,7 +63,8 @@ public class AnhsExperiments {
 		String dataDir = "data/raw-data/ww2d/";
 		String outDir = "data/input/";	//"data/raw-data/ww2d/lisp/";
 		String prefix = "global-internal-ww2d";
-		WubbleWorld2d.globalWithInternalStates(n, activities, ignoreWalls, dataDir, outDir, prefix);
+		boolean trackInternalStates = false;
+		WubbleWorld2d.global(n, activities, ignoreWalls, dataDir, outDir, prefix, trackInternalStates);
 	}
 
 	@SuppressWarnings("unused")

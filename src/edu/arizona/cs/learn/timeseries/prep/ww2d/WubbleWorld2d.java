@@ -429,7 +429,11 @@ public class WubbleWorld2d {
 	
 	public static void globalWithInternalStates(int n, String[] activities, boolean ignoreWalls, String dataDir,
 			String outDir, String prefix) {
-		
+		global(n, activities, ignoreWalls, dataDir, outDir, prefix, true);
+	}
+	
+	public static void global(int n, String[] activities, boolean ignoreWalls, String dataDir,
+			String outDir, String prefix, boolean trackInternalStates) {
 		if (outDir.charAt(outDir.length()-1) != '/') outDir += "/";
 		if (dataDir.charAt(dataDir.length()-1) != '/') dataDir += "/";
 		
@@ -442,26 +446,28 @@ public class WubbleWorld2d {
 					String filename = act + "/" + act + "-" + i + ".csv";
 					System.out.println("Activity: " + filename);
 					
+					// Convert to intervals
+					List<Interval> intervals = new ArrayList<Interval>();
+					
 					// Load global
 					ww2d.load(dataDir + "global/" + filename, DBType.Global);
 					ww2d.doBooleanStream(DBType.Global, null, null, null);
 					ww2d.doSDL(DBType.Global, new String[]{"distance"}, null, null);
 					ww2d.doMoving(DBType.Global, null);
-//					ww2d.doRelative(DBType.Global);		// Ignore relative for now
+//					ww2d.doRelative(DBType.Global);		// Relative does not seem to impact performance
+					intervals.addAll(ww2d.getIntervals(DBType.Global));
 					
 					// Load agent
-					ww2d.load(dataDir + "agent/" + filename, DBType.Agent);
-					ww2d.doInternalStates(DBType.Agent);
-					
-					// Load obj
-					ww2d.load(dataDir + "object/" + filename, DBType.Object);
-					ww2d.doInternalStates(DBType.Object);
-					
-					// Convert to intervals
-					List<Interval> intervals = new ArrayList<Interval>();
-					intervals.addAll(ww2d.getIntervals(DBType.Global));
-					intervals.addAll(ww2d.getIntervals(DBType.Agent));
-					intervals.addAll(ww2d.getIntervals(DBType.Object));
+					if (trackInternalStates) {
+						ww2d.load(dataDir + "agent/" + filename, DBType.Agent);
+						ww2d.doInternalStates(DBType.Agent);
+						intervals.addAll(ww2d.getIntervals(DBType.Agent));
+						
+						// Load obj
+						ww2d.load(dataDir + "object/" + filename, DBType.Object);
+						ww2d.doInternalStates(DBType.Object);
+						intervals.addAll(ww2d.getIntervals(DBType.Object));
+					}
 					
 					// Output episode
 					out.write("(" + i + "\n");
