@@ -21,7 +21,7 @@ import edu.uci.ics.jung.graph.DirectedSparseGraph;
 public class FSMFactory {
 	private static Logger logger = Logger.getLogger(FSMFactory.class);
 
-	public static DirectedGraph<BPPNode, Edge> makeGraph(List<String> propList, List<List<Interval>> instances, 
+	public static DirectedGraph<BPPNode, Edge> makeGraph(List<Integer> propList, List<List<Interval>> instances, 
 			boolean onlyStart) {
 		
 		DirectedGraph<BPPNode,Edge> graph = new DirectedSparseGraph<BPPNode,Edge>();
@@ -37,9 +37,9 @@ public class FSMFactory {
 			int time = timeLine[0].length;
 
 			BPPNode lastNode = startNode;
-			Set<String> props = new HashSet<String>();
+			Set<Integer> props = new HashSet<Integer>();
 			for (int i = 0; i < time; i++) {
-				props = new HashSet<String>();
+				props = new HashSet<Integer>();
 				StringBuffer state = new StringBuffer();
 				for (int j = 0; j < propList.size(); j++) {
 					if (onlyStart) {
@@ -48,14 +48,14 @@ public class FSMFactory {
 							if ((i > 0) && (timeLine[j][(i - 1)] == '1'))
 								value = '0';
 							else
-								props.add((String) propList.get(j));
+								props.add(propList.get(j));
 							state.append(value);
 						} else {
 							state.append(timeLine[j][i]);
 						}
 					} else {
 						if (timeLine[j][i] == '1') {
-							props.add((String) propList.get(j));
+							props.add(propList.get(j));
 						}
 						state.append(timeLine[j][i]);
 					}

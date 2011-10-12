@@ -108,12 +108,12 @@ public class RecognitionExperiment {
 			String file = path + dataset + "-" + className + "-" + type + ".xml";
 			Signature s = Signature.fromXML(file);
 
-			Set<String> propSet = new TreeSet<String>();
+			Set<Integer> propSet = new TreeSet<Integer>();
 			for (Symbol obj : s.signature()) {
 				StringSymbol ss = (StringSymbol) obj;
 				propSet.addAll(ss.getProps());
 			}
-			List<String> props = new ArrayList<String>(propSet);
+			List<Integer> props = new ArrayList<Integer>(propSet);
 			List<List<Interval>> all = BitPatternGeneration.getBPPs(null, s.table(), propSet);
 
 			DirectedGraph<BPPNode, Edge> graph = FSMFactory.makeGraph(props, all, false);
@@ -144,10 +144,10 @@ public class RecognitionExperiment {
 			}
 
 			for (int i = start; i < end; i++) {
-				Set<String> props = new HashSet<String>();
+				Set<Integer> props = new HashSet<Integer>();
 				for (Interval interval : intervals) {
 					if (interval.on(i)) {
-						props.add(interval.name);
+						props.add(interval.keyId);
 					}
 				}
 

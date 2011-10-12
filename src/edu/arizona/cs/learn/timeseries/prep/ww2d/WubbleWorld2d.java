@@ -14,6 +14,7 @@ import java.util.Set;
 
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.prep.TimeSeries;
+import edu.arizona.cs.learn.util.DataMap;
 
 
 /**
@@ -473,7 +474,7 @@ public class WubbleWorld2d {
 					out.write("(" + i + "\n");
 					out.write(" (\n");
 					for (Interval interval : intervals) { 
-						out.write("(\"" + interval.name + "\" " + 
+						out.write("(\"" + DataMap.getKey(interval.keyId) + "\" " + 
 								interval.start + " " +
 								interval.end + ")\n");
 					}

@@ -26,8 +26,8 @@ public class AnhsExperiments {
 		
 		boolean exportFromDB, extractFluents, runRecognition, runClassification;
 		exportFromDB = false;
-		extractFluents = true;
-		runRecognition = true;
+		extractFluents = false;
+		runRecognition = false;
 		runClassification = true;
 		
 		if (exportFromDB)

@@ -32,13 +32,13 @@ public class FSMSequences {
 		
 		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
 
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		for (Instance instance : instances) {
 			for (Interval interval : instance.intervals()) {
-				propSet.add(interval.name);
+				propSet.add(interval.keyId);
 			}
 		}
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 
 		List<List<Interval>> all = new ArrayList<List<Interval>>();
 		Instance instance5 = null;
@@ -67,13 +67,13 @@ public class FSMSequences {
 		SignatureExample.init();
 		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
 
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		for (Instance instance : instances) {
 			for (Interval interval : instance.intervals()) {
-				propSet.add(interval.name);
+				propSet.add(interval.keyId);
 			}
 		}
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 
 		List<List<Interval>> all = new ArrayList<List<Interval>>();
 		for (Instance instance : instances) {
@@ -93,17 +93,17 @@ public class FSMSequences {
 		SignatureExample.init();
 
 		List<Instance> instances = Instance.load(new File("data/input/" + prefix + ".lisp"));
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 
 		List<List<Interval>> all = new ArrayList<List<Interval>>();
 		for (Instance instance : instances) {
 			all.add(BPPFactory.compress(instance.intervals(), Interval.eff));
 
 			for (Interval interval : instance.intervals()) {
-				propSet.add(interval.name);
+				propSet.add(interval.keyId);
 			}
 		}
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 
 		DirectedGraph<BPPNode,Edge> graph = FSMFactory.makeGraph(props, all, false);
 		FSMFactory.toDot(graph, "data/graph/" + prefix + ".dot", false);
@@ -121,21 +121,21 @@ public class FSMSequences {
 		Map<String,List<Instance>> map = Utils.load(prefix, type);
 		List<Instance> examples = map.get(prefix);
 
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		Signature s = new Signature("approach");
 		for (Instance instance : examples) {
 			s.update(instance.sequence());
 			for (Symbol obj : instance.sequence()) {
 				StringSymbol ss = (StringSymbol) obj;
 				for (Interval interval : ss.getIntervals())
-					propSet.add(interval.name);
+					propSet.add(interval.keyId);
 			}
 		}
 		s = s.prune(min);
 
 		System.out.println(TableFactory.toLatex(s.table()));
 
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 
 		List<List<Interval>> all = BitPatternGeneration.getBPPs(prefix, s.table(), propSet);
 		DirectedGraph<BPPNode,Edge> graph = FSMFactory.makeGraph(props, all, false);
@@ -153,12 +153,12 @@ public class FSMSequences {
 		int min = (int) Math.floor(s.trainingSize() * 0.75D);
 		s = s.prune(min);
 
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		for (Symbol obj : s.signature()) {
 			StringSymbol ss = (StringSymbol) obj;
 			propSet.addAll(ss.getProps());
 		}
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 		List<List<Interval>> all = BitPatternGeneration.getBPPs(key, s.table(), propSet);
 
 		DirectedGraph<BPPNode,Edge> graph = FSMFactory.makeGraph(props, all, false);

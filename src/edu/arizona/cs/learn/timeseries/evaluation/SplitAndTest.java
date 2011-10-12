@@ -70,7 +70,7 @@ public class SplitAndTest extends ClassificationTest {
 	}
 
 	/**
-	 * run CrossValidation on the data and automatically partition
+	 * run SplitAndTest on the data and automatically partition
 	 * the data into training and test sets.
 	 * @param seed - so that you can control the splitting of k
 	 * @params classNames - so that the classNames order is unique

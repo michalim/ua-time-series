@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
+import edu.arizona.cs.learn.util.DataMap;
 
 public class Paint {
     private static Logger logger = Logger.getLogger(Paint.class);
@@ -78,8 +79,8 @@ public class Paint {
 
 		FontMetrics fm = g.getFontMetrics();
 		int width = 0;
-		for (String s : propSet) { 
-			width = Math.max(fm.stringWidth(s), width);
+		for (String prop : propSet) { 
+			width = Math.max(fm.stringWidth(prop), width);
 		}
 		// add some padding
 		return width + 5;
@@ -99,7 +100,7 @@ public class Paint {
 		int startTime = Integer.MAX_VALUE;
 		int endTime = 0;
 		for (Interval i : intervals) { 
-			propSet.add(i.name);
+			propSet.add(DataMap.getKey(i.keyId));
 			startTime = Math.min(i.start, startTime);
 			endTime = Math.max(i.end, endTime);
 		}
@@ -152,7 +153,7 @@ public class Paint {
 			if (intensityMap != null && intensityMap.get(interval.toString()) == null)
 				continue;
 			
-			int index = props.indexOf(interval.name);
+			int index = props.indexOf(interval.keyId);
 
 			int iw = (end - start) * _timeWidth;
 			int ih = _rowHeight;
@@ -183,12 +184,12 @@ public class Paint {
 	
 	public static void sample1() { 
 		List<Interval> intervals = new ArrayList<Interval>();
-		intervals.add(Interval.make("a", 0, 10));
-		intervals.add(Interval.make("a", 14, 18));
-		intervals.add(Interval.make("b", 3, 7));
-		intervals.add(Interval.make("c", 0, 4));
-		intervals.add(Interval.make("c", 9, 16));
-		intervals.add(Interval.make("d", 6, 12));
+		intervals.add(new Interval("a", 0, 10));
+		intervals.add(new Interval("a", 14, 18));
+		intervals.add(new Interval("b", 3, 7));
+		intervals.add(new Interval("c", 0, 4));
+		intervals.add(new Interval("c", 9, 16));
+		intervals.add(new Interval("d", 6, 12));
 		
 		Paint.render(intervals, "/Users/wkerr/Desktop/synthetic1.png");
 		
@@ -201,19 +202,19 @@ public class Paint {
 	
 	public static void sample2() { 
 		List<Interval> set1 = new ArrayList<Interval>();
-		set1.add(Interval.make("a", 0, 10));
-		set1.add(Interval.make("b", 5, 15));
-		set1.add(Interval.make("c", 3, 7));
+		set1.add(new Interval("a", 0, 10));
+		set1.add(new Interval("b", 5, 15));
+		set1.add(new Interval("c", 3, 7));
 
 		Paint.render(set1, "/Users/wkerr/Desktop/example1.png");
 		Collections.sort(set1, Interval.esf);
 		logger.debug(SequenceType.allen.getSequence(set1));
 	
 		List<Interval> set2 = new ArrayList<Interval>();
-		set2.add(Interval.make("a", 0, 10));
-		set2.add(Interval.make("b", 5, 15));
-		set2.add(Interval.make("c", 3, 7));
-		set2.add(Interval.make("d", 0, 4));
+		set2.add(new Interval("a", 0, 10));
+		set2.add(new Interval("b", 5, 15));
+		set2.add(new Interval("c", 3, 7));
+		set2.add(new Interval("d", 0, 4));
 
 		Paint.render(set2, "/Users/wkerr/Desktop/example2.png");
 		Collections.sort(set2, Interval.esf);
@@ -221,20 +222,20 @@ public class Paint {
 
 	
 		List<Interval> set3 = new ArrayList<Interval>();
-		set3.add(Interval.make("a", 0, 6));
-		set3.add(Interval.make("b", 3, 7));
-		set3.add(Interval.make("c", 2, 5));
-		set3.add(Interval.make("d", 6, 9));
+		set3.add(new Interval("a", 0, 6));
+		set3.add(new Interval("b", 3, 7));
+		set3.add(new Interval("c", 2, 5));
+		set3.add(new Interval("d", 6, 9));
 
 		Paint.render(set3, "/Users/wkerr/Desktop/example3.png");
 		Collections.sort(set3, Interval.esf);
 		logger.debug(SequenceType.allen.getSequence(set3));
 		
 		List<Interval> set4 = new ArrayList<Interval>();
-		set4.add(Interval.make("a", 2, 8));
-		set4.add(Interval.make("b", 5, 10));
-		set4.add(Interval.make("c", 4, 7));
-		set4.add(Interval.make("e", 0, 4));
+		set4.add(new Interval("a", 2, 8));
+		set4.add(new Interval("b", 5, 10));
+		set4.add(new Interval("c", 4, 7));
+		set4.add(new Interval("e", 0, 4));
 
 		Paint.render(set4, "/Users/wkerr/Desktop/example4.png");
 		Collections.sort(set4, Interval.esf);

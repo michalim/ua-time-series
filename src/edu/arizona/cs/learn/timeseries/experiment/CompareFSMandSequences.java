@@ -90,10 +90,10 @@ public class CompareFSMandSequences {
 			// accepts the test episode.
 			List<Boolean> acceptList = new ArrayList<Boolean>();
 			for (int j = start; j < end; j++) {
-				Set<String> props = new HashSet<String>();
+				Set<Integer> props = new HashSet<Integer>();
 				for (Interval interval : episode) {
 					if (interval.on(j)) 
-						props.add(interval.name);
+						props.add(interval.keyId);
 				}
 
 				acceptList.add(recognizer.update(active, props, false));

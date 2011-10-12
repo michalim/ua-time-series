@@ -16,7 +16,7 @@ public class StringNode extends BPPNode {
 		return _label;
 	}
 
-	public boolean active(Set<String> activeProps) {
+	public boolean active(Set<Integer> activeProps) {
 		return true;
 	}
 }

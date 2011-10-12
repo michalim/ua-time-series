@@ -22,6 +22,7 @@ import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.visualization.Controller;
 import edu.arizona.cs.learn.timeseries.visualization.graphics.color.TimelineColor;
 import edu.arizona.cs.learn.timeseries.visualization.model.DataModel;
+import edu.arizona.cs.learn.util.DataMap;
 
 public class TimelineCanvas extends JPanel implements DataComponent, ScrollablePanel, MouseListener {
 	private static Logger logger = Logger.getLogger(TimelineCanvas.class);
@@ -133,7 +134,7 @@ public class TimelineCanvas extends JPanel implements DataComponent, ScrollableP
 			if (start == end)
 				continue;
 			
-			int index = props.indexOf(interval.name);
+			int index = props.indexOf(DataMap.getKey(interval.keyId));
 			if (index < _row) 
 				continue; 
 			
@@ -245,7 +246,7 @@ public class TimelineCanvas extends JPanel implements DataComponent, ScrollableP
 		
 		for (int i = 0; i < intervals.size(); ++i) { 
 			Interval interval = intervals.get(i);
-			if (interval.name.equals(prop) && 
+			if (DataMap.getKey(interval.keyId).equals(prop) && 
 					time >= interval.start && 
 					time < interval.end) { 
 				_selected = interval;

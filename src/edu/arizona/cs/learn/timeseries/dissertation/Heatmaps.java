@@ -215,10 +215,10 @@ public class Heatmaps {
 		signature.add(new AllenRelation("B", "overlaps", "C", 5.0D));
 
 		List<Interval> episode = new ArrayList<Interval>();
-		episode.add(Interval.make("C", 1, 3));
-		episode.add(Interval.make("A", 3, 6));
-		episode.add(Interval.make("B", 4, 9));
-		episode.add(Interval.make("C", 6, 10));
+		episode.add(new Interval("C", 1, 3));
+		episode.add(new Interval("A", 3, 6));
+		episode.add(new Interval("B", 4, 9));
+		episode.add(new Interval("C", 6, 10));
 
 		HeatmapImage.makeHeatmap("/Users/wkerr/Desktop/test1.png", signature,
 				0, episode, SequenceType.allen);
@@ -234,10 +234,10 @@ public class Heatmaps {
 		signature.add(new AllenRelation("B", "overlaps", "C", 5.0D));
 
 		List<Interval> episode = new ArrayList<Interval>();
-		episode.add(Interval.make("A", 1, 5));
-		episode.add(Interval.make("D", 3, 5));
-		episode.add(Interval.make("B", 4, 6));
-		episode.add(Interval.make("C", 4, 6));
+		episode.add(new Interval("A", 1, 5));
+		episode.add(new Interval("D", 3, 5));
+		episode.add(new Interval("B", 4, 6));
+		episode.add(new Interval("C", 4, 6));
 
 		HeatmapImage.makeHeatmap("/Users/wkerr/Desktop/test2.png", signature,
 				0, episode, SequenceType.allen);
@@ -253,10 +253,10 @@ public class Heatmaps {
 		signature.add(new AllenRelation("B", "overlaps", "C", 5.0D));
 
 		List<Interval> episode = new ArrayList<Interval>();
-		episode.add(Interval.make("A", 1, 5));
-		episode.add(Interval.make("D", 3, 5));
-		episode.add(Interval.make("B", 4, 6));
-		episode.add(Interval.make("C", 5, 7));
+		episode.add(new Interval("A", 1, 5));
+		episode.add(new Interval("D", 3, 5));
+		episode.add(new Interval("B", 4, 6));
+		episode.add(new Interval("C", 5, 7));
 
 		HeatmapImage.makeHeatmap("/Users/wkerr/Desktop/test3.png", signature,
 				0, episode, SequenceType.allen);

@@ -63,7 +63,7 @@ public class BitPatternGeneration {
      * @param min
      * @return
      */
-    public static List<List<Interval>> getBPPs(String name, List<Symbol[]> subset, Set<String> propSet) { 
+    public static List<List<Interval>> getBPPs(String name, List<Symbol[]> subset, Set<Integer> propSet) { 
 		
 		// I need to construct a sorted union of all of the possible propositions
 		// within the subset.
@@ -88,7 +88,7 @@ public class BitPatternGeneration {
 						map.put(interval.toString(), interval);
 					
 					b.add(interval.toString());
-					propSet.add(interval.name);
+					propSet.add(interval.keyId);
 				}
 			}
 			
@@ -133,7 +133,7 @@ public class BitPatternGeneration {
      * @param min
      * @return
      */
-    public static List<List<Interval>> getBPPs(String name, SequenceType type, int min, Set<String> propSet) { 
+    public static List<List<Interval>> getBPPs(String name, SequenceType type, int min, Set<Integer> propSet) { 
 		List<Symbol[]> subset = trainAndSubset(name, type, min);
 		return getBPPs(name, subset, propSet);
     }
@@ -156,12 +156,12 @@ public class BitPatternGeneration {
 		
 		// I need to construct a sorted union of all of the possible propositions
 		// within the subset.
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		List<List<Interval>> bppInstances = getBPPs(name, type, min, propSet);
 
 		logger.debug("Num constructed: " + bppInstances.size() + " " + propSet);
 		if (bppInstances.size() > 0) { 
-			List<String> propList = new ArrayList<String>(propSet);
+			List<Integer> propList = new ArrayList<Integer>(propSet);
 			DirectedGraph<BPPNode,Edge> graph = FSMFactory.makeGraph(propList, bppInstances, onlyStart);
 			FSMFactory.toDot(graph, name + "-" + min + "-bpp.dot");
 		} else { 
@@ -171,14 +171,14 @@ public class BitPatternGeneration {
 	}
 	
 	public static void compositeGraph(String[] names, int[] mins, SequenceType type) { 
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		List<List<List<Interval>>> list = new ArrayList<List<List<Interval>>>();
 		
 		for (int i = 0; i < names.length; ++i) { 
 			list.add(getBPPs(names[i], type, mins[i], propSet));
 		}
 		
-		List<String> propList = new ArrayList<String>(propSet);
+		List<Integer> propList = new ArrayList<Integer>(propSet);
 		DirectedGraph<BPPNode,Edge> graph = null;
 		Map<String,BPPNode> vertices = new HashMap<String,BPPNode>();
 		for (int i = 0; i < names.length; ++i) { 
@@ -201,10 +201,10 @@ public class BitPatternGeneration {
 		}
 		
 		List<Symbol[]> subset = TableFactory.subset(signature, 0);
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		List<List<Interval>> bppInstances = getBPPs("super", subset, propSet);
 		if (bppInstances.size() > 0) { 
-			List<String> propList = new ArrayList<String>(propSet);
+			List<Integer> propList = new ArrayList<Integer>(propSet);
 			DirectedGraph<BPPNode,Edge> graph = FSMFactory.makeGraph(propList, bppInstances, onlyStart);
 			FSMFactory.toDot(graph, "super.dot");
 		} else { 

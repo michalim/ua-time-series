@@ -13,6 +13,7 @@ import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
+import edu.arizona.cs.learn.util.DataMap;
 
 public class HeatmapImage {
     private static Logger logger = Logger.getLogger(HeatmapImage.class);
@@ -76,11 +77,12 @@ public class HeatmapImage {
 				throw new RuntimeException("Not yet supported!");
 			
 			StringSymbol s = (StringSymbol) obj;
-			for (String prop : s.getProps()) { 
-				Double d = maxWeightMap.get(prop);
+			for (Integer propId : s.getProps()) {
+				String propName = DataMap.getKey(propId);
+				Double d = maxWeightMap.get(propName);
 				if (d == null) 
 					d = 0.0;
-				maxWeightMap.put(prop, d+obj.weight());
+				maxWeightMap.put(propName, d+obj.weight());
 			}
 		}
 		

@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
+import edu.arizona.cs.learn.util.DataMap;
 
 public class Histogram {
 
@@ -23,23 +24,23 @@ public class Histogram {
 			int min = Integer.MAX_VALUE;
 			int max = Integer.MIN_VALUE;
 			
-			Map<String,List<Interval>> map = new HashMap<String,List<Interval>>();
+			Map<Integer,List<Interval>> map = new HashMap<Integer,List<Interval>>();
 			for (Interval interval : instance.intervals()) { 
 				min = Math.min(interval.start, min);
 				max = Math.max(interval.end, max);
 				
-				List<Interval> intervals = map.get(interval.name);
+				List<Interval> intervals = map.get(interval.keyId);
 				if (intervals == null) { 
 					intervals = new ArrayList<Interval>();
-					map.put(interval.name, intervals);
+					map.put(interval.keyId, intervals);
 				}
 				intervals.add(interval);
 			}
 			
 			Set<Data> dataSet = new TreeSet<Data>();
-			for (String name : map.keySet()) { 
-				Data d = new Data(name);
-				d.update(map.get(name), max-min);
+			for (Integer id : map.keySet()) { 
+				Data d = new Data(id);
+				d.update(map.get(id), max-min);
 				
 				dataSet.add(d);
 			}
@@ -50,21 +51,21 @@ public class Histogram {
 			Set<Data> dataSet = data.get(i);
 			System.out.println("Instance: " + i);
 			for (Data d : dataSet) { 
-				System.out.println(" -- " + d.name() + " -- " + d.pctTime());
+				System.out.println(" -- " + DataMap.getKey(d.propId()) + " -- " + d.pctTime());
 			}
 		}
 	}
 }
 
 class Data implements Comparable<Data> { 
-	private String _name;
+	private int _propId;
 	private int _onTime;
 	private int _offTime;
 	
 	private double _pctTime;
 	
-	public Data(String name) { 
-		_name = name;
+	public Data(int id) { 
+		_propId = id;
 	}
 	
 	public void update(List<Interval> intervals, int length) { 
@@ -78,16 +79,16 @@ class Data implements Comparable<Data> {
 	
 	@Override
 	public String toString() {
-		return _name;
+		return DataMap.getKey(_propId);
 	}
 
 	@Override
 	public int hashCode() { 
-		return _name.hashCode();
+		return DataMap.getKey(_propId).hashCode();
 	}
 	
-	public String name() { 
-		return _name;
+	public int propId() { 
+		return _propId;
 	}
 	
 	public double pctTime() {
@@ -104,6 +105,6 @@ class Data implements Comparable<Data> {
 
 	@Override
 	public int compareTo(Data arg0) {
-		return _name.compareTo(arg0._name);
+		return DataMap.getKey(_propId).compareTo(DataMap.getKey(arg0._propId));
 	}
 }

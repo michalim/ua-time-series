@@ -36,15 +36,15 @@ public class FSMRecognizer {
 		return this._key;
 	}
 
-	public boolean update(Set<String> activeProps) {
+	public boolean update(Set<Integer> activeProps) {
 		return update(this._active, activeProps);
 	}
 
-	public boolean update(Set<String> activeProps, boolean autoReset) {
+	public boolean update(Set<Integer> activeProps, boolean autoReset) {
 		return update(this._active, activeProps, autoReset);
 	}
 	
-	public boolean update(List<BPPNode> active, Set<String> activeProps) {
+	public boolean update(List<BPPNode> active, Set<Integer> activeProps) {
 		return update(active, activeProps, true);
 	}
 	
@@ -56,7 +56,7 @@ public class FSMRecognizer {
 	 * @param autoReset
 	 * @return
 	 */
-	public boolean update(List<BPPNode> active, Set<String> activeProps, boolean autoReset) {
+	public boolean update(List<BPPNode> active, Set<Integer> activeProps, boolean autoReset) {
 		return update(active, activeProps, autoReset, false);
 	}
 	
@@ -70,7 +70,7 @@ public class FSMRecognizer {
 	 * @param printDebug
 	 * @return
 	 */
-	public boolean update(List<BPPNode> active, Set<String> activeProps, boolean autoReset, boolean printDebug) {
+	public boolean update(List<BPPNode> active, Set<Integer> activeProps, boolean autoReset, boolean printDebug) {
 		List<BPPNode> turningOn = new ArrayList<BPPNode>();
 		List<BPPNode> turningOff = new ArrayList<BPPNode>();
 		
@@ -163,10 +163,10 @@ public class FSMRecognizer {
 		reset();
 
 		for (int i = start; i < end; i++) {
-			Set<String> props = new HashSet<String>();
+			Set<Integer> props = new HashSet<Integer>();
 			for (Interval interval : intervals) {
 				if (interval.on(i)) 
-					props.add(interval.name);
+					props.add(interval.keyId);
 			}
 
 			if (update(props)) {
@@ -194,10 +194,10 @@ public class FSMRecognizer {
 		boolean accepted = false;
 		List<BPPNode> actives = new ArrayList<BPPNode>();
 		for (int j = start; j < end; j++) {
-			Set<String> props = new HashSet<String>();
+			Set<Integer> props = new HashSet<Integer>();
 			for (Interval interval : intervals) {
 				if (interval.on(j)) {
-					props.add(interval.name);
+					props.add(interval.keyId);
 				}
 			}
 			
@@ -243,10 +243,10 @@ public class FSMRecognizer {
 		boolean accept = false;
 		for (int i = start; i < end; i++) {
 			System.out.println(" TimeStep: " + i);
-			Set<String> props = new HashSet<String>();
+			Set<Integer> props = new HashSet<Integer>();
 			for (Interval interval : intervals) {
 				if (interval.on(i)) 
-					props.add(interval.name);
+					props.add(interval.keyId);
 			}
 	
 			boolean tmp = update(_active, props, false, true);

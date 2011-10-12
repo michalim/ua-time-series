@@ -37,7 +37,7 @@ public class IEConversion {
 //	    B 2 5 C 3 4
 //	    ...
 	    
-	public static void convert(String inputF, String outputF, boolean mapKeys) throws Exception { 
+	public static void convert(String inputF, String outputF) throws Exception { 
 		List<Instance> instances = Instance.load(new File(inputF));
 		
 		Map<String,Integer> keyMap = new HashMap<String,Integer>();
@@ -45,18 +45,9 @@ public class IEConversion {
 		for (Instance instance : instances) { 
 			Collections.sort(instance.intervals(), Interval.esf);
 			for (Interval i : instance.intervals()) { 
-				
-				if (mapKeys) {
-					Integer name = keyMap.get(i.name);
-					if (name == null) { 
-						name = keyMap.size();
-						keyMap.put(i.name, name);
-					}
-					
-					out.write(name + " " + i.start + " " + i.end + " ");
-				} else { 
-					out.write(i.name + " " + i.start + " " + i.end + " ");
-				}
+				// TODO: make sure that this still works.  The id that the
+				// proposition is getting is specific to this JVM
+				out.write(i.keyId + " " + i.start + " " + i.end + " ");
 			}
 			out.write("\n");
 			out.flush();
@@ -70,10 +61,9 @@ public class IEConversion {
 	 * @param prefix
 	 * @throws Exception
 	 */
-	public static void splitAndConvert(String dataDir, String prefix, double pct, boolean mapKeys) throws Exception { 
+	public static void splitAndConvert(String dataDir, String prefix, double pct) throws Exception { 
 		List<String> activities = Utils.getActivityNames(prefix);
 		Map<String,List<List<Interval>>> allMap = new HashMap<String,List<List<Interval>>>();
-		Map<String,Integer> keyMap = new HashMap<String,Integer>();
 		for (String key : activities) { 
 			List<Instance> instances = Instance.load(new File(dataDir + key + ".lisp"));
 			List<List<Interval>> intervals = new ArrayList<List<Interval>>();
@@ -81,13 +71,6 @@ public class IEConversion {
 			// Iterate over all of the intervals and add the names to the keyMap
 			for (Instance instance : instances) { 
 				Collections.sort(instance.intervals(), Interval.esf);
-				for (Interval i : instance.intervals()) { 
-					Integer name = keyMap.get(i.name);
-					if (name == null) { 
-						name = keyMap.size();
-						keyMap.put(i.name, name);
-					}
-				}
 				intervals.add(instance.intervals());
 			}
 			
@@ -95,7 +78,7 @@ public class IEConversion {
 		}
 
 		for (String key : allMap.keySet()) { 
-			write(key, keyMap, allMap.get(key), pct, mapKeys);
+			write(key, allMap.get(key), pct);
 		}
 		
 	}
@@ -105,7 +88,7 @@ public class IEConversion {
 	 * @param data
 	 * @param pct
 	 */
-	public static void write(String key, Map<String,Integer> propMap, List<List<Interval>> data, double pct, boolean mapKeys) 
+	public static void write(String key, List<List<Interval>> data, double pct) 
 				throws Exception { 
 		String prefix = "/Users/wkerr/Dropbox/dhaval-app/classify/";
 		
@@ -117,10 +100,7 @@ public class IEConversion {
 			List<Interval> instance = data.remove(0);
 			Collections.sort(instance, Interval.esf);
 			for (Interval interval : instance)  {
-				if (mapKeys)
-					out.write(propMap.get(interval.name) + " " + interval.start + " " + interval.end + " ");
-				else
-					out.write(interval.name + " " + interval.start + " " + interval.end + " ");
+				out.write(interval.keyId + " " + interval.start + " " + interval.end + " ");
 			}
 			out.write("\n");
 			out.flush();
@@ -132,10 +112,7 @@ public class IEConversion {
 			List<Interval> instance = data.remove(0);
 			Collections.sort(instance, Interval.esf);
 			for (Interval interval : instance) {
-				if (mapKeys) 
-					test.write(propMap.get(interval.name) + " " + interval.start + " " + interval.end + " ");
-				else 
-					test.write(interval.name + " " + interval.start + " " + interval.end + " ");
+				test.write(interval.keyId + " " + interval.start + " " + interval.end + " ");
 			}
 			test.write("\n");
 			test.flush();
@@ -145,6 +122,6 @@ public class IEConversion {
 	
 	public static void main(String[] args) throws Exception { 
 //		convert("data/input/ww3d-jump-over.lisp", "/Users/wkerr/Dropbox/dhaval-app/data/ww3d-jump-over.data");
-		splitAndConvert("/tmp/niall-9507/", "niall", 2.0/3.0, true);
+		splitAndConvert("/tmp/niall-9507/", "niall", 2.0/3.0);
 	}
 }

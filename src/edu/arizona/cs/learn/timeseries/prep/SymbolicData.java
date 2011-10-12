@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.arizona.cs.learn.timeseries.model.Interval;
+import edu.arizona.cs.learn.util.DataMap;
 
 public class SymbolicData {
 
@@ -50,7 +51,7 @@ public class SymbolicData {
 				out.write("(" + i + "\n");
 				out.write(" (\n");
 				for (Interval interval : intervals) { 
-					out.write("(\"" + interval.name + "\" " + 
+					out.write("(\"" + DataMap.getKey(interval.keyId) + "\" " + 
 							interval.start + " " +
 							interval.end + ")\n");
 				}

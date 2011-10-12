@@ -4,10 +4,10 @@ import org.dom4j.Element;
 
 public abstract class Value {
 
-	protected String _variableName;
+	protected Integer _variableId;
 	
-	public Value(String variableName) { 
-		_variableName = variableName;
+	public Value(Integer variableId) { 
+		_variableId = variableId;
 	}
 	
 	public abstract void merge(Value v);

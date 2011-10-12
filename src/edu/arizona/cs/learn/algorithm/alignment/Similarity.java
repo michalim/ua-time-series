@@ -102,7 +102,7 @@ public enum Similarity {
 			StringSymbol cA = (StringSymbol) A;
 			StringSymbol cB = (StringSymbol) B;
 
-			if (cA.getKey().equals(cB.getKey()))
+			if (cA.equals(cB))
 				return 1;
 			return 0;
 		}
@@ -118,7 +118,7 @@ public enum Similarity {
 			IntervalAndSequence iasA = (IntervalAndSequence) A;
 			IntervalAndSequence iasB = (IntervalAndSequence) B;
 			
-			if (!iasA.proposition().equals(iasB.proposition()))
+			if (iasA.proposition() != iasB.proposition())
 				return 0;
 			
 			Params p = new Params(iasA.sequence(), iasB.sequence());

@@ -12,6 +12,7 @@ import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 
 public class DataModel {
@@ -67,7 +68,7 @@ public class DataModel {
 		
 		_propSet = new TreeSet<String>();
 		for (Interval interval : _instance.intervals())
-			_propSet.add(interval.name);
+			_propSet.add(DataMap.getKey(interval.keyId));
 	}
 	
 	/**

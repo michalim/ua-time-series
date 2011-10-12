@@ -6,6 +6,7 @@ import java.util.List;
 import org.dom4j.Element;
 
 import edu.arizona.cs.learn.timeseries.model.Interval;
+import edu.arizona.cs.learn.util.DataMap;
 
 /**
  * The event class essentially wraps the interval class so that we don't have to
@@ -17,11 +18,11 @@ import edu.arizona.cs.learn.timeseries.model.Interval;
 
 public class Event extends StringSymbol {
 	private String _key;
-	private List<String> _props;
+	private List<Integer> _props;
 	private List<Interval> _intervals;
 
 	public Event(Interval interval) {
-		this(interval.name, interval);
+		this(DataMap.getKey(interval.keyId), interval);
 	}
 
 	public Event(String name, Interval interval) {
@@ -32,8 +33,8 @@ public class Event extends StringSymbol {
 		_key = name;
 		_weight = weight;
 
-		_props = new ArrayList<String>();
-		_props.add(interval.name);
+		_props = new ArrayList<Integer>();
+		_props.add(interval.keyId);
 
 		_intervals = new ArrayList<Interval>();
 		_intervals.add(interval);
@@ -55,8 +56,8 @@ public class Event extends StringSymbol {
 		return this._key;
 	}
 
-	public List<String> getProps() {
-		return this._props;
+	public List<Integer> getProps() {
+		return _props;
 	}
 
 	public String toString() {

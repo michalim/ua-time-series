@@ -9,18 +9,17 @@ import org.dom4j.Element;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
 import edu.arizona.cs.learn.timeseries.model.Interval;
+import edu.arizona.cs.learn.util.DataMap;
 
 public class CBA extends StringSymbol implements Comparable<CBA> {
 	private static Logger logger = Logger.getLogger(CBA.class);
-
-	private String _key;
 
 	private int _start;
 	private int _end;
 
 	private List<Interval> _intervals;
 
-	private List<String> _props;
+	private List<Integer> _props;
 	private List<Integer> _starts;
 	private List<Integer> _ends;
 
@@ -34,7 +33,7 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 
 		_intervals = new ArrayList<Interval>();
 
-		_props = new ArrayList<String>();
+		_props = new ArrayList<Integer>();
 		_starts = new ArrayList<Integer>();
 		_ends = new ArrayList<Integer>();
 	}
@@ -44,12 +43,7 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 	}
 	
 	public CBA(String key, double weight) { 
-		_key = key;
-		_weight = weight;
-	}
-
-	public String toString() {
-		return _key;
+		super(key, weight);
 	}
 
 	/**
@@ -65,7 +59,7 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 
 		_intervals.add(interval);
 
-		_props.add(interval.name);
+		_props.add(interval.keyId);
 		_starts.add(interval.start);
 		_ends.add(interval.end);
 
@@ -83,7 +77,7 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 	 */
 	public void finish(boolean makeKey) {
 		if (makeKey) 
-			_key = BPPFactory.bpp(_intervals, Interval.eff);
+			_name = BPPFactory.bpp(_intervals, Interval.eff);
 
 		Collections.sort(_starts);
 
@@ -99,7 +93,7 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 			return false;
 
 		CBA other = (CBA) o;
-		return _key.equals(other._key);
+		return _name.equals(other._name);
 	}
 
 	@Override
@@ -143,8 +137,8 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 
 		// compare all of the propositions...
 		for (int i = 0; i < _props.size(); ++i) {
-			String n1 = _props.get(i);
-			String n2 = cba._props.get(i);
+			String n1 = DataMap.getKey(_props.get(i));
+			String n2 = DataMap.getKey(cba._props.get(i));
 
 			int comp = n1.compareTo(n2);
 			if (comp > 0 || comp < 0) {
@@ -154,8 +148,8 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 
 		// At this point everything is equal.... so what do we
 		// do? Throw up our hands and throw an exception.
-		throw new RuntimeException("Comparing the exact same CBAs - \n" + _key
-				+ "\n" + cba._key);
+		throw new RuntimeException("Comparing the exact same CBAs - \n" + _name
+				+ "\n" + cba._name);
 	}
 
 	@Override
@@ -164,12 +158,7 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 	}
 
 	@Override
-	public String getKey() {
-		return _key;
-	}
-
-	@Override
-	public List<String> getProps() {
+	public List<Integer> getProps() {
 		return _props;
 	}
 	
@@ -187,7 +176,7 @@ public class CBA extends StringSymbol implements Comparable<CBA> {
 		Element cba = e.addElement("symbol");
 		
 		cba.addAttribute("class", "CBA");
-		cba.addAttribute("key", _key);
+		cba.addAttribute("key", _name);
 		cba.addAttribute("weight", _weight +"");
 
 		for (Interval interval : _intervals)

@@ -9,6 +9,12 @@ import java.util.Set;
 
 import edu.arizona.cs.learn.timeseries.model.Interval;
 
+/**
+ * An IntervalSet is a collection of intervals.  An episode
+ * consists of many IntervalSets.
+ * @author kerrw
+ *
+ */
 public class IntervalSet {
 
 	private int _start;
@@ -22,6 +28,12 @@ public class IntervalSet {
 		_end = 0;
 	}
 	
+	/**
+	 * Combine two IntervalSets into a new IntervalSet.
+	 * The two IntervalSets must be the same size.
+	 * @param is1
+	 * @param is2
+	 */
 	public IntervalSet(IntervalSet is1, IntervalSet is2) { 
 		this();
 		
@@ -48,10 +60,18 @@ public class IntervalSet {
 		_end = Math.min(is1._end, is2._end);
 	}
 	
+	/**
+	 * Return the moment in time when this IntervalSet starts.
+	 * @return
+	 */
 	public int start() { 
 		return _start;
 	}
 	
+	/**
+	 * Return the moment in time when this IntervalSet ends.
+	 * @return
+	 */
 	public int end() { 
 		return _end;
 	}
@@ -64,6 +84,10 @@ public class IntervalSet {
 		return _intervals.size();
 	}
 	
+	/**
+	 * Adds another Interval to this IntervalSet.
+	 * @param interval
+	 */
 	public void add(Interval interval) { 
 		_intervals.add(interval);
 		_start = Math.min(interval.start, _start);

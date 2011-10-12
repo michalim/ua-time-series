@@ -40,6 +40,7 @@ import edu.arizona.cs.learn.timeseries.model.Signature;
 import edu.arizona.cs.learn.timeseries.recognizer.RecognizeCallable;
 import edu.arizona.cs.learn.timeseries.recognizer.Recognizer;
 import edu.arizona.cs.learn.timeseries.recognizer.RecognizerStatistics;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 import edu.arizona.cs.learn.util.graph.Edge;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -735,10 +736,10 @@ public class Experiments {
 					Set<BPPNode> mainActive = new HashSet<BPPNode>();
 					Set<BPPNode> subActive = new HashSet<BPPNode>();
 					for (int j = start; j < end; j++) {
-						Set<String> props = new HashSet<String>();
+						Set<Integer> props = new HashSet<Integer>();
 						for (Interval interval : testItem) {
 							if (interval.on(j)) {
-								props.add(interval.name);
+								props.add(interval.keyId);
 							}
 						}
 						
@@ -968,10 +969,10 @@ public class Experiments {
 				List<BPPNode> actives = new ArrayList<BPPNode>();
 				boolean isAccepted = false;
 				for (int j = start; j < end; j++) {
-					Set<String> props = new HashSet<String>();
+					Set<Integer> props = new HashSet<Integer>();
 					for (Interval interval : testInstance) {
 						if (interval.on(j)) {
-							props.add(interval.name);
+							props.add(interval.keyId);
 						}
 					}
 					

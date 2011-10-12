@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
+import edu.arizona.cs.learn.util.DataMap;
 
 /**
  * @author wkerr
@@ -56,8 +57,8 @@ public class BuildWekaVariableDataset {
 				episodes.add(propSet);
 				
 				for (Interval i : instance.intervals()) { 
-					variableSet.add(i.name);
-					propSet.add(i.name);
+					variableSet.add(DataMap.getKey(i.keyId));
+					propSet.add(DataMap.getKey(i.keyId));
 				}
 			}
 		}

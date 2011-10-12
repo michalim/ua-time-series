@@ -14,6 +14,9 @@ public class Pattern {
 	private String _name;
 	private int _size;
 	
+	/** _examples maps episodes to the collection of IntervalSets within
+	 *  that episode that represent this pattern.
+	 */
 	private Map<Integer,Map<String,IntervalSet>> _examples;
 	
 	public Pattern(String name, int size) { 
@@ -31,6 +34,10 @@ public class Pattern {
 		return _size;
 	}
 	
+	/**
+	 * Return the number of episodes that this pattern occurs in.
+	 * @return
+	 */
 	public int episodeCount() {
 		return _examples.size();
 	}
@@ -93,15 +100,15 @@ public class Pattern {
 	public static String getName(List<Interval> intervals) { 
 //		System.out.println("getName(): " + intervals);
 		Collections.sort(intervals, Interval.esf);
-		StringBuilder buf = new StringBuilder(intervals.get(0).name);
+		StringBuilder buf = new StringBuilder(intervals.get(0).keyId);
 		for (int i = 1; i < intervals.size(); ++i) { 
 			Interval i1 = intervals.get(i-1);
 			Interval i2 = intervals.get(i);
 			
 			if (i1.end <= i2.start)
-				buf.append(" b " + i2.name);
+				buf.append(" b " + i2.keyId);
 			else 
-				buf.append(" o " + i2.name);
+				buf.append(" o " + i2.keyId);
 		}
 		return buf.toString();
 	}
@@ -114,6 +121,6 @@ public class Pattern {
 	 * @return
 	 */
 	public static String getName(Interval interval) { 
-		return interval.name;
+		return interval.keyId + "";
 	}
 }

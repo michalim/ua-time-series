@@ -101,12 +101,12 @@ public class GeneralTests {
 		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
 		Map<Integer,List<Symbol>> instanceMap = new TreeMap<Integer,List<Symbol>>();
 		
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		for (Instance instance : instances) { 
 			for (Interval interval : instance.intervals())
-				propSet.add(interval.name);
+				propSet.add(interval.keyId);
 		}
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 		for (Instance instance : instances) {
 			instanceMap.put(instance.id(), Utils.toSequence(props, BPPFactory.compress(instance.intervals(), Interval.eff)));
 			System.out.println("Key: " + instance.id() + " ---- " + instanceMap.get(instance.id()));
@@ -126,12 +126,12 @@ public class GeneralTests {
 		List<Instance> instances = Instance.load(new File("data/input/chpt1-approach.lisp"));
 		Map<Integer,List<Symbol>> timelineMap = new TreeMap<Integer,List<Symbol>>();
 		
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		for (Instance instance : instances) { 
 			for (Interval interval : instance.intervals())
-				propSet.add(interval.name);
+				propSet.add(interval.keyId);
 		}
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 		for (Instance instance : instances) {
 			timelineMap.put(instance.id(), Utils.toSequence(props, BPPFactory.compress(instance.intervals(), Interval.eff)));
 			System.out.println("Key: " + instance.id() + " ---- " + timelineMap.get(instance.id()));
@@ -181,12 +181,12 @@ public class GeneralTests {
 		List<Instance> instances = Instance.load(new File("data/input/ww3d-jump-over.lisp"));
 		Map<Integer,List<Symbol>> timelineMap = new TreeMap<Integer,List<Symbol>>();
 		
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		for (Instance instance : instances) { 
 			for (Interval interval : instance.intervals())
-				propSet.add(interval.name);
+				propSet.add(interval.keyId);
 		}
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 		for (Instance instance : instances) {
 			timelineMap.put(instance.id(), Utils.toSequence(props, BPPFactory.compress(instance.intervals(), Interval.eff)));
 		}
@@ -214,7 +214,7 @@ public class GeneralTests {
 	
 	public static void doit(String prefix) { 
 		Map<String,List<List<Interval>>> eMap = new HashMap<String,List<List<Interval>>>();
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		for (File f : new File("data/input/").listFiles()) {
 			if ((f.getName().startsWith(prefix)) && (f.getName().endsWith("lisp"))) {
 				String name = f.getName().substring(0, f.getName().indexOf(".lisp"));
@@ -224,13 +224,13 @@ public class GeneralTests {
 				for (Instance instance : instances) { 
 					eMap.get(name).add(instance.intervals());
 					for (Interval interval : instance.intervals())
-						propSet.add(interval.name);
+						propSet.add(interval.keyId);
 				}
 			}
 		}
 		System.out.println("eMap: " + eMap.size());
 
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 		Map<String,List<List<Symbol>>> sMap = new HashMap<String,List<List<Symbol>>>();
 		for (String key : eMap.keySet()) { 
 			sMap.put(key, new ArrayList<List<Symbol>>());

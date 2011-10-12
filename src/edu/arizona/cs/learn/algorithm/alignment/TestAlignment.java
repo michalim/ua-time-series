@@ -13,6 +13,7 @@ import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 
 public class TestAlignment {
@@ -182,21 +183,31 @@ public class TestAlignment {
 	private static void test1() {
 		logger.debug("********* TEST 1 ***********");
 
+		int a = DataMap.findOrAdd("A");
+		int b = DataMap.findOrAdd("B");
+		int c = DataMap.findOrAdd("C");
+		int d = DataMap.findOrAdd("D");
+		
+		int e = DataMap.findOrAdd("ends-with");
+		int o = DataMap.findOrAdd("overlaps");
+		int m = DataMap.findOrAdd("meets");
+		int be = DataMap.findOrAdd("before");
+				
 		List<Symbol> s1 = new ArrayList<Symbol>();
-		s1.add(new AllenRelation("A", "ends-with", "D"));
-		s1.add(new AllenRelation("A", "overlaps", "B", 5.0D));
-		s1.add(new AllenRelation("A", "meets", "C", 5.0D));
-		s1.add(new AllenRelation("D", "overlaps", "B"));
-		s1.add(new AllenRelation("D", "overlaps", "C"));
-		s1.add(new AllenRelation("B", "overlaps", "C", 5.0D));
+		s1.add(new AllenRelation(a, e, d));
+		s1.add(new AllenRelation(a, o, b, 5.0D));
+		s1.add(new AllenRelation(a, m, c, 5.0D));
+		s1.add(new AllenRelation(d, o, b));
+		s1.add(new AllenRelation(d, o, c));
+		s1.add(new AllenRelation(b, o, c, 5.0D));
 
 		List<Symbol> s2 = new ArrayList<Symbol>();
-		s2.add(new AllenRelation("C", "meets", "A"));
-		s2.add(new AllenRelation("C", "before", "B"));
-		s2.add(new AllenRelation("C", "before", "C"));
-		s2.add(new AllenRelation("A", "overlaps", "B"));
-		s2.add(new AllenRelation("A", "meets", "C"));
-		s2.add(new AllenRelation("B", "overlaps", "C"));
+		s2.add(new AllenRelation(c, m, a));
+		s2.add(new AllenRelation(c, be, b));
+		s2.add(new AllenRelation(c, be, c));
+		s2.add(new AllenRelation(a, o, b));
+		s2.add(new AllenRelation(a, m, c));
+		s2.add(new AllenRelation(b, o, c));
 
 		Params p1 = new Params();
 		p1.setMin(0, 0);
@@ -212,21 +223,31 @@ public class TestAlignment {
 	private static void test2() {
 		logger.debug("********* TEST 2 ***********");
 
+		int a = DataMap.findOrAdd("A");
+		int b = DataMap.findOrAdd("B");
+		int c = DataMap.findOrAdd("C");
+		int d = DataMap.findOrAdd("D");
+		
+		int e = DataMap.findOrAdd("ends-with");
+		int o = DataMap.findOrAdd("overlaps");
+		int m = DataMap.findOrAdd("meets");
+		int be = DataMap.findOrAdd("before");
+				
 		List<Symbol> s1 = new ArrayList<Symbol>();
-		s1.add(new AllenRelation("A", "ends-with", "D"));
-		s1.add(new AllenRelation("A", "overlaps", "B", 5.0D));
-		s1.add(new AllenRelation("A", "meets", "C", 5.0D));
-		s1.add(new AllenRelation("D", "overlaps", "B"));
-		s1.add(new AllenRelation("D", "overlaps", "C"));
-		s1.add(new AllenRelation("B", "overlaps", "C", 5.0D));
+		s1.add(new AllenRelation(a, e, d));
+		s1.add(new AllenRelation(a, o, b, 5.0D));
+		s1.add(new AllenRelation(a, m, c, 5.0D));
+		s1.add(new AllenRelation(d, o, b));
+		s1.add(new AllenRelation(d, o, c));
+		s1.add(new AllenRelation(b, o, c, 5.0D));
 
 		List<Symbol> s2 = new ArrayList<Symbol>();
-		s2.add(new AllenRelation("C", "meets", "A"));
-		s2.add(new AllenRelation("C", "before", "B"));
-		s2.add(new AllenRelation("C", "before", "C"));
-		s2.add(new AllenRelation("A", "overlaps", "B"));
-		s2.add(new AllenRelation("A", "meets", "C"));
-		s2.add(new AllenRelation("B", "overlaps", "C"));
+		s2.add(new AllenRelation(c, m, a));
+		s2.add(new AllenRelation(c, be, b));
+		s2.add(new AllenRelation(c, be, c));
+		s2.add(new AllenRelation(a, o, b));
+		s2.add(new AllenRelation(a, m, c));
+		s2.add(new AllenRelation(b, o, c));
 
 		Params p1 = new Params();
 		p1.seq1 = s1;
@@ -278,21 +299,31 @@ public class TestAlignment {
 	private static void test4() {
 		logger.debug("********* TEST 4 ***********");
 
+		int a = DataMap.findOrAdd("A");
+		int b = DataMap.findOrAdd("B");
+		int c = DataMap.findOrAdd("C");
+		int d = DataMap.findOrAdd("D");
+		
+		int e = DataMap.findOrAdd("ends-with");
+		int o = DataMap.findOrAdd("overlaps");
+		int m = DataMap.findOrAdd("meets");
+		int be = DataMap.findOrAdd("before");
+
 		List<Symbol> s1 = new ArrayList<Symbol>();
-		s1.add(new AllenRelation("A", "ends-with", "D"));
-		s1.add(new AllenRelation("A", "overlaps", "B"));
-		s1.add(new AllenRelation("A", "meets", "C"));
-		s1.add(new AllenRelation("D", "overlaps", "B"));
-		s1.add(new AllenRelation("D", "overlaps", "C"));
-		s1.add(new AllenRelation("B", "overlaps", "C"));
+		s1.add(new AllenRelation(a, e, d));
+		s1.add(new AllenRelation(a, o, b));
+		s1.add(new AllenRelation(a, m, c));
+		s1.add(new AllenRelation(d, o, b));
+		s1.add(new AllenRelation(d, o, c));
+		s1.add(new AllenRelation(b, o, c));
 
 		List<Symbol> s2 = new ArrayList<Symbol>();
-		s2.add(new AllenRelation("C", "meets", "A"));
-		s2.add(new AllenRelation("C", "before", "B"));
-		s2.add(new AllenRelation("C", "before", "C"));
-		s2.add(new AllenRelation("A", "overlaps", "B"));
-		s2.add(new AllenRelation("A", "meets", "C"));
-		s2.add(new AllenRelation("B", "overlaps", "C"));
+		s2.add(new AllenRelation(c, m, a));
+		s2.add(new AllenRelation(c, b, b));
+		s2.add(new AllenRelation(c, b, c));
+		s2.add(new AllenRelation(a, o, b));
+		s2.add(new AllenRelation(a, m, c));
+		s2.add(new AllenRelation(b, o, c));
 
 		Params p1 = new Params();
 		p1.setMin(0, 0);
@@ -337,20 +368,20 @@ public class TestAlignment {
 	
 	public static void test6() { 
 		List<Interval> i1 = new ArrayList<Interval>();
-		i1.add(Interval.make("distance-decreasing(agent,box)", 1, 20));
-		i1.add(Interval.make("forward(agent)", 0, 11));
-		i1.add(Interval.make("speed-decreasing(agent)", 11, 20));
-		i1.add(Interval.make("collision(agent,box)", 20, 21));
+		i1.add(new Interval("distance-decreasing(agent,box)", 1, 20));
+		i1.add(new Interval("forward(agent)", 0, 11));
+		i1.add(new Interval("speed-decreasing(agent)", 11, 20));
+		i1.add(new Interval("collision(agent,box)", 20, 21));
 		List<Symbol> s1 = SequenceType.tree.getSequence(i1);
 		
 		List<Interval> i2 = new ArrayList<Interval>();
-  		i2.add(Interval.make("distance-decreasing(agent,box)", 1, 16));
-  		i2.add(Interval.make("forward(agent)", 0, 8));
-  		i2.add(Interval.make("speed-decreasing(agent)", 8, 16));
-  		i2.add(Interval.make("collision(agent,box)", 16, 17));
-  		i2.add(Interval.make("distance-decreasing(agent,box2)", 1, 7));
-  		i2.add(Interval.make("distance-stable(agent,box2)", 7, 9));
-  		i2.add(Interval.make("distance-increasing(agent,box2)", 9, 16));		
+  		i2.add(new Interval("distance-decreasing(agent,box)", 1, 16));
+  		i2.add(new Interval("forward(agent)", 0, 8));
+  		i2.add(new Interval("speed-decreasing(agent)", 8, 16));
+  		i2.add(new Interval("collision(agent,box)", 16, 17));
+  		i2.add(new Interval("distance-decreasing(agent,box2)", 1, 7));
+  		i2.add(new Interval("distance-stable(agent,box2)", 7, 9));
+  		i2.add(new Interval("distance-increasing(agent,box2)", 9, 16));		
 		List<Symbol> s2 = SequenceType.tree.getSequence(i2);
 		
 		Params p1 = new Params();

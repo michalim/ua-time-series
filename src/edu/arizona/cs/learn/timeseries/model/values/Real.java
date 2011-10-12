@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 import org.dom4j.Element;
 
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.XMLUtils;
 
 public class Real extends Value {
@@ -19,8 +20,8 @@ public class Real extends Value {
 	 * and otherwise the value is stored as is.
 	 * @param value
 	 */
-	public Real(String variableName, double value) { 
-		super(variableName);
+	public Real(Integer variableId, double value) { 
+		super(variableId);
 		_values = new ArrayList<Double>();
 		_values.add(value);
 		
@@ -37,8 +38,8 @@ public class Real extends Value {
 	 * @param uknown
 	 * @param values
 	 */
-	private Real(String variableName, boolean uknown, List<Double> values) { 
-		super(variableName);
+	private Real(Integer variableId, boolean uknown, List<Double> values) { 
+		super(variableId);
 		_unknown = false;
 		_values = new ArrayList<Double>(values);
 		
@@ -88,7 +89,7 @@ public class Real extends Value {
 
 	@Override
 	public Value copy() {
-		return new Real(_variableName, _unknown, _values);
+		return new Real(_variableId, _unknown, _values);
 	}
 	
 	@Override
@@ -115,7 +116,7 @@ public class Real extends Value {
 	public void toXML(Element e) { 
 		e.addElement("value")
 			.addAttribute("class", Real.class.getSimpleName())
-			.addAttribute("variable", _variableName)
+			.addAttribute("variable", DataMap.getKey(_variableId))
 			.addAttribute("unknown", _unknown+"")
 			.addAttribute("values", XMLUtils.toString(_values));
 	}
@@ -129,6 +130,6 @@ public class Real extends Value {
 		List<Double> values = new ArrayList<Double>();
 		for (String tok : tokens) 
 			values.add(Double.parseDouble(tok));
-		return new Real(varName, unknown, values);
+		return new Real(DataMap.findOrAdd(varName), unknown, values);
 	}
 }

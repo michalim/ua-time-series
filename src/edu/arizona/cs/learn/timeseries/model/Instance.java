@@ -245,19 +245,19 @@ public class Instance implements Clusterable<Instance> {
 				List<Object> intervals = (List<Object>) episode.get(1);
 				for (Object o : intervals) { 
 					List<Object> list = (List<Object>) o;
-					Interval interval = new Interval();
+					String name = (String) list.get(0);
+					if (rewrite.containsKey(name))
+						name = rewrite.get(name);
+					int start = (Integer) list.get(1);
+					int end = (Integer) list.get(2);
+					
+					Interval interval = new Interval(name, start, end);
 					interval.file = file.getName();
 					interval.episode = id;
-					interval.name = (String) list.get(0);
-					if (rewrite.containsKey(interval.name)) 
-						interval.name = rewrite.get(interval.name);
-
-					interval.start = (Integer) list.get(1);
-					interval.end = (Integer) list.get(2);
-
+					
 					boolean add = true;
 					for (String exclude : excludeSet) { 
-						if (interval.name.endsWith(exclude)) { 
+						if (name.endsWith(exclude)) {
 							add = false;
 							break;
 						}

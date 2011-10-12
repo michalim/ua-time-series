@@ -22,6 +22,7 @@ import org.dom4j.io.XMLWriter;
 
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.symbols.ComplexSymbol;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.XMLUtils;
 
 public class Handwriting {
@@ -173,7 +174,7 @@ public class Handwriting {
 				
 				out.write("(" + k + "\n (\n");
 				for (Interval interval : intervals) { 
-					out.write("  (\"" + interval.name + "\" " + interval.start + " " + interval.end + ")\n");
+					out.write("  (\"" + DataMap.getKey(interval.keyId) + "\" " + interval.start + " " + interval.end + ")\n");
 				}
 				out.write (" )\n)\n");
 			}

@@ -6,13 +6,15 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
+import edu.arizona.cs.learn.util.DataMap;
+
 public class BPPNode {
 	private static Logger logger = Logger.getLogger(BPPNode.class);
 	public static int _counter = 0;
 	private int _id;
 	
-	private List<String> _propList;
-	private Set<String>  _props;
+	private List<Integer> _propList;
+	private Set<Integer>  _props;
 
 	private String _values;
 	private String _color;
@@ -38,10 +40,10 @@ public class BPPNode {
 		_activeDepth = 0;
 		_distanceToFinal = Integer.MAX_VALUE;
 
-		_props = new TreeSet<String>();
+		_props = new TreeSet<Integer>();
 	}
 
-	public BPPNode(List<String> propList, StringBuffer buf, BPPNode startNode,
+	public BPPNode(List<Integer> propList, StringBuffer buf, BPPNode startNode,
 			boolean isFinalState) {
 		
 		this(startNode);
@@ -49,7 +51,7 @@ public class BPPNode {
 		_propList = propList;
 		_values = buf.toString();
 
-		_props = new TreeSet<String>();
+		_props = new TreeSet<Integer>();
 		for (int i = 0; i < this._propList.size(); i++) {
 			if (_values.charAt(i) == '1') {
 				_props.add(_propList.get(i));
@@ -66,7 +68,7 @@ public class BPPNode {
 		_isFinal = isFinalState;
 	}
 	
-	public BPPNode(List<String> propList, StringBuffer buf, BPPNode startNode) {
+	public BPPNode(List<Integer> propList, StringBuffer buf, BPPNode startNode) {
 		this(propList, buf, startNode, false);
 	}
 
@@ -102,10 +104,10 @@ public class BPPNode {
 	 * @param activeProps
 	 * @return
 	 */
-	public boolean active(Set<String> activeProps) {
-		for (int i = 0; i < this._propList.size(); i++) {
-			if ((this._values.charAt(i) == '1')
-					&& (!activeProps.contains(this._propList.get(i)))) {
+	public boolean active(Set<Integer> activeProps) {
+		for (int i = 0; i < _propList.size(); i++) {
+			if ((_values.charAt(i) == '1')
+					&& (!activeProps.contains(_propList.get(i)))) {
 				++_timeSpentOff;
 				return false;
 			}
@@ -142,7 +144,7 @@ public class BPPNode {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < _propList.size(); i++) {
 			if (_values.charAt(i) == '1') {
-				buf.append((String) _propList.get(i) + " \\n");
+				buf.append(DataMap.getKey(_propList.get(i)) + " \\n");
 			}
 		}
 
@@ -166,15 +168,15 @@ public class BPPNode {
 				(_isFinal ? ",shape=\"octagon\"" : "") + "];\n";
 	}
 
-	public static String id(List<String> propList, StringBuffer buf) {
+	public static String id(List<Integer> propList, StringBuffer buf) {
 		StringBuffer id = new StringBuffer();
 		for (int i = 0; i < propList.size(); i++) {
-			id.append(buf.charAt(i) + " " + (String) propList.get(i) + "|");
+			id.append(buf.charAt(i) + " " + DataMap.getKey(propList.get(i)) + "|");
 		}
 		return id.toString();
 	}
 	
-	public List<String> getPropList() {
+	public List<Integer> getPropList() {
 		return _propList;
 	}
 	
@@ -182,7 +184,7 @@ public class BPPNode {
 		return _values;
 	}
 	
-	public Set<String> getProps() {
+	public Set<Integer> getProps() {
 		return _props;
 	}
 	

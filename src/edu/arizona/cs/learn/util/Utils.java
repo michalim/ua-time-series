@@ -132,7 +132,7 @@ public class Utils {
 	public static Map<String,List<Instance>> convert(Map<String,String> fileMap) { 
 		
 		Map<String,List<Instance>> map = new HashMap<String,List<Instance>>();
-		Set<String> propSet = new TreeSet<String>();
+		Set<Integer> propSet = new TreeSet<Integer>();
 		for (String key : fileMap.keySet()) { 
 			
 			List<Instance> instances = Instance.load(new File(fileMap.get(key)));
@@ -140,12 +140,12 @@ public class Utils {
 			
 			for (Instance instance : instances) { 
 				for (Interval interval : instance.intervals()) {
-					propSet.add(interval.name);
+					propSet.add(interval.keyId);
 				}
 			}
 		}
 		
-		List<String> props = new ArrayList<String>(propSet);
+		List<Integer> props = new ArrayList<Integer>(propSet);
 		for (List<Instance> instances : map.values()) { 
 			for (Instance instance : instances) { 
 				List<Interval> cba = BPPFactory.compress(instance.intervals(), Interval.eff);
@@ -160,31 +160,29 @@ public class Utils {
 	
 	/**
 	 * Construct a sequence from the propositions and the intervals given.
-	 * @param props
+	 * @param props -- the ids of all of the propositions that become true in
+	 * 	this set of intervals or that we want to include in this sequence
 	 * @param intervals
 	 * @return
 	 */
-	public static List<Symbol> toSequence(List<String> props, List<Interval> intervals) { 
+	public static List<Symbol> toSequence(List<Integer> props, List<Interval> intervals) { 
 		List<Symbol> results = new ArrayList<Symbol>();
 		
-		int tmpSize = 0;
 		int endTime = 0;
 		int startTime = Integer.MAX_VALUE;
-		Map<String,List<Interval>> propMap = new TreeMap<String,List<Interval>>();
+		Map<Integer,List<Interval>> propMap = new TreeMap<Integer,List<Interval>>();
 		for (Interval i : intervals) { 
-			List<Interval> propIntervals = propMap.get(i.name);
+			List<Interval> propIntervals = propMap.get(i.keyId);
 			if (propIntervals == null) { 
 				propIntervals = new ArrayList<Interval>();
-				propMap.put(i.name, propIntervals);
+				propMap.put(i.keyId, propIntervals);
 			}
 			
 			propIntervals.add(i);
 			startTime = Math.min(i.start, startTime);
 			endTime = Math.max(i.end, endTime);
 			
-			tmpSize = Math.max(tmpSize, i.name.length());
 		}
-		tmpSize += 1;
 
 		int time = (endTime - startTime);
 		for (int i = 0; i < time; ++i) { 
@@ -192,7 +190,7 @@ public class Utils {
 			// if they are on or off.
 			List<Value> state = new ArrayList<Value>();
 			for (int j = 0; j < props.size(); ++j) {
-				String prop = props.get(j);
+				Integer prop = props.get(j);
 				List<Interval> propIntervals = propMap.get(prop);
 				if (propIntervals == null) {
 					state.add(new Binary(prop, Binary.FALSE));
@@ -284,7 +282,7 @@ public class Utils {
 
 				// now write out all of the intervals.
 				for (Interval interval : episodes.get(i))  
-					out.write("  (\"" + interval.name + "\" " + interval.start + " " + interval.end + ")\n");
+					out.write("  (\"" + DataMap.getKey(interval.keyId) + "\" " + interval.start + " " + interval.end + ")\n");
 				
 				out.write(" )\n");
 				out.write(")\n");

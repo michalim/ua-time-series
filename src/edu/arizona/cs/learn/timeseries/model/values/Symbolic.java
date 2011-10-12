@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.dom4j.Element;
 
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.XMLUtils;
 
 public class Symbolic extends Value {
@@ -21,8 +22,8 @@ public class Symbolic extends Value {
 	 * means that the value is unknown
 	 * @param value
 	 */
-	public Symbolic(String variableName, String value) { 
-		super(variableName);
+	public Symbolic(Integer variableId, String value) { 
+		super(variableId);
 		_uniqueValue = value;
 		_values = new ArrayList<String>();
 		_values.add(value);
@@ -40,8 +41,8 @@ public class Symbolic extends Value {
 	 *    The cost matrix defines the distance between any 
 	 *    two possible symbols.
 	 */
-	public Symbolic(String variableName, String value, List<String> symbols, double[][] costMatrix) { 
-		this(variableName, value);
+	public Symbolic(Integer variableId, String value, List<String> symbols, double[][] costMatrix) { 
+		this(variableId, value);
 		
 		_symbols = new ArrayList<String>(symbols);
 		_costMatrix = costMatrix;
@@ -54,8 +55,8 @@ public class Symbolic extends Value {
 	 * @param symbols
 	 * @param costMatrix
 	 */
-	private Symbolic(String variableName, String uniqueValue, List<String> values, List<String> symbols, double[][] costMatrix) { 
-		super(variableName);
+	private Symbolic(Integer variableId, String uniqueValue, List<String> values, List<String> symbols, double[][] costMatrix) { 
+		super(variableId);
 		_uniqueValue = uniqueValue;
 		_values = new ArrayList<String>(values);
 		
@@ -117,7 +118,7 @@ public class Symbolic extends Value {
 
 	@Override
 	public Value copy() {
-		return new Symbolic(_variableName, _uniqueValue, _values, _symbols, _costMatrix);
+		return new Symbolic(_variableId, _uniqueValue, _values, _symbols, _costMatrix);
 	}
 	
 	@Override
@@ -139,7 +140,7 @@ public class Symbolic extends Value {
 	public void toXML(Element e) { 			
 		Element sElement = e.addElement("value")
 			.addAttribute("class", Symbolic.class.getSimpleName())
-			.addAttribute("variable", _variableName)
+			.addAttribute("variable", DataMap.getKey(_variableId))
 			.addAttribute("value", _uniqueValue+"")
 			.addAttribute("values", XMLUtils.toString(_values));
 
@@ -162,7 +163,7 @@ public class Symbolic extends Value {
 		if (e.element("symbols") != null) { 
 			throw new RuntimeException("Not yet implemented!");
 		}
-		return new Symbolic(varName, value, values, null, null);
+		return new Symbolic(DataMap.findOrAdd(varName), value, values, null, null);
 	}	
 	
 }

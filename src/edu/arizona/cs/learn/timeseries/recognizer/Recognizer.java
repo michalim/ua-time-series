@@ -41,12 +41,12 @@ public enum Recognizer {
 			// Assumption is that you will only build FSMRecognizer on 
 			// StringSymbols....for now
 			// TODO: extend to work with ComplexSymbols (but all binary)
-			Set<String> propSet = new TreeSet<String>();
+			Set<Integer> propSet = new TreeSet<Integer>();
 			for (Symbol obj : s.signature()) {
 				StringSymbol ss = (StringSymbol) obj;
 				propSet.addAll(ss.getProps());
 			}
-			List<String> props = new ArrayList<String>(propSet);
+			List<Integer> props = new ArrayList<Integer>(propSet);
 			List<List<Interval>> all = BitPatternGeneration.getBPPs(null, s.table(), propSet);
 
 			DirectedGraph<BPPNode, Edge> graph = FSMFactory.makeGraph(props, all, onlyStart);
@@ -61,7 +61,7 @@ public enum Recognizer {
 				int minPct, boolean onlyStart) {
 
 			List<List<Interval>> bpps = new ArrayList<List<Interval>>();
-			Set<String> propSet = new TreeSet<String>();
+			Set<Integer> propSet = new TreeSet<Integer>();
 			for (Instance instance : training) { 
 				if (test.indexOf(instance.id()) != -1) {
 					continue;
@@ -70,10 +70,10 @@ public enum Recognizer {
 				// compress the instance .
 				bpps.add(BPPFactory.compress(instance.intervals(), Interval.eff));
 				for (Interval interval : instance.intervals()) {
-					propSet.add(interval.name);
+					propSet.add(interval.keyId);
 				}
 			}
-			List<String> props = new ArrayList<String>(propSet);
+			List<Integer> props = new ArrayList<Integer>(propSet);
 			DirectedGraph<BPPNode, Edge> graph = FSMFactory.makeGraph(props, bpps, onlyStart);
 
 			FSMFactory.toDot(graph, "data/graph/tmp-" + key + ".dot");

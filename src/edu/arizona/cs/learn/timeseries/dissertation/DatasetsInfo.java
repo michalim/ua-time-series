@@ -45,11 +45,11 @@ public class DatasetsInfo {
 					int minStart = Integer.MAX_VALUE;
 					int maxEnd = 0;
 
-					Set<String> props = new HashSet<String>();
+					Set<Integer> props = new HashSet<Integer>();
 					for (Interval interval : instance.intervals()) {
 						minStart = Math.min(minStart, interval.start);
 						maxEnd = Math.max(maxEnd, interval.end);
-						props.add(interval.name);
+						props.add(interval.keyId);
 					}
 
 					propSize.addValue(props.size());

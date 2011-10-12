@@ -3,28 +3,31 @@ package edu.arizona.cs.learn.util.graph;
 import java.util.Set;
 import java.util.TreeSet;
 
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 
 public class Edge {
-	private Set<String> _props;
+	private Set<Integer> _props;
 	
 	private String _key;
 	private String _label;
 	private double _count;
 
-	public Edge(Set<String> props) {
-		_props = new TreeSet<String>(props);
+	public Edge(Set<Integer> props) {
+		_props = new TreeSet<Integer>(props);
 
 		StringBuffer buf = new StringBuffer();
 		StringBuffer key = new StringBuffer("[");
-		for (String s : this._props) {
+		for (Integer propId : _props) {
 			if (buf.length() > 0) {
 				buf.append("\\n");
 			}
 			if (key.length() > 1)
 				key.append(" ");
-			buf.append(s);
-			key.append(s);
+			
+			String prop = DataMap.getKey(propId);
+			buf.append(prop);
+			key.append(prop);
 		}
 		_label = buf.toString();
 		_key = (key.toString() + "]");
@@ -45,7 +48,7 @@ public class Edge {
 		_count = count;
 	}
 
-	public Set<String> props() {
+	public Set<Integer> props() {
 		return _props;
 	}
 

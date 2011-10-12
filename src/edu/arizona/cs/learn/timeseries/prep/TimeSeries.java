@@ -357,14 +357,14 @@ public class TimeSeries {
 				continue;
 			
 			if (!"NaN".equals(expected)) 
-				results.add(Interval.make("(" + key + " " + expected + ")", idx, i));
+				results.add(new Interval("(" + key + " " + expected + ")", idx, i));
 			
 			idx = i;
 			expected = symbolTS.get(i);
 		}
 		
 		if (!"NaN".equals(expected)) 
-			results.add(Interval.make("(" + key + " " + expected + ")", idx, symbolTS.size()));
+			results.add(new Interval("(" + key + " " + expected + ")", idx, symbolTS.size()));
 		
 		return results;
 	}
@@ -380,14 +380,14 @@ public class TimeSeries {
 				continue;
 
 			if (expected != false) 
-				results.add(Interval.make(key, idx, i));
+				results.add(new Interval(key, idx, i));
 			
 			idx = i;
 			expected = values.get(i);
 		}
 		
 		if (expected != false) 
-			results.add(Interval.make(key, idx, values.size()));
+			results.add(new Interval(key, idx, values.size()));
 		
 		return results;
 	}

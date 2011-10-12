@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.dom4j.Element;
 
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.XMLUtils;
 
 public class Binary extends Value {
@@ -22,8 +23,8 @@ public class Binary extends Value {
 	 * and -1 = unknown
 	 * @param value
 	 */
-	public Binary(String variableName, int value) { 
-		super(variableName);
+	public Binary(Integer variableId, int value) { 
+		super(variableId);
 		_uniqueValue = value;
 		
 		_values = new ArrayList<Integer>();
@@ -36,8 +37,8 @@ public class Binary extends Value {
 	 * @param uniqueValue
 	 * @param values
 	 */
-	private Binary(String variableName, Integer uniqueValue, List<Integer> values) { 
-		super(variableName);
+	private Binary(Integer variableId, Integer uniqueValue, List<Integer> values) { 
+		super(variableId);
 		_uniqueValue = uniqueValue;
 		_values = new ArrayList<Integer>(values);
 	}
@@ -84,7 +85,7 @@ public class Binary extends Value {
 
 	@Override
 	public Value copy() {
-		return new Binary(_variableName, _uniqueValue, _values);
+		return new Binary(_variableId, _uniqueValue, _values);
 	}
 	
 	@Override
@@ -111,7 +112,7 @@ public class Binary extends Value {
 	public void toXML(Element e) { 
 		e.addElement("value")
 			.addAttribute("class", Binary.class.getSimpleName())
-			.addAttribute("variable", _variableName)
+			.addAttribute("variable", DataMap.getKey(_variableId))
 			.addAttribute("value", _uniqueValue+"")
 			.addAttribute("values", XMLUtils.toString(_values));
 	}
@@ -126,6 +127,6 @@ public class Binary extends Value {
 		for (String tok : tokens) 
 			values.add(Integer.parseInt(tok));
 		
-		return new Binary(varName, value, values);
+		return new Binary(DataMap.findOrAdd(varName), value, values);
 	}
 }

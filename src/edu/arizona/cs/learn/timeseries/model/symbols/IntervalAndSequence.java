@@ -12,6 +12,7 @@ import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
 import edu.arizona.cs.learn.timeseries.model.Interval;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 
 /**
@@ -25,7 +26,7 @@ import edu.arizona.cs.learn.util.Utils;
 public class IntervalAndSequence extends Symbol {
     private static Logger logger = Logger.getLogger(IntervalAndSequence.class);
 
-    private String _proposition;
+    private int _propId;
 	
 	/** Although defined as a list of Symbols, each is expected to be an Allen relation */
 	private List<Symbol> _sequence;
@@ -39,7 +40,7 @@ public class IntervalAndSequence extends Symbol {
 	public IntervalAndSequence(List<Interval> intervals, int index) { 
 		super(1.0);
 		
-		_proposition = intervals.get(index).name;
+		_propId = intervals.get(index).keyId;
 		_sequence = new ArrayList<Symbol>();
 		
 		Interval interval = intervals.get(index);
@@ -49,7 +50,8 @@ public class IntervalAndSequence extends Symbol {
 			
 			Interval tmp = intervals.get(i);
 			if (!Utils.LIMIT_RELATIONS || interval.overlaps(tmp, Utils.WINDOW)) {
-				_sequence.add(new AllenRelation(AllenRelation.unordered(interval, tmp), interval, tmp, 1));
+				int relationId = DataMap.findOrAdd(AllenRelation.unordered(interval, tmp));
+				_sequence.add(new AllenRelation(relationId, interval, tmp, 1));
 			}
 
 		}
@@ -69,10 +71,10 @@ public class IntervalAndSequence extends Symbol {
 	 * @param sequence
 	 * @param weight
 	 */
-	public IntervalAndSequence(String proposition, List<Symbol> sequence, double weight) { 
+	public IntervalAndSequence(int propId, List<Symbol> sequence, double weight) { 
 		super(weight);
 		
-		_proposition = proposition;
+		_propId = propId;
 		_sequence = sequence;
 	}
 	
@@ -80,8 +82,8 @@ public class IntervalAndSequence extends Symbol {
 	 * Return the proposition associated with this IntervalAndSequence
 	 * @return
 	 */
-	public String proposition() { 
-		return _proposition;
+	public int proposition() { 
+		return _propId;
 	}
 	
 	/**
@@ -124,7 +126,7 @@ public class IntervalAndSequence extends Symbol {
 				seq.add(item2.copy());
 		}
 		
-		return new IntervalAndSequence(_proposition, seq, weight);
+		return new IntervalAndSequence(_propId, seq, weight);
 	}
 
 	@Override
@@ -138,7 +140,7 @@ public class IntervalAndSequence extends Symbol {
 		List<Symbol> seq = new ArrayList<Symbol>();
 		for (Symbol s : _sequence)
 			seq.add(s.copy());
-		return new IntervalAndSequence(_proposition, seq, _weight);
+		return new IntervalAndSequence(_propId, seq, _weight);
 	}
 	
 	@Override
@@ -157,13 +159,13 @@ public class IntervalAndSequence extends Symbol {
 			.addAttribute("class", "IntervalAndSequence");
 
 		ias.addAttribute("weight", _weight+"");
-		ias.addAttribute("proposition", _proposition);
+		ias.addAttribute("proposition", DataMap.getKey(_propId));
 		Element sequence = ias.addElement("sequence");
 		for (Symbol s : _sequence)
 			s.toXML(sequence);
 	}
 	
 	public String toString() { 
-		return _proposition + " " + _sequence;
+		return _propId + " " + _sequence;
 	}
 }

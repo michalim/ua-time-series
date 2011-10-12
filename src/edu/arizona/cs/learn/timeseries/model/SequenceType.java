@@ -11,6 +11,7 @@ import edu.arizona.cs.learn.timeseries.model.symbols.CBA;
 import edu.arizona.cs.learn.timeseries.model.symbols.Event;
 import edu.arizona.cs.learn.timeseries.model.symbols.IntervalAndSequence;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 
 public enum SequenceType {
@@ -59,15 +60,17 @@ public enum SequenceType {
 				Collections.sort(events, new Comparator<Interval>() {
 					@Override
 					public int compare(Interval o1, Interval o2) {
-						return o1.name.compareTo(o2.name);
+						String name1 = DataMap.getKey(o1.keyId);
+						String name2 = DataMap.getKey(o2.keyId);
+						return name1.compareTo(name2);
 					} 
 				});
 				
 				for (Interval interval : events) { 
 					if (interval.start == i ) 
-						sequence.add(new Event(interval.name+"_on", interval));
+						sequence.add(new Event(DataMap.getKey(interval.keyId)+"_on", interval));
 					if (interval.end == i) 
-						sequence.add(new Event(interval.name+"_off", interval));
+						sequence.add(new Event(DataMap.getKey(interval.keyId)+"_off", interval));
 				}
 			}
 			return sequence;
@@ -108,8 +111,8 @@ public enum SequenceType {
 					Interval i2 = intervals.get(j);
 					
 					if (!Utils.LIMIT_RELATIONS || i2.start - i1.end < Utils.WINDOW) { // or 5 for most things....
-						String relation = AllenRelation.get(i1, i2);
-						AllenRelation allen = new AllenRelation(relation, i1, i2);
+						int relationId = DataMap.findOrAdd(AllenRelation.get(i1, i2));
+						AllenRelation allen = new AllenRelation(relationId, i1, i2);
 						
 						tmp.add(new Data(allen, i1, i2, Math.min(i1.start,i2.start), Math.max(i1.end, i2.end)));
 					}
@@ -139,11 +142,16 @@ public enum SequenceType {
 					if (o1.i2.start < o2.i2.start)
 						return -1;
 					
-					int name1 = o1.i1.name.compareTo(o2.i1.name);
+					String i1Name1 = DataMap.getKey(o1.i1.keyId);
+					String i1Name2 = DataMap.getKey(o2.i1.keyId);
+
+					int name1 = i1Name1.compareTo(i1Name2);
 					if (name1 > 0 || name1 < 0)
 						return name1;
 
-					int name2 = o1.i2.name.compareTo(o2.i2.name);
+					String i2Name1 = DataMap.getKey(o1.i2.keyId);
+					String i2Name2 = DataMap.getKey(o2.i2.keyId);
+					int name2 = i2Name1.compareTo(i2Name2);
 					if (name2 > 0 || name2 < 0)
 						return name2;
 
@@ -178,7 +186,7 @@ public enum SequenceType {
 			List<Interval> shortList = new ArrayList<Interval>();
 			for (Interval orig : intervals) { 
 				int randomStart = Utils.random.nextInt(orig.end-orig.start);
-				shortList.add(Interval.make(orig.name, orig.start + randomStart, orig.start + randomStart+1));
+				shortList.add(new Interval(DataMap.getKey(orig.keyId), orig.start + randomStart, orig.start + randomStart+1));
 			}
 			
 			Collections.sort(shortList, Interval.starts);

@@ -3,17 +3,17 @@ package edu.arizona.cs.learn.timeseries.dissertation;
 import java.util.List;
 import java.util.Map;
 
-import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.timeseries.model.Instance;
-import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.timeseries.model.symbols.Event;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.visualization.TableFactory;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 
 public class SignatureExample {
@@ -157,7 +157,7 @@ public class SignatureExample {
 					System.out.print("$-$ & ");
 				} else {
 					Event event = (Event) left;
-					name = ((Interval) event.getIntervals().get(0)).name;
+					name = DataMap.getKey(event.getIntervals().get(0).keyId);
 					System.out.print("\\prop{" + name + "} & ");
 				}
 
@@ -165,7 +165,7 @@ public class SignatureExample {
 					System.out.print("$-$ & ");
 				} else {
 					Event event = (Event) right;
-					name = ((Interval) event.getIntervals().get(0)).name;
+					name = DataMap.getKey(event.getIntervals().get(0).keyId);
 					System.out.print("\\prop{" + name + "} & ");
 				}
 

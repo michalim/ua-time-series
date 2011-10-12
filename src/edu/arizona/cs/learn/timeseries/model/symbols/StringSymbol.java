@@ -7,7 +7,7 @@ import org.dom4j.Element;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 
 public class StringSymbol extends Symbol {
-	private String _name;
+	protected String _name;
 
 	public StringSymbol() {
 		this("", 1.0);
@@ -27,10 +27,6 @@ public class StringSymbol extends Symbol {
 		_name = name;
 	}
 
-	public String getKey() {
-		return _name;
-	}
-	
 	public boolean equals(Object o) {
 		if (!(o instanceof StringSymbol)) {
 			return false;
@@ -47,7 +43,11 @@ public class StringSymbol extends Symbol {
 		throw new RuntimeException("Latex is not defined for base class Symbol");
 	}
 
-	public List<String> getProps() {
+	/**
+	 * This returns a list of the id's for the propositions participating in this symbol.
+	 * @return
+	 */
+	public List<Integer> getProps() {
 		throw new RuntimeException("No propositions associated with a base class Symbol");
 	}
 

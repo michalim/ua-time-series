@@ -1,12 +1,13 @@
 package edu.arizona.cs.learn.timeseries.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
+
+import edu.arizona.cs.learn.util.DataMap;
 
 public class Interval {
 	private static Logger logger = Logger.getLogger(Interval.class);
@@ -14,21 +15,42 @@ public class Interval {
 	/** This is the file that this episode came from */
 	public String file;
 
-	public String name;
+	/** The keyId is a unique number that maps to a proposition */
+	public int keyId;
+	
 	public int episode;
 
 	public int start;
 	public int end;
-
-	public static Interval make(String name, int s, int e) {
-		Interval i = new Interval();
-		i.name = name;
-		i.start = s;
-		i.end = e;
-		i.episode = -1;
-		return i;
+	
+	/**
+	 * Constructor to make a new interval.
+	 * @param propId
+	 * @param s
+	 * @param e
+	 */
+	public Interval(int propId, int s, int e) { 
+		this.keyId = propId;
+		this.start = s;
+		this.end = e;
+		this.episode = -1;
+		
 	}
-
+	
+	/**
+	 * Constructor to make a new interval. The proposition
+	 * name is given as a string and converted into an integer.
+	 * @param prop
+	 * @param s
+	 * @param e
+	 */
+	public Interval(String prop, int s, int e) {
+		this.keyId = DataMap.findOrAdd(prop);
+		this.start = s;
+		this.end = e;
+		this.episode = -1;
+	}
+	
 	public boolean on(int time) {
 		return time >= start && time < end;
 	}
@@ -58,20 +80,18 @@ public class Interval {
 		return true;
 	}
 
+	/**
+	 * Returns the full string representation of this interval...
+	 * TODO: Might want to use the keyId since it is a more compact representation.
+	 */
 	public String toString() {
-		return file + " " + episode + " " + name + " " + start + " " + end;
+		return file + " " + episode + " " + DataMap.getKey(keyId) + " " + start + " " + end;
 	}
-
-//	public boolean equals(Object o) {
-//		if (!(o instanceof Interval))
-//			return false;
-//		return name.equals(((Interval) o).name);
-//	}
 
 	public void toXML(Element e) {
 		e.addElement("Interval").addAttribute("file", this.file)
 				.addAttribute("episode", this.episode + "")
-				.addAttribute("name", this.name)
+				.addAttribute("name", DataMap.getKey(this.keyId))
 				.addAttribute("start", this.start + "")
 				.addAttribute("end", this.end + "");
 	}
@@ -83,7 +103,7 @@ public class Interval {
 		int start = Integer.parseInt(e.attributeValue("start"));
 		int end = Integer.parseInt(e.attributeValue("end"));
 
-		Interval i = make(name, start, end);
+		Interval i = new Interval(name, start, end);
 		i.episode = episode;
 		i.file = file;
 		return i;
@@ -93,19 +113,15 @@ public class Interval {
 		String[] args = s.split("[ ]");
 		file = args[0];
 		episode = Integer.parseInt(args[1]);
-		name = args[2];
+		keyId = DataMap.findOrAdd(args[2]);
 		start = Integer.parseInt(args[3]);
 		end = Integer.parseInt(args[4]);
 	}
 
 	public Interval copy() {
-		Interval i = new Interval();
-		i.file = file;
-		i.name = name;
+		Interval i = new Interval(keyId, start, end);
 		i.episode = episode;
-		i.start = start;
-		i.end = end;
-
+		i.file = file;
 		return i;
 	}
 
@@ -139,7 +155,7 @@ public class Interval {
 		for (int i = 0; i < stream.length; ++i) {
 			if (stream[i] != expected) {
 				if (expected) {
-					list.add(make(key, startPos, i));
+					list.add(new Interval(key, startPos, i));
 				}
 				expected = !expected;
 				startPos = i;
@@ -147,7 +163,7 @@ public class Interval {
 		}
 
 		if (expected && startPos < stream.length) {
-			list.add(make(key, startPos, stream.length));
+			list.add(new Interval(key, startPos, stream.length));
 		}
 
 		return list;
@@ -168,7 +184,7 @@ public class Interval {
 		for (int i = 0; i < stream.size(); ++i) {
 			if (stream.get(i) != expected) {
 				if (expected) {
-					list.add(make(key, startPos, i));
+					list.add(new Interval(key, startPos, i));
 				}
 				expected = !expected;
 				startPos = i;
@@ -176,7 +192,7 @@ public class Interval {
 		}
 
 		if (expected && startPos < stream.size()) {
-			list.add(make(key, startPos, stream.size()));
+			list.add(new Interval(key, startPos, stream.size()));
 		}
 
 		return list;

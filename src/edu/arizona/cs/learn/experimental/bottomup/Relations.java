@@ -8,6 +8,7 @@ import java.util.Map;
 
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 
 public class Relations {
@@ -23,14 +24,14 @@ public class Relations {
 				
 				if (!Utils.LIMIT_RELATIONS || i2.start - i1.end < Utils.WINDOW) { // or 5 for most things....
 					String relation = AllenRelation.get(i1, i2);
-					AllenRelation allen = new AllenRelation(relation, i1, i2);
+					AllenRelation allen = new AllenRelation(DataMap.findOrAdd(relation), i1, i2);
 					
-					Integer count = map.get(allen.getKey());
+					Integer count = map.get(allen.toString());
 					if (count == null) {
 						count = 0;
 					}
 					
-					map.put(allen.getKey(), count+=1);
+					map.put(allen.toString(), count+=1);
 				}
 			}
 		}
@@ -54,7 +55,7 @@ public class Relations {
 				
 				if (!Utils.LIMIT_RELATIONS || i2.start - i1.end < Utils.WINDOW) { // or 5 for most things....
 					String relation = AllenRelation.get(i1, i2);
-					AllenRelation allen = new AllenRelation(relation, i1, i2);
+					AllenRelation allen = new AllenRelation(DataMap.findOrAdd(relation), i1, i2);
 					
 					Integer count = map.get(allen);
 					if (count == null)

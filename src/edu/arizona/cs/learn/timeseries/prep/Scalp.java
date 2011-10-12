@@ -11,6 +11,7 @@ import java.util.Map;
 
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.prep.Scalp.Variable;
+import edu.arizona.cs.learn.util.DataMap;
 
 public class Scalp {
 	
@@ -93,7 +94,7 @@ public class Scalp {
 			out.write(" (\n");
 			
 			for (Interval interval : intervals)
-				out.write("  (\"" + interval.name + "\" " + interval.start + " " + interval.end + ")\n");
+				out.write("  (\"" + DataMap.getKey(interval.keyId) + "\" " + interval.start + " " + interval.end + ")\n");
 			
 			out.write(" )\n");
 			out.write(")\n");

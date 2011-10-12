@@ -94,7 +94,7 @@ public class FSMConverter {
 	 */
 	private static DirectedGraph<BPPNode, Edge> constructDFA(
 			Set<BPPNode> startSet, Map<Set<BPPNode>, Boolean> statesSets,
-			Map<Set<BPPNode>, SetMultimap<Set<String>, BPPNode>> transitions) {
+			Map<Set<BPPNode>, SetMultimap<Set<Integer>, BPPNode>> transitions) {
 		
 		DirectedGraph<BPPNode, Edge> dfa = new DirectedSparseGraph<BPPNode, Edge>();
 		Map<Set<BPPNode>, BPPNode> statesTable = new HashMap<Set<BPPNode>, BPPNode>();
@@ -114,8 +114,8 @@ public class FSMConverter {
 		// Add edges
 		for (Set<BPPNode> fromSet : transitions.keySet()) {
 			BPPNode fromNode = statesTable.get(fromSet);
-			SetMultimap<Set<String>, BPPNode> outEdges = transitions.get(fromSet);
-			for (Set<String> props : outEdges.keySet()) {
+			SetMultimap<Set<Integer>, BPPNode> outEdges = transitions.get(fromSet);
+			for (Set<Integer> props : outEdges.keySet()) {
 				Set<BPPNode> destSet = outEdges.get(props);
 				BPPNode destNode = statesTable.get(destSet);
 				Edge e = new Edge(props);
@@ -156,8 +156,8 @@ public class FSMConverter {
 		// Initialize new set of DFA states
 		Stack<Set<BPPNode>> unmarkedStates = new Stack<Set<BPPNode>>();
 		Set<Set<BPPNode>> markedStates = new HashSet<Set<BPPNode>>();
-		Map<Set<BPPNode>, SetMultimap<Set<String>, BPPNode>> transitions = 
-			new HashMap<Set<BPPNode>, SetMultimap<Set<String>, BPPNode>>();
+		Map<Set<BPPNode>, SetMultimap<Set<Integer>, BPPNode>> transitions = 
+			new HashMap<Set<BPPNode>, SetMultimap<Set<Integer>, BPPNode>>();
 		
 		// Create new DFA start state from the epsilon-closure set of the
 		// NFA's start state.
@@ -175,7 +175,7 @@ public class FSMConverter {
 						
 			// For each transition symbol, find the set of states in the NFA
 			// that we can transition to.
-			HashMultimap<Set<String>, BPPNode> outEdges = HashMultimap.create();
+			HashMultimap<Set<Integer>, BPPNode> outEdges = HashMultimap.create();
 			for (BPPNode node : state) {
 				for (Edge e : nfa.getOutEdges(node)) {
 					Set<BPPNode> dest = epsilonClosure(nfa, nfa.getDest(e));
@@ -190,7 +190,7 @@ public class FSMConverter {
 			// For each transition symbol, if the set of states what we
 			// can transition to is not already added to the DFA, then add
 			// it as an 'unmarked' state.
-			for (Set<String> symbol : outEdges.keySet()) {
+			for (Set<Integer> symbol : outEdges.keySet()) {
 				Set<BPPNode> newState = outEdges.get(symbol);
 				if (!markedStates.contains(newState)) {
 					unmarkedStates.push(newState);

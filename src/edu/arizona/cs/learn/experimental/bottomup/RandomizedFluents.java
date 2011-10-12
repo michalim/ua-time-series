@@ -15,6 +15,7 @@ import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.Utils;
 
 public class RandomizedFluents {
@@ -44,15 +45,15 @@ public class RandomizedFluents {
 		for (Integer key : eMap.keySet()) { 
 
 			double maxTime = 0;
-			Map<String,List<Interval>> propMap = new HashMap<String,List<Interval>>();
+			Map<Integer,List<Interval>> propMap = new HashMap<Integer,List<Interval>>();
 
 			for (Interval interval : eMap.get(key)) { 
 				maxTime = Math.max(maxTime, interval.end);
 
-				List<Interval> examples = propMap.get(interval.name);
+				List<Interval> examples = propMap.get(interval.keyId);
 				if (examples == null) { 
 					examples = new ArrayList<Interval>();
-					propMap.put(interval.name, examples);
+					propMap.put(interval.keyId, examples);
 				}
 				examples.add(interval);
 			}
@@ -62,11 +63,11 @@ public class RandomizedFluents {
 			// list of propositions... therefore we can begin to make ..
 			// on off lists.
 			List<Variable> varList = new ArrayList<Variable>();
-			for (String propName : propMap.keySet()) { 
-				List<Interval> list = propMap.get(propName);
+			for (Integer propId : propMap.keySet()) { 
+				List<Interval> list = propMap.get(propId);
 				Collections.sort(list, Interval.starts);
 				
-				Variable v = new Variable(propName);
+				Variable v = new Variable(propId);
 				
 				int last = 0;
 				for (Interval interval : list) {
@@ -99,13 +100,13 @@ public class RandomizedFluents {
 	public void shuffle() { 
 		// Task 1: shuffle the variables into random episodes
 		//   Subtask 1: Organize variables by proposition name
-		Map<String,List<Variable>> propMap = new HashMap<String,List<Variable>>();
+		Map<Integer,List<Variable>> propMap = new HashMap<Integer,List<Variable>>();
 		for (List<Variable> list : _vMap.values()) { 
 			for (Variable v : list) {
-				List<Variable> dest = propMap.get(v.prop);
+				List<Variable> dest = propMap.get(v.propId);
 				if (dest == null) {
 					dest = new ArrayList<Variable>();
-					propMap.put(v.prop, dest);
+					propMap.put(v.propId, dest);
 				}
 				dest.add(v);
 			}
@@ -186,7 +187,7 @@ public class RandomizedFluents {
 				if (!offList) { 
 					double ratio = on.remove(0);
 					int length = Math.max(1, (int) Math.round(ratio * maxTime));
-					intervals.add(Interval.make(v.prop, currentTime, currentTime+length));
+					intervals.add(new Interval(v.propId, currentTime, currentTime+length));
 					currentTime += length;
 					offList = true;
 				}
@@ -225,7 +226,9 @@ public class RandomizedFluents {
 				
 				if (!Utils.LIMIT_RELATIONS || i2.start - i1.end < Utils.WINDOW) { // or 5 for most things....
 					String relation = AllenRelation.get(i1, i2);
-					AllenRelation allen = new AllenRelation(relation, i1, i2);
+					
+					
+					AllenRelation allen = new AllenRelation(DataMap.findOrAdd(relation), i1, i2);
 					
 					Integer count = map.get(allen);
 					if (count == null)
@@ -261,7 +264,7 @@ public class RandomizedFluents {
 				if (retValue != 0)
 					return retValue*-1;
 				
-				return o1.relation.getKey().compareTo(o2.relation.getKey());
+				return o1.relation.compareTo(o2.relation);
 			} 
 			
 		});
@@ -295,7 +298,7 @@ public class RandomizedFluents {
 }
 
 class Variable { 
-	public String prop;
+	public Integer propId;
 	
 	// onList and offList will store all
 	// of the percentages that this proposition
@@ -303,8 +306,8 @@ class Variable {
 	public List<Double> onList;
 	public List<Double> offList;
 	
-	public Variable(String prop) { 
-		this.prop = prop;
+	public Variable(Integer propId) { 
+		this.propId = propId;
 		
 		onList = new ArrayList<Double>();
 		offList = new ArrayList<Double>();

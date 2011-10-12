@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.algorithm.recognition.BPPNode;
 import edu.arizona.cs.learn.timeseries.model.Interval;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.graph.Edge;
 import edu.uci.ics.jung.graph.DirectedGraph;
 
@@ -27,7 +28,7 @@ public class BPPFactory {
     		max = Math.max(max, interval.end);
     	
     	for (Interval interval : bpp) { 
-    		buf.append("[" + interval.name + " ");
+    		buf.append("[" + interval.keyId + " ");
     		
     		for (int i = 0; i < interval.start; ++i)  
     			buf.append('0');
@@ -52,11 +53,11 @@ public class BPPFactory {
 		 // this class stores some local information about the bit pattern
 		 // so that we can link pairs of stuff together.
 		class Data { 
-			public String prop;
+			public Integer prop;
 			public List<Boolean> stream;
 			public List<Interval> intervals;
 			
-			public Data(String prop) {
+			public Data(Integer prop) {
 				this.prop = prop;
 				this.stream = new ArrayList<Boolean>();
 				this.intervals = new ArrayList<Interval>();
@@ -77,12 +78,12 @@ public class BPPFactory {
 		
 		int minTime = Integer.MAX_VALUE;
 		int maxTime = 0;
-		Map<String,Data> propMap = new TreeMap<String,Data>();
+		Map<Integer,Data> propMap = new TreeMap<Integer,Data>();
 		for (Interval i : intervals) { 
-			Data d = propMap.get(i.name);
+			Data d = propMap.get(i.keyId);
 			if (d == null) { 
-				d = new Data(i.name);
-				propMap.put(i.name, d);
+				d = new Data(i.keyId);
+				propMap.put(i.keyId, d);
 			}
 			d.add(i);
 
@@ -132,11 +133,11 @@ public class BPPFactory {
 		// we now have a relation between the intervals that should be small.
 		// Now we have to convert it to a set of intervals.
 		List<Interval> results = new ArrayList<Interval>();
-		for (Map.Entry<String,Data> e : propMap.entrySet()) { 
+		for (Map.Entry<Integer,Data> e : propMap.entrySet()) { 
 			int startPos = 0;
 			boolean expected = false;
 
-			String prop = e.getKey();
+			Integer prop = e.getKey();
 			Data d = e.getValue();
 			
 			for (int i = 0; i < d.stream.size(); ++i) { 
@@ -144,7 +145,7 @@ public class BPPFactory {
 				if (on != expected) { 
 					// if we have just turned off.
 					if (expected)  
-						results.add(Interval.make(prop, startPos, i));
+						results.add(new Interval(prop, startPos, i));
 
 					expected = on;
 					startPos = i;
@@ -152,7 +153,7 @@ public class BPPFactory {
 			}
 			
 			if (startPos < d.stream.size() && expected) { 
-				results.add(Interval.make(prop, startPos, d.stream.size()));
+				results.add(new Interval(prop, startPos, d.stream.size()));
 			}
 		}
 
@@ -181,32 +182,28 @@ public class BPPFactory {
 	 * @param intervals
 	 * @return
 	 */
-	public static char[][] timeLine(List<String> props, List<Interval> intervals) { 
-		int tmpSize = 0;
+	public static char[][] timeLine(List<Integer> props, List<Interval> intervals) { 
 		int endTime = 0;
 		int startTime = Integer.MAX_VALUE;
-		Map<String,List<Interval>> propMap = new TreeMap<String,List<Interval>>();
+		Map<Integer,List<Interval>> propMap = new TreeMap<Integer,List<Interval>>();
 		for (Interval i : intervals) { 
-			List<Interval> propIntervals = propMap.get(i.name);
+			List<Interval> propIntervals = propMap.get(i.keyId);
 			if (propIntervals == null) { 
 				propIntervals = new ArrayList<Interval>();
-				propMap.put(i.name, propIntervals);
+				propMap.put(i.keyId, propIntervals);
 			}
 			
 			propIntervals.add(i);
 			startTime = Math.min(i.start, startTime);
 			endTime = Math.max(i.end, endTime);
-			
-			tmpSize = Math.max(tmpSize, i.name.length());
 		}
-		tmpSize += 1;
 
 		int time = (endTime - startTime);
 
 		char[][] timeLine = new char[props.size()][time];
 		// march forward through time determining the current state
 		for (int i = 0; i < props.size(); ++i) { 
-			String prop = props.get(i);
+			Integer prop = props.get(i);
 			for (int j = 0; j < time; ++j) { 
 				timeLine[i][j] = '0';
 			}
@@ -271,7 +268,7 @@ public class BPPFactory {
 	 * @return
 	 */
 	public static DirectedGraph<BPPNode,Edge> graph(DirectedGraph<BPPNode,Edge> graph, Map<String,BPPNode> vertices, 
-												    String acceptingState, List<String> propList, List<List<Interval>> instances) { 
+												    String acceptingState, List<Integer> propList, List<List<Interval>> instances) { 
 		throw new RuntimeException("Revisit this in once we learn more");
 	}
 
@@ -296,13 +293,13 @@ public class BPPFactory {
 	
 	public static void bppTest1() {
 		List<Interval> intervals = new ArrayList<Interval>();
-		intervals.add(Interval.make("a", 0, 10));
-		intervals.add(Interval.make("b", 20, 25));
-		intervals.add(Interval.make("c", 22, 24));
+		intervals.add(new Interval("a", 0, 10));
+		intervals.add(new Interval("b", 20, 25));
+		intervals.add(new Interval("c", 22, 24));
 		
 		List<Interval> bpp = compress(intervals, Interval.eff);
 		System.out.println(bpp);
 		
-		char[][] timeLine = timeLine(Arrays.asList("a","b","c"), bpp);
+		char[][] timeLine = timeLine(Arrays.asList(DataMap.findOrAdd("a"),DataMap.findOrAdd("b"),DataMap.findOrAdd("c")), bpp);
 	}
 }
