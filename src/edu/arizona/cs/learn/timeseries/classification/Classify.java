@@ -36,6 +36,11 @@ public enum Classify {
 		public Classifier getClassifier(ClassifyParams params) {
 			return new CAVEClassifier(params);
 		}
+	},
+	proportion { 
+		public Classifier getClassifier(ClassifyParams params) {
+			return new ProportionClassifier(params);
+		}
 	};
 
 	public abstract Classifier getClassifier(ClassifyParams params);

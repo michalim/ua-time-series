@@ -29,7 +29,7 @@ public class ClassifyCallable implements Callable<ClassifyCallable> {
 	}
 	
 	public String actual() { 
-		return _testInstance.name();
+		return _testInstance.label();
 	}
 	
 	public Long duration() { 

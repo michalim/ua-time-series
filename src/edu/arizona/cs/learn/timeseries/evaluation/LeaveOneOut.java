@@ -53,14 +53,14 @@ public class LeaveOneOut extends ClassificationTest {
 			}
 
 			Instance testInstance = allInstances.get(i);
-			test.get(testInstance.name()).add(testInstance);
+			test.get(testInstance.label()).add(testInstance);
 			
 			for (int j = 0; j < allInstances.size(); ++j) { 
 				if (i == j)
 					continue;
 				
 				Instance trainInstance = allInstances.get(j);
-				train.get(trainInstance.name()).add(trainInstance);
+				train.get(trainInstance.label()).add(trainInstance);
 			}
 			
 			foldStats.add(runBatch(i, c, classNames, train, test));

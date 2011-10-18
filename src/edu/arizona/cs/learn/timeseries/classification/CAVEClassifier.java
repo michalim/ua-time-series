@@ -152,8 +152,4 @@ public class CAVEClassifier extends Classifier {
 		execute.shutdown();
 		return timing;
 	}
-	
-	public Map<String,Long> train(Map<String,List<Instance>> training) {
-		throw new RuntimeException("Not yet implemented!!");
-	}
 }

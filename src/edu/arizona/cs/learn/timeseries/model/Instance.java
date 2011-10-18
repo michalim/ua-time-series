@@ -51,7 +51,7 @@ public class Instance implements Clusterable<Instance> {
 		_stringId = stringId;
 	}
 	
-	public String name() {
+	public String label() {
 		return _label;
 	}
 

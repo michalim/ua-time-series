@@ -1,17 +1,26 @@
 package edu.arizona.cs.learn.timeseries.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.timeseries.model.symbols.CBA;
 import edu.arizona.cs.learn.timeseries.model.symbols.Event;
 import edu.arizona.cs.learn.timeseries.model.symbols.IntervalAndSequence;
+import edu.arizona.cs.learn.timeseries.model.symbols.ProportionSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.util.DataMap;
+import edu.arizona.cs.learn.util.MathUtils;
 import edu.arizona.cs.learn.util.Utils;
 
 public enum SequenceType {
@@ -185,7 +194,7 @@ public enum SequenceType {
 		public List<Symbol> getSequence(List<Interval> intervals) {
 			List<Interval> shortList = new ArrayList<Interval>();
 			for (Interval orig : intervals) { 
-				int randomStart = Utils.random.nextInt(orig.end-orig.start);
+				int randomStart = MathUtils.random.nextInt(orig.end-orig.start);
 				shortList.add(new Interval(DataMap.getKey(orig.keyId), orig.start + randomStart, orig.start + randomStart+1));
 			}
 			
@@ -297,9 +306,57 @@ public enum SequenceType {
 		public int getSequenceSize(List<Interval> intervals) {
 			return intervals.size();
 		} 
-	};
+	},
+	proportionOn {
+		@Override
+		public List<Symbol> getSequence(List<Interval> intervals) {
+			// TODO Auto-generated method stub
+			Multimap<Integer,Integer> onMap = ArrayListMultimap.create();
+			int minTime = Integer.MAX_VALUE;
+			int maxTime = Integer.MIN_VALUE;
+			
+			for (Interval interval : intervals) { 
+				onMap.put(interval.keyId, interval.end-interval.start);
+				minTime = Math.min(minTime, interval.start);
+				maxTime = Math.max(maxTime, interval.end);
+			}
+			
+			List<Symbol> sequence = new ArrayList<Symbol>();
+			for (Integer key : onMap.keySet()) { 
+				int timeOn = 0;
+				for (Integer i : onMap.get(key))
+					timeOn += i;
+				sequence.add(new ProportionSymbol(key, timeOn, maxTime-minTime));
+			}
+			return sequence;
+		}
 
+		@Override
+		public int getSequenceSize(List<Interval> intervals) {
+			// The size of this sequence will be the number of 
+			// different propositions in the intervals...
+			Set<Integer> propSet = new HashSet<Integer>();
+			for (Interval interval : intervals)
+				propSet.add(interval.keyId);
+			return propSet.size();
+		}
+		
+	};
+	
+	
+	/**
+	 * Get the Sequence for the given intervals.
+	 * @param intervals
+	 * @return
+	 */
 	public abstract List<Symbol> getSequence(List<Interval> intervals);
+	
+	/**
+	 * Don't actually compute the whole sequence, but return 
+	 * what the size would be if we generated the sequence.
+	 * @param intervals
+	 * @return
+	 */
 	public abstract int getSequenceSize(List<Interval> intervals);
 
 	public static List<SequenceType> get(String option) {
@@ -326,7 +383,7 @@ public enum SequenceType {
 	 * @param list
 	 * @return
 	 */
-	public static List<Symbol> propSequence(List<Interval> list) { 
+	private static List<Symbol> propSequence(List<Interval> list) { 
 		List<Symbol> results = new ArrayList<Symbol>();
 		for (int i = 0; i < list.size(); ++i) { 
 			Interval i1 = list.get(i);

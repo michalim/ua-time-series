@@ -25,7 +25,7 @@ public class RecognizeCallable implements Callable<RecognizeCallable> {
 	private Map<String, List<Double>> _depthRatios;
 	
 	public RecognizeCallable(Map<String,FSMRecognizer> recognizers, Instance test) {
-		this(new ArrayList<FSMRecognizer>(recognizers.values()), test.id(), test.name(), test.intervals());
+		this(new ArrayList<FSMRecognizer>(recognizers.values()), test.id(), test.label(), test.intervals());
 	}
 	
 	public RecognizeCallable(List<FSMRecognizer> recognizers, int testId, String testName, List<Interval> test) {

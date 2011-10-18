@@ -95,7 +95,7 @@ public class AgglomerativeNode {
 	public String label() { 
 		if (!_isLeaf)
 			throw new RuntimeException("label() only valid for leaf nodes");
-		return _instance.name() + "-" + _instance.id();
+		return _instance.label() + "-" + _instance.id();
 	}
 	
 	/**

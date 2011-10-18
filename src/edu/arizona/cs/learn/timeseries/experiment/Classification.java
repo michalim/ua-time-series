@@ -159,54 +159,65 @@ public class Classification {
 	}
 	
 	public static void main(String[] args) throws Exception { 
-//		Map<String,String> map = new HashMap<String,String>();
-//		for (String character : Utils.alphabet) { 
-//			map.put(character, "data/raw-data/handwriting/wes/xml/" + character + ".xml");
-//		}
-//		
-//		Map<String,List<Instance>> data = new HashMap<String,List<Instance>>();
-//		for (String key : map.keySet()) { 
-//			data.put(key, XMLUtils.loadXML(map.get(key)));
-//		}
-//		
-//		performance(data);
-		
-//		lispPerformance(Utils.load("wes-pen", SequenceType.allen));
-		
-		
-		String prefix = "derek-pen";
-		
-		Utils.LIMIT_RELATIONS = true;
-		Utils.WINDOW = 10;
-		
 		ClassifyParams rParams = new ClassifyParams();
 		rParams.prunePct = 0.5;
 		rParams.incPrune = true;
-		rParams.type = SequenceType.tree;
-		rParams.similarity = Similarity.alignment;
+		rParams.type = SequenceType.allen;
 		Classifier c1 = Classify.prune.getClassifier(rParams);
-		performance(Utils.load(prefix, SequenceType.tree), c1, "logs/tree.csv");
-		
-		ClassifyParams oParams = new ClassifyParams();
-		oParams.prunePct = 0.5;
-		oParams.incPrune = true;
-		oParams.similarity = Similarity.strings;
-		Classifier c2 = Classify.prune.getClassifier(oParams);
-		performance(Utils.load(prefix, SequenceType.allen), c2, "logs/allen.csv");
-		
-		
-		
-//		List<String> activities = Utils.getActivityNames("ww3d");
-//		for (String s : activities) { 
-//			map.put(s, "data/input/" + s + ".lisp");
-//		}
-//		
-//		performance(Utils.convert(map));
-		
-//		performance("ww3d");
-//		learningCurve("ww3d");
-//		learningCurve("ww2d");
+		performance(Utils.load("/tmp/niall-5407/", "niall", SequenceType.allen), c1, "logs/proportion.csv");
+//		performance(Utils.load("global-ww2d", SequenceType.proportionOn), c1, "logs/proportion.csv");	
+//		performance(Utils.load("global-internal", SequenceType.proportionOn), c1, "logs/proportion.csv");	
 	}
+	
+//	public static void main(String[] args) throws Exception { 
+////		Map<String,String> map = new HashMap<String,String>();
+////		for (String character : Utils.alphabet) { 
+////			map.put(character, "data/raw-data/handwriting/wes/xml/" + character + ".xml");
+////		}
+////		
+////		Map<String,List<Instance>> data = new HashMap<String,List<Instance>>();
+////		for (String key : map.keySet()) { 
+////			data.put(key, XMLUtils.loadXML(map.get(key)));
+////		}
+////		
+////		performance(data);
+//		
+////		lispPerformance(Utils.load("wes-pen", SequenceType.allen));
+//		
+//		
+//		String prefix = "derek-pen";
+//		
+//		Utils.LIMIT_RELATIONS = true;
+//		Utils.WINDOW = 10;
+//		
+//		ClassifyParams rParams = new ClassifyParams();
+//		rParams.prunePct = 0.5;
+//		rParams.incPrune = true;
+//		rParams.type = SequenceType.tree;
+//		rParams.similarity = Similarity.alignment;
+//		Classifier c1 = Classify.prune.getClassifier(rParams);
+//		performance(Utils.load(prefix, SequenceType.tree), c1, "logs/tree.csv");
+//		
+//		ClassifyParams oParams = new ClassifyParams();
+//		oParams.prunePct = 0.5;
+//		oParams.incPrune = true;
+//		oParams.similarity = Similarity.strings;
+//		Classifier c2 = Classify.prune.getClassifier(oParams);
+//		performance(Utils.load(prefix, SequenceType.allen), c2, "logs/allen.csv");
+//		
+//		
+//		
+////		List<String> activities = Utils.getActivityNames("ww3d");
+////		for (String s : activities) { 
+////			map.put(s, "data/input/" + s + ".lisp");
+////		}
+////		
+////		performance(Utils.convert(map));
+//		
+////		performance("ww3d");
+////		learningCurve("ww3d");
+////		learningCurve("ww2d");
+//	}
 	
 	public static void ida() { 
 		// IDA 2011 Experiments are done using this bit of code

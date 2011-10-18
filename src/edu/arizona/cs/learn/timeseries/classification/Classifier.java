@@ -12,12 +12,31 @@ public abstract class Classifier {
 		_params = params;
 	}
 	
+	/**
+	 * Return the name of this classifier.
+	 * @return
+	 */
 	public abstract String getName();
+	
+	/**
+	 * Train is called on each classifier once during each batch of
+	 * test we perform.  We give the batchId so that, if necessary,
+	 * the system can load precomputed results for that batch in the
+	 * event that training is incredibly slow.
+	 * @param batchId
+	 * @param trainingSet
+	 * @return
+	 * 	We return the amount of time it took to perform training in a map 
+	 *  with the key being the class name.
+	 */
+	public abstract Map<String,Long> train(int batchId, Map<String,List<Instance>> trainingSet);
+	
 
-	// return the amount of time it took to performing training
-	// organized by class name.
-	public abstract Map<String,Long> train(int fold, Map<String,List<Instance>> training);
-	public abstract Map<String,Long> train(Map<String,List<Instance>> training);
-
+	/**
+	 * Called when we want to test an unlabeled instance
+	 * @param testInstance
+	 * @return
+	 * 	  the classifier assigned class name for this instance.
+	 */
 	public abstract String test(Instance testInstance);
 }

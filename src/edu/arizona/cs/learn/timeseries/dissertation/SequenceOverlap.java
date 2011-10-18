@@ -37,7 +37,7 @@ public class SequenceOverlap {
 						value = "internal";
 					}
 					for (Instance i2 : map.get(classes.get(j))) {
-						out.write(i1.name() + "," + i1.id() + "," + i2.name()
+						out.write(i1.label() + "," + i1.id() + "," + i2.label()
 								+ "," + i2.id() + "," + value + ","
 								+ overlap(i1, i2) + "\n");
 					}

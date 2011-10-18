@@ -60,10 +60,10 @@ public class Ordering {
 				if (testSet.contains(instance.id()))
 					_testing.add(instance);
 				else { 
-					List<Instance> list = _training.get(instance.name());
+					List<Instance> list = _training.get(instance.label());
 					if (list == null) { 
 						list = new ArrayList<Instance>();
-						_training.put(instance.name(), list);
+						_training.put(instance.label(), list);
 					}
 					list.add(instance);
 				}

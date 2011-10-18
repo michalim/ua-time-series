@@ -10,10 +10,9 @@ import java.util.Map;
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.algorithm.alignment.Normalize;
 import edu.arizona.cs.learn.algorithm.alignment.Params;
-import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
+import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 
 public class NearestNeighbor extends Classifier {
@@ -27,9 +26,6 @@ public class NearestNeighbor extends Classifier {
 
 	public String getName() {
 		return "knn";
-	}
-
-	public void addData(BatchStatistics fold) {
 	}
 
 	public String test(Instance instance) {
@@ -69,7 +65,7 @@ public class NearestNeighbor extends Classifier {
 		Map<String,Double> map = new HashMap<String,Double>();
 		for (int i = 0; (i < distanceList.size()) && (i < _params.k); i++) {
 			Distance distance = (Distance) distanceList.get(i);
-			String name = distance.instance.name();
+			String name = distance.instance.label();
 
 			double inc = 1.0D;
 			if (_params.weighted) 
@@ -90,23 +86,12 @@ public class NearestNeighbor extends Classifier {
 		return maxClass;
 	}
 
-	public Map<String,Long> train(int x, Map<String,List<Instance>> training) {
+	public Map<String,Long> train(int batchId, Map<String,List<Instance>> trainingSet) {
 		_trainingData = new ArrayList<Instance>();
 
 		Map<String,Long> timing = new HashMap<String,Long>();
-		for (String key : training.keySet()) {
-			_trainingData.addAll(training.get(key));
-			timing.put(key, 0L);
-		}
-		return timing;
-	}
-
-	public Map<String,Long> train(Map<String,List<Instance>> training) {
-		_trainingData = new ArrayList<Instance>();
-		
-		Map<String,Long> timing = new HashMap<String,Long>();
-		for (String key : training.keySet()) {
-			_trainingData.addAll(training.get(key));
+		for (String key : trainingSet.keySet()) {
+			_trainingData.addAll(trainingSet.get(key));
 			timing.put(key, 0L);
 		}
 		return timing;

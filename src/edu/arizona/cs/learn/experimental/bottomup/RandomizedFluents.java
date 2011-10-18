@@ -16,6 +16,7 @@ import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.util.DataMap;
+import edu.arizona.cs.learn.util.MathUtils;
 import edu.arizona.cs.learn.util.Utils;
 
 public class RandomizedFluents {
@@ -168,7 +169,7 @@ public class RandomizedFluents {
 			if (on.size() > off.size())
 				offList = false;
 			
-			if (on.size() == off.size() && Utils.random.nextDouble() < 0.1)
+			if (on.size() == off.size() && MathUtils.random.nextDouble() < 0.1)
 				offList = false;
 
 			Collections.shuffle(on);

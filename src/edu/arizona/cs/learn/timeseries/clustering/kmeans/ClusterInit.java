@@ -117,10 +117,10 @@ public enum ClusterInit {
 		Random r = new Random(System.currentTimeMillis());
 		Map<String,List<Instance>> map = new HashMap<String,List<Instance>>();
 		for (Instance instance : instances) { 
-			List<Instance> tmp = map.get(instance.name());
+			List<Instance> tmp = map.get(instance.label());
 			if (tmp == null) { 
 				tmp = new ArrayList<Instance>();
-				map.put(instance.name(), tmp);
+				map.put(instance.label(), tmp);
 			}
 			tmp.add(instance);
 		}

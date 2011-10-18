@@ -48,10 +48,10 @@ public class KMeans {
 		// Make ground truth clusters....
 		Map<String,Cluster> gtClusters = new HashMap<String,Cluster>();
 		for (Instance instance : instances) { 
-			Cluster c = gtClusters.get(instance.name());
+			Cluster c = gtClusters.get(instance.label());
 			if (c == null) { 
-				c = _type.make(instance.name(), gtClusters.size());
-				gtClusters.put(instance.name(), c);
+				c = _type.make(instance.label(), gtClusters.size());
+				gtClusters.put(instance.label(), c);
 			}
 			c.add(instance);
 		}
@@ -132,7 +132,7 @@ public class KMeans {
 			out.println("  Cluster: " + c.id());
 			out.print("  \t[");
 			for (Instance instance : c.instances()) { 
-				out.print(instance.name()+ "-" + instance.id() + ",");
+				out.print(instance.label()+ "-" + instance.id() + ",");
 			}
 			out.println("]");
 		}

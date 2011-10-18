@@ -36,14 +36,19 @@ args <- commandArgs(TRUE)
 #   cov.pct -- the amount to modify the covariance for the middle episode (0 - 1)
 prefix <- args[1]              # File location with class label
 p <- as.integer(args[2])       # Number of streams
+
 ep.len <- as.integer(args[3])  # Length of individual episodes
-mean <- as.real(args[4])       # Mean value to shift the middle episode
-means <- rep(mean, p)          
-cov.pct <- as.real(args[5])    # Amount to modify covariance for middle episode (0-1)
+mean.1 <- as.real(args[4])       # Mean value to shift the middle episode
+means.1 <- rep(mean.1, p)          
+cov.pct.1 <- as.real(args[5])    # Amount to modify covariance for middle episode (0-1)
+
+mean.2 <- as.real(args[6])
+means.2 <- rep(mean.2, p)
+cov.pct.2 <- as.real(args[7])
 
 ntrain <- 60
 alphabet.size <- 7
-n.episodes <- 3 # used to be 5
+n.episodes <- 4 
 
 # these cuts are based on quantiles of a standard Gaussian
 # THIS IS WHAT I USED SO FAR
@@ -56,8 +61,9 @@ cov.mat.A <- diag(1/50,p)
 cov.mat.B <- diag(1/10,p)
 cov.mat.B[2:5,2:5] <- 0.5
 
-print(ep.len)	
-print(means)
+print(ep.len)  
+print(means.1)
+print(means.2)
 
 for (i in 1:ntrain) {
   
@@ -70,8 +76,12 @@ for (i in 1:ntrain) {
 
   # Change the structure of this episode.  
   # change in covariance
-  cov.mat <- cov.mat.A + (cov.pct * (cov.mat.B - cov.mat.A))
-  c2 <- rbind(c2,create.episode(ep.len,means,cov.mat,cut.points))
+  cov.mat <- cov.mat.A + (cov.pct.1 * (cov.mat.B - cov.mat.A))
+  c2 <- rbind(c2,create.episode(ep.len,means.1,cov.mat,cut.points))
+  
+  # Change the structure of the next episode
+  cov.mat <- cov.mat.A + (cov.pct.2 * (cov.mat.B - cov.mat.A))
+  c2 <- rbind(c2,create.episode(ep.len,means.2,cov.mat,cut.points))
   
   #Normal episodes.  
   for (j in 1:floor(n.episodes/2)) {

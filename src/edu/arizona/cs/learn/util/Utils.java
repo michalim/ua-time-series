@@ -28,7 +28,6 @@ import edu.arizona.cs.learn.timeseries.model.values.Value;
 public class Utils {
 	public static int EXPERIMENTS = 50;
 
-	public static Random random;
 	public static int numThreads;
 	public static NumberFormat nf;
 
@@ -47,7 +46,6 @@ public class Utils {
 	public static int WINDOW = 5;
 	
 	static { 
-		random = new Random();
 		numThreads = Runtime.getRuntime().availableProcessors();
 		numThreads = Math.min(4, numThreads);
 

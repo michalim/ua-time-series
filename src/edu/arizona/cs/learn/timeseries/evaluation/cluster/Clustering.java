@@ -122,7 +122,7 @@ public class Clustering {
 			logger.debug("******** Cluster ********");
 			Bag<String> bag = new HashBag<String>();
 			for (Instance c : cluster.getPoints()) { 
-				bag.add(c.name());
+				bag.add(c.label());
 			}
 
 			int localMax = 0;

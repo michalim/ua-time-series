@@ -478,7 +478,7 @@ class SignatureNode {
 		sequenceIndexes = new ArrayList<Integer>();
 		sequenceIndexes.add(index);
 		
-		signature = new Signature(instance.name());
+		signature = new Signature(instance.label());
 		signature.update(instance.sequence());
 	}
 

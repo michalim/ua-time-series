@@ -278,7 +278,7 @@ public class RecognitionExperiment {
 			System.out.println("Key: " + key);
 			for (Instance instance : testing.get(key)) {
 				boolean accept = recognizers.get(key).test(instance.intervals());
-				System.out.println("  Instance: " + instance.name() + " " + instance.id() + " -- " + accept);
+				System.out.println("  Instance: " + instance.label() + " " + instance.id() + " -- " + accept);
 			}
 		}
 	}

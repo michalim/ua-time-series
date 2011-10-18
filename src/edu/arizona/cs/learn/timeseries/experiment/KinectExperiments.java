@@ -207,8 +207,8 @@ public class KinectExperiments {
 					out.write(results.file()+',');
 					for (Distance d : results.results()) { 
 						// print out the class name and the distance to the class being tested
-						System.out.print(" " + d.instance.name() + " ");
-						out.write(d.instance.name());	
+						System.out.print(" " + d.instance.label() + " ");
+						out.write(d.instance.label());	
 					}
 					out.write('\n');
 					System.out.println();
