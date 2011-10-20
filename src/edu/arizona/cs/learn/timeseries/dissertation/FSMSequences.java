@@ -14,7 +14,7 @@ import edu.arizona.cs.learn.timeseries.experiment.BitPatternGeneration;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.CompleteSignature;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.visualization.TableFactory;
@@ -122,7 +122,7 @@ public class FSMSequences {
 		List<Instance> examples = map.get(prefix);
 
 		Set<Integer> propSet = new TreeSet<Integer>();
-		Signature s = new Signature("approach");
+		CompleteSignature s = new CompleteSignature("approach");
 		for (Instance instance : examples) {
 			s.update(instance.sequence());
 			for (Symbol obj : instance.sequence()) {
@@ -131,7 +131,7 @@ public class FSMSequences {
 					propSet.add(interval.keyId);
 			}
 		}
-		s = s.prune(min);
+		s = (CompleteSignature) s.prune(min);
 
 		System.out.println(TableFactory.toLatex(s.table()));
 
@@ -148,10 +148,10 @@ public class FSMSequences {
 	 * @param type
 	 */
 	public static void markovChainFromFile(String key, SequenceType type) {
-		Signature s = Signature.fromXML("data/signatures/" + key + "-" + type
+		CompleteSignature s = CompleteSignature.fromXML("data/signatures/" + key + "-" + type
 				+ ".xml");
 		int min = (int) Math.floor(s.trainingSize() * 0.75D);
-		s = s.prune(min);
+		s = (CompleteSignature) s.prune(min);
 
 		Set<Integer> propSet = new TreeSet<Integer>();
 		for (Symbol obj : s.signature()) {

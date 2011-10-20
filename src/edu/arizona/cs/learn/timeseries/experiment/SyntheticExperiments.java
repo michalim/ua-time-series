@@ -19,11 +19,11 @@ import edu.arizona.cs.learn.timeseries.clustering.ClusteringResults;
 import edu.arizona.cs.learn.timeseries.clustering.kmeans.ClusterInit;
 import edu.arizona.cs.learn.timeseries.clustering.kmeans.ClusterType;
 import edu.arizona.cs.learn.timeseries.clustering.kmeans.KMeans;
+import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
 import edu.arizona.cs.learn.timeseries.evaluation.SplitAndTest;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.prep.SymbolicData;
 import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
@@ -32,9 +32,12 @@ import edu.arizona.cs.learn.util.Utils;
 //    The number of folds....   5
 
 public class SyntheticExperiments {
-	public static final int FOLDS = 6;
-	public static final int N = 60;
 	
+	/**
+	 * Read input from the user and run the appropriate experiments.
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception { 
 		Utils.LIMIT_RELATIONS = true;
 		Utils.WINDOW = 2;
@@ -93,8 +96,8 @@ public class SyntheticExperiments {
 				for (int length : lengths) { 
 					System.out.println("Mean: " + mean + " Pct: " + pct + " Length: " + length);
 
-					generateClass(pid, "f", 0, 0, length);
-					generateClass(pid, "g", mean, pct, length);
+					SyntheticData.generateABA(pid, "f", 0, 0, length);
+					SyntheticData.generateABA(pid, "g", mean, pct, length);
 
 					Map<String,List<Instance>> data = Utils.load(dir, "niall", SequenceType.allen);
 					curve.buildCurve("logs/niall-" + mean + "-" + pct + "-" + length, data);
@@ -103,30 +106,6 @@ public class SyntheticExperiments {
 		}
 	}
 	
-	/**
-	 * Class 1 does not change -- so we need to construct the niall-f.lisp file
-	 * @param index - 1 for pure random class and 2 for the structured class
-	 */
-	public static void generateClass(String pid, String className, double mean, double pct, int eLength) { 		
-		String prefix = "/tmp/niall-" + pid + "/";
-		File f = new File(prefix);
-		if (!f.exists())
-			f.mkdir();
-		
-		try {
-			int streams = 6;
-			
-			String cmd = "scripts/sim.R " + prefix + className + " " + streams + " " + eLength + " " + mean + " " + pct;
-			System.out.println(cmd);
-			Process p = Runtime.getRuntime().exec("Rscript " + cmd);
-			p.waitFor();
-		} catch (Exception e) { 
-			e.printStackTrace();
-		}
-		
-		SymbolicData.convert(prefix + className, prefix + "niall-" + className +".lisp", N);
-	}
-
 	/**
 	 * Run clustering algorithm for all of the values across the means, lengths, and pct to vary
 	 * the covariance between no covariance and an easy covariance structure.
@@ -144,8 +123,8 @@ public class SyntheticExperiments {
 		for (double pct : pcts) { 
 			for (double mean : means) { 
 				for (int length : episodeLengths) { 
-					generateClass(pid, "f", 0, 0, length);
-					generateClass(pid, "g", mean, pct, length);
+					SyntheticData.generateABA(pid, "f", 0, 0, length);
+					SyntheticData.generateABA(pid, "g", mean, pct, length);
 					
 					Map<String,List<Instance>> data = Utils.load("/tmp/niall-" + pid + "/", "niall", SequenceType.allen);
 					List<Instance> all = new ArrayList<Instance>();
@@ -197,8 +176,8 @@ public class SyntheticExperiments {
 				for (int length : episodeLengths) { 
 					System.out.println("Mean: " + mean + " Length: " + length);
 
-					generateClass(pid, "f", 0, 0, length);
-					generateClass(pid, "g", mean, pct, length);
+					SyntheticData.generateABA(pid, "f", 0, 0, length);
+					SyntheticData.generateABA(pid, "g", mean, pct, length);
 
 					Map<String,List<Instance>> data = Utils.load("/tmp/niall-" + pid + "/", "niall", SequenceType.allen);
 					List<String> classNames = new ArrayList<String>(data.keySet());
@@ -279,8 +258,8 @@ public class SyntheticExperiments {
 				for (int length : episodeLengths) { 
 					System.out.println("Mean: " + mean + " Length: " + length);
 
-					generateClass(pid, "f", 0, 0, length);
-					generateClass(pid, "g", mean, pct, length);
+					SyntheticData.generateABA(pid, "f", 0, 0, length);
+					SyntheticData.generateABA(pid, "g", mean, pct, length);
 
 					Map<String,List<Instance>> data = Utils.load("/tmp/niall-" + pid + "/", "niall", SequenceType.allen);
 					List<String> classNames = new ArrayList<String>(data.keySet());
@@ -329,8 +308,8 @@ public class SyntheticExperiments {
 			for (int length : episodeLengths) { 
 				System.out.println("Mean: " + mean + " Length: " + length);
 				
-				generateClass(pid, "f", 1, 0, length);
-				generateClass(pid, "g", 2, mean, length);
+				SyntheticData.generateABA(pid, "f", 1, 0, length);
+				SyntheticData.generateABA(pid, "g", 2, mean, length);
 
 				Map<String,List<Instance>> data = Utils.load("/tmp/niall-" + pid + "/", "niall", SequenceType.allen);
 				List<String> classNames = new ArrayList<String>(data.keySet());
@@ -361,3 +340,4 @@ public class SyntheticExperiments {
 		out.close();
 	}
 }
+

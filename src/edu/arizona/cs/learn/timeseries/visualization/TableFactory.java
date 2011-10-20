@@ -8,7 +8,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.CompleteSignature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.visualization.graph.Node;
@@ -26,7 +27,7 @@ public class TableFactory {
 	 * @param min
 	 * @return
 	 */
-	public static List<Symbol[]> subset(Signature s, int min) {
+	public static List<Symbol[]> subset(CompleteSignature s, int min) {
 		List<Symbol[]> results = new ArrayList<Symbol[]>(s.table().size());
 
 		Set<Integer> ignore = new HashSet<Integer>();

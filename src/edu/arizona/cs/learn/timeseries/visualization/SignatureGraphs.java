@@ -8,7 +8,8 @@ import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.CompleteSignature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.visualization.graph.GraphMethods;
 import edu.arizona.cs.learn.timeseries.visualization.graph.Node;
@@ -41,7 +42,7 @@ public class SignatureGraphs {
 	
 	public static void singleGraph(String name, SequenceType type, int min) {
     	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
-		Signature signature = new Signature(name);
+		CompleteSignature signature = new CompleteSignature(name);
 		signature.train(instances);
 
 		List<Symbol[]> subset = TableFactory.subset(signature, min);
@@ -55,21 +56,21 @@ public class SignatureGraphs {
 	}
 	
 	public static void mergeGraph(List<String> names, SequenceType type) {
-		List<Signature> signatures = new ArrayList<Signature>();
+		List<CompleteSignature> signatures = new ArrayList<CompleteSignature>();
 		List<Range> ranges = new ArrayList<Range>();
 		
 		int min = 0;
 		for (String name : names) {  
 	    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
-			Signature signature = new Signature(name);
+	    	CompleteSignature signature = new CompleteSignature(name);
 			signature.train(instances);
-			signatures.add(signature.prune(signature.trainingSize()/2));
+			signatures.add((CompleteSignature) signature.prune(signature.trainingSize()/2));
 			ranges.add(new Range(min, min+signature.trainingSize()));
 			
 			min += signature.trainingSize();
 		}
 		
-		Signature starter = signatures.get(0);
+		CompleteSignature starter = signatures.get(0);
 		for (int i = 1; i < signatures.size(); ++i) { 
 			starter.merge(signatures.get(i));
 		}

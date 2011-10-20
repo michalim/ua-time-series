@@ -13,7 +13,7 @@ public class Interval {
 	private static Logger logger = Logger.getLogger(Interval.class);
 
 	/** This is the file that this episode came from */
-	public String file;
+	public int fileId;
 
 	/** The keyId is a unique number that maps to a proposition */
 	public int keyId;
@@ -85,11 +85,11 @@ public class Interval {
 	 * TODO: Might want to use the keyId since it is a more compact representation.
 	 */
 	public String toString() {
-		return file + " " + episode + " " + DataMap.getKey(keyId) + " " + start + " " + end;
+		return fileId + " " + episode + " " + DataMap.getKey(keyId) + " " + start + " " + end;
 	}
 
 	public void toXML(Element e) {
-		e.addElement("Interval").addAttribute("file", this.file)
+		e.addElement("Interval").addAttribute("file", DataMap.getKey(fileId))
 				.addAttribute("episode", this.episode + "")
 				.addAttribute("name", DataMap.getKey(this.keyId))
 				.addAttribute("start", this.start + "")
@@ -105,23 +105,14 @@ public class Interval {
 
 		Interval i = new Interval(name, start, end);
 		i.episode = episode;
-		i.file = file;
+		i.fileId = DataMap.findOrAdd(file);
 		return i;
-	}
-
-	public void fromString(String s) {
-		String[] args = s.split("[ ]");
-		file = args[0];
-		episode = Integer.parseInt(args[1]);
-		keyId = DataMap.findOrAdd(args[2]);
-		start = Integer.parseInt(args[3]);
-		end = Integer.parseInt(args[4]);
 	}
 
 	public Interval copy() {
 		Interval i = new Interval(keyId, start, end);
 		i.episode = episode;
-		i.file = file;
+		i.fileId = fileId;
 		return i;
 	}
 

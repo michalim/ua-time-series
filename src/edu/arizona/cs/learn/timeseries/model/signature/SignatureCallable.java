@@ -1,9 +1,10 @@
-package edu.arizona.cs.learn.timeseries.model;
+package edu.arizona.cs.learn.timeseries.model.signature;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
+import edu.arizona.cs.learn.timeseries.model.Instance;
 
 
 public class SignatureCallable implements Callable<SignatureCallable> {

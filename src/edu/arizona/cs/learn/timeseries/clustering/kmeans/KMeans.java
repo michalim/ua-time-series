@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import edu.arizona.cs.learn.timeseries.clustering.ClusteringResults;
-import edu.arizona.cs.learn.timeseries.experiment.SyntheticExperiments;
+import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.util.RandomFile;
@@ -284,8 +284,8 @@ public class KMeans {
 			for (double mean : means) { 
 				for (int length : episodeLengths) { 
 					for (int i = 0; i < repeats; ++i) { 
-						SyntheticExperiments.generateClass(pid, "f", 0, 0, length);
-						SyntheticExperiments.generateClass(pid, "g", mean, pct, length);
+						SyntheticData.generateABA(pid, "f", 0, 0, length);
+						SyntheticData.generateABA(pid, "g", mean, pct, length);
 
 						String params = pct + "-" + mean + "-" + length;
 						String rowString = pct + "," + mean + "," + length;

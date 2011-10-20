@@ -72,8 +72,8 @@ public class SequenceAlignment {
 	 * @return
 	 */
 	public static Report align(Params params) {
-		return alignWithCons(params);
-//		return alignCheckp(params);
+//		return alignWithCons(params);
+		return alignCheckp(params);
 	}
 	
 	

@@ -2,7 +2,6 @@ package edu.arizona.cs.learn.timeseries.recognizer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -13,7 +12,8 @@ import edu.arizona.cs.learn.algorithm.recognition.FSMRecognizer;
 import edu.arizona.cs.learn.timeseries.experiment.BitPatternGeneration;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.CompleteSignature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.util.graph.Edge;
@@ -34,6 +34,8 @@ public enum Recognizer {
 		public FSMRecognizer build(String key, Signature s, int minPct, boolean onlyStart) {
 			double pct = minPct / 100.0D;
 
+			CompleteSignature cs = (CompleteSignature) s;
+			
 			// Daniel: I changed this to a floor to avoid getting empty FSMs
 			int minSeen = (int) Math.floor(s.trainingSize() * pct);
 			s = s.prune(minSeen);
@@ -47,7 +49,7 @@ public enum Recognizer {
 				propSet.addAll(ss.getProps());
 			}
 			List<Integer> props = new ArrayList<Integer>(propSet);
-			List<List<Interval>> all = BitPatternGeneration.getBPPs(null, s.table(), propSet);
+			List<List<Interval>> all = BitPatternGeneration.getBPPs(null, cs.table(), propSet);
 
 			DirectedGraph<BPPNode, Edge> graph = FSMFactory.makeGraph(props, all, onlyStart);
 			return new FSMRecognizer(key, graph);

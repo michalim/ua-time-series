@@ -9,7 +9,7 @@ import edu.arizona.cs.learn.algorithm.alignment.Params;
 import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
 import edu.arizona.cs.learn.timeseries.model.Instance;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
 
 public class AgglomerativeNode {
 

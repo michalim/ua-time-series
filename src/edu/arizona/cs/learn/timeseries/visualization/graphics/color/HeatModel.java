@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.algorithm.render.HeatmapImage;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
 import edu.arizona.cs.learn.timeseries.visualization.model.DataModel;
 
 /**

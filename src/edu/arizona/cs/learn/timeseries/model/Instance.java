@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.timeseries.evaluation.cluster.Clustering;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
+import edu.arizona.cs.learn.util.DataMap;
 import edu.arizona.cs.learn.util.LispReader;
 
 public class Instance implements Clusterable<Instance> {
@@ -252,7 +253,7 @@ public class Instance implements Clusterable<Instance> {
 					int end = (Integer) list.get(2);
 					
 					Interval interval = new Interval(name, start, end);
-					interval.file = file.getName();
+					interval.fileId = DataMap.findOrAdd(file.getName());
 					interval.episode = id;
 					
 					boolean add = true;

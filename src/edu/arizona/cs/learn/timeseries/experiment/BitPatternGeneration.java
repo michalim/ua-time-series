@@ -18,7 +18,8 @@ import edu.arizona.cs.learn.algorithm.recognition.FSMFactory;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.CompleteSignature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.visualization.TableFactory;
@@ -38,7 +39,7 @@ public class BitPatternGeneration {
      */
     public static List<Symbol[]> trainAndSubset(String name, SequenceType type, int min) { 
     	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
-		Signature signature = new Signature(name);
+		CompleteSignature signature = new CompleteSignature(name);
 		signature.train(instances);
 		
 		// after training the table still looks good from what I can tell.
@@ -140,7 +141,7 @@ public class BitPatternGeneration {
     
 	public static void generate(String name, SequenceType type, int min, boolean onlyStart) { 
     	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
-		Signature signature = new Signature(name);
+		CompleteSignature signature = new CompleteSignature(name);
 		signature.train(instances);
 		
 		// after training the table still looks good from what I can tell.
@@ -189,14 +190,14 @@ public class BitPatternGeneration {
 	}
 	
 	public static void supergraph(String[] names, int[] mins, SequenceType type, boolean onlyStart) { 
-		Signature signature = new Signature("super");
+		CompleteSignature signature = new CompleteSignature("super");
 		for (int i = 0; i < names.length; ++i) { 
 			String name = names[i];
 	    	List<Instance> instances = Instance.load(name, new File("data/input/" + name + ".lisp"), type);
 			Signature s = new Signature(name);
 			s.train(instances);
 
-			Signature pruned = s.prune(mins[i]);
+			CompleteSignature pruned = (CompleteSignature) s.prune(mins[i]);
 			signature.merge(pruned);
 		}
 		

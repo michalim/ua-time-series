@@ -8,7 +8,8 @@ import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.CompleteSignature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
 import edu.arizona.cs.learn.timeseries.model.symbols.AllenRelation;
 import edu.arizona.cs.learn.timeseries.model.symbols.Event;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
@@ -181,12 +182,12 @@ public class SignatureExample {
 
 		for (String key : map.keySet()) {
 			List<Instance> list = map.get(key);
-			Signature s = new Signature(key);
+			CompleteSignature s = new CompleteSignature(key);
 
 			for (int i = 0; i < list.size(); i++) {
 				s.update(((Instance) list.get(i)).sequence());
 			}
-			s = s.prune(2);
+			s = (CompleteSignature) s.prune(2);
 			System.out.println(TableFactory.toLatex(s.table()));
 		}
 	}

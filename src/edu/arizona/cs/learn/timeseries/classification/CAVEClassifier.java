@@ -18,8 +18,8 @@ import edu.arizona.cs.learn.algorithm.alignment.Report;
 import edu.arizona.cs.learn.algorithm.alignment.SequenceAlignment;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Score;
-import edu.arizona.cs.learn.timeseries.model.Signature;
-import edu.arizona.cs.learn.timeseries.model.SignatureCallable;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.SignatureCallable;
 import edu.arizona.cs.learn.util.Utils;
 
 public class CAVEClassifier extends Classifier {

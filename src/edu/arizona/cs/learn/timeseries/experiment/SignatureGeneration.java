@@ -1,17 +1,17 @@
 package edu.arizona.cs.learn.timeseries.experiment;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
+import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
+import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
 public class SignatureGeneration {
@@ -21,8 +21,10 @@ public class SignatureGeneration {
 		Utils.LIMIT_RELATIONS = true;
 		Utils.WINDOW = 5;
 //		signature("chpt1-approach", SequenceType.tree, Similarity.alignment);
-		signature("chpt1-approach", SequenceType.starts, Similarity.strings);
+//		signature("ww3d-jump-over", SequenceType.allen, Similarity.strings);
 //		sequence();
+		
+		syntheticSignature(0.05, 0.1);
 	}
 	
 	public static void signature(String name, SequenceType type, Similarity sim) { 
@@ -56,6 +58,22 @@ public class SignatureGeneration {
 //    	s = new Signature(name);
 //    	s.train(instances);
 //    	s.toFile("/tmp/signature2.signature", s.trainingSize()/2);
+	}
+	
+	public static void syntheticSignature(double mean, double pct) { 
+		String pid = RandomFile.getPID();
+		String dir = "/tmp/synthetic-" + pid + "/";
+		
+		SyntheticData.generateABA(RandomFile.getPID(), "f", 0.025, 0.1, 100);
+		Map<String,List<Instance>> map = Utils.load(dir, "synthetic-", SequenceType.allen);
+		for (String key : map.keySet()) { 
+			System.out.println("Building Signature for : " + key);
+	    	Signature s = new Signature(key, Similarity.strings);
+	    	for (Instance instance : map.get(key)) { 
+	    		logger.debug("  Instance " + instance.id());
+	    		s.update(instance.sequence());
+	    	}
+		}
 	}
 	
 	/**

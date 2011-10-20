@@ -7,11 +7,12 @@ import java.util.Map;
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
 import edu.arizona.cs.learn.algorithm.render.HeatmapImage;
 import edu.arizona.cs.learn.algorithm.render.Paint;
+import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchSignatures;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.Signature;
 import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
@@ -62,8 +63,8 @@ public class Visualize {
 		String pid = RandomFile.getPID();
 		String dir = "/tmp/niall-" + pid + "/";
 
-		SyntheticExperiments.generateClass(pid, "f", 0, 0, 25);
-		SyntheticExperiments.generateClass(pid, "g", 1.0, 0, 25);
+		SyntheticData.generateABA(pid, "f", 0, 0, 25);
+		SyntheticData.generateABA(pid, "g", 1.0, 0, 25);
 
 		makeImages(dir, dir, "niall-f", false);
 		makeImages(dir, dir, "niall-g", false);

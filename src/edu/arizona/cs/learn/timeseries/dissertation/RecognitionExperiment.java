@@ -18,7 +18,7 @@ import edu.arizona.cs.learn.timeseries.experiment.BitPatternGeneration;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.model.Signature;
+import edu.arizona.cs.learn.timeseries.model.signature.CompleteSignature;
 import edu.arizona.cs.learn.timeseries.model.symbols.StringSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.timeseries.recognizer.Recognizer;
@@ -106,7 +106,7 @@ public class RecognitionExperiment {
 		List<FSMRecognizer> results = new ArrayList<FSMRecognizer>();
 		for (String className : classes) {
 			String file = path + dataset + "-" + className + "-" + type + ".xml";
-			Signature s = Signature.fromXML(file);
+			CompleteSignature s = CompleteSignature.fromXML(file);
 
 			Set<Integer> propSet = new TreeSet<Integer>();
 			for (Symbol obj : s.signature()) {

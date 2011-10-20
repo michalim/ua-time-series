@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
@@ -44,8 +45,8 @@ public class BuildWekaVariableDataset {
     public static void generateSynthetic(double mean, double pct) { 
 		String pid = RandomFile.getPID();
 
-		SyntheticExperiments.generateClass(pid, "f", 0, 0, 150);
-		SyntheticExperiments.generateClass(pid, "g", mean, pct, 150);
+		SyntheticData.generateABA(pid, "f", 0, 0, 150);
+		SyntheticData.generateABA(pid, "g", mean, pct, 150);
 
 		makeWekaFiles("/tmp/niall-" + pid + "/", "niall");
     }
