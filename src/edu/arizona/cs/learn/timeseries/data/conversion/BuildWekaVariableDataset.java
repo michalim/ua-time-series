@@ -1,4 +1,4 @@
-package edu.arizona.cs.learn.timeseries.experiment;
+package edu.arizona.cs.learn.timeseries.data.conversion;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -12,14 +12,13 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
+import edu.arizona.cs.learn.timeseries.data.generation.SyntheticData;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.symbols.ProportionSymbol;
 import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.util.DataMap;
-import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
 /**
@@ -43,12 +42,13 @@ public class BuildWekaVariableDataset {
     }
     
     public static void generateSynthetic(double mean, double pct) { 
-		String pid = RandomFile.getPID();
+		String d1 = SyntheticData.generateABA("f", 0, 0, 150);
+		String d2 = SyntheticData.generateABA("g", mean, pct, 150);
+		
+		if (!d1.equals(d2)) 
+			throw new RuntimeException("Broken assumption.  The directories should be the same");
 
-		SyntheticData.generateABA(pid, "f", 0, 0, 150);
-		SyntheticData.generateABA(pid, "g", mean, pct, 150);
-
-		makeWekaFiles("/tmp/niall-" + pid + "/", "niall");
+		makeWekaFiles(d1, SyntheticData.PREFIX);
     }
     
     public static void makeWekaFiles(String dir, String prefix) { 

@@ -1,4 +1,4 @@
-package edu.arizona.cs.learn.timeseries.prep;
+package edu.arizona.cs.learn.timeseries.data.preparation;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

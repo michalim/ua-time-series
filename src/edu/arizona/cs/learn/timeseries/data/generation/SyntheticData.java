@@ -1,9 +1,9 @@
-package edu.arizona.cs.learn.timeseries.datageneration;
+package edu.arizona.cs.learn.timeseries.data.generation;
 
 import java.io.File;
 
-import edu.arizona.cs.learn.timeseries.experiment.SyntheticExperiments;
-import edu.arizona.cs.learn.timeseries.prep.SymbolicData;
+import edu.arizona.cs.learn.timeseries.data.preparation.SymbolicData;
+import edu.arizona.cs.learn.util.Utils;
 
 /**
  * This class handles generating synthetic data from
@@ -31,32 +31,35 @@ import edu.arizona.cs.learn.timeseries.prep.SymbolicData;
  */
 public class SyntheticData {
 
-	public static int N = 60;
+	public static int N = 30;
 	public static int STREAMS = 6;
+	
+	public static final String PREFIX = "synthetic";
 	
 	/**
 	 * Call the Rscript that generates instances of a specific class
-	 * @param pid -- the process-id of the running program.  Used to uniquely identify the results
 	 * @param className -- the name we are planning to give to the generated class of instances
 	 * @param mean -- the mean of the p-dimensional gaussian
 	 * @param pct -- the covariance as a percentage interpolated between two covariance matrices
 	 * @param eLength -- the length of each episodes
+	 * @return the directory where the data is stored
 	 */
-	public static void generateABA(String pid, String className, double mean, double pct, int eLength) { 		
-		generateABA(pid, className, STREAMS, mean, pct, eLength);
+	public static String generateABA(String className, double mean, double pct, int eLength) { 		
+		return generateABA(className, STREAMS, mean, pct, eLength);
 	}
 	
 	/**
 	 * Call the Rscript that generates instances of a specific class
-	 * @param pid - the process-id of the running program.  Used to uniquely identify the results
 	 * @param className - the name we are planning to give to the generated class of instances
 	 * @param streams - the number of streams
 	 * @param mean - the mean of the p-dimensional gaussian
 	 * @param pct - the covariance as a percentage interpolated between two covariance matrices
 	 * @param eLength - the length of each episode
+	 * @return the directory where the data is stored
 	 */
-	public static void generateABA(String pid, String className, int streams, double mean, double pct, int eLength) { 		
-		String prefix = "/tmp/synthetic-" + pid + "/";
+	public static String generateABA(String className, int streams, double mean, double pct, int eLength) { 	
+		String pid = Utils.getPID();
+		String prefix = "/tmp/" + PREFIX + "-" + pid + "/";
 		File f = new File(prefix);
 		if (!f.exists())
 			f.mkdir();
@@ -70,32 +73,34 @@ public class SyntheticData {
 			e.printStackTrace();
 		}
 		
-		SymbolicData.convert(prefix + className, prefix + "synthetic-" + className +".lisp", N);
+		SymbolicData.convert(prefix + className, prefix + PREFIX + "-" + className +".lisp", N);
+		return prefix;
 	}
 	
 	/**
 	 * Call the Rscript that generates instances of a specific class
-	 * @param pid -- the process-id of the running program.  Used to uniquely identify the results
 	 * @param className -- the name we are planning to give to the generated class of instances
 	 * @param means -- the means of the p-dimensional gaussian -- need two of them
 	 * @param pcts -- the covariance as a percentage interpolated between two covariance matrices
 	 * @param eLength -- the length of each episodes
+	 * @return the directory where the data is stored
 	 */
-	public static void generateABCA(String pid, String className, double[] means, double[] pcts, int eLength) { 		
-		generateABCA(pid, className, STREAMS, means, pcts, eLength);
+	public static String generateABCA(String className, double[] means, double[] pcts, int eLength) { 		
+		return generateABCA(className, STREAMS, means, pcts, eLength);
 	}
 	
 	
 	/**
 	 * Call the Rscript that generates instances of a specific class
-	 * @param pid - the process-id of the running program.  Uniquely identifies the results
 	 * @param className - the name we are planning to give to the generated class of instances
 	 * @param streams - the number of streams.
 	 * @param means - the means of the p-dimensional gaussians -- need two of them
 	 * @param pcts - covariance as a percentage interpolated between two covariance matrices
 	 * @param eLength - the length of each episode
+	 * @return the directory where the data is stored
 	 */
-	public static void generateABCA(String pid, String className, int streams, double[] means, double[] pcts, int eLength) {
+	public static String generateABCA(String className, int streams, double[] means, double[] pcts, int eLength) {
+		String pid = Utils.getPID();
 		String prefix = "/tmp/synthetic-" + pid + "/";
 		File f = new File(prefix);
 		if (!f.exists())
@@ -113,6 +118,7 @@ public class SyntheticData {
 			e.printStackTrace();
 		}
 		
-		SymbolicData.convert(prefix + className, prefix + "synthetic-" + className +".lisp", N);
+		SymbolicData.convert(prefix + className, prefix + PREFIX + "-" + className +".lisp", N);
+		return prefix;
 	}
 }

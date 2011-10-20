@@ -7,11 +7,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
-import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
+import edu.arizona.cs.learn.timeseries.data.generation.SyntheticData;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.signature.Signature;
-import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
 public class SignatureGeneration {
@@ -61,11 +60,8 @@ public class SignatureGeneration {
 	}
 	
 	public static void syntheticSignature(double mean, double pct) { 
-		String pid = RandomFile.getPID();
-		String dir = "/tmp/synthetic-" + pid + "/";
-		
-		SyntheticData.generateABA(RandomFile.getPID(), "f", 0.025, 0.1, 100);
-		Map<String,List<Instance>> map = Utils.load(dir, "synthetic-", SequenceType.allen);
+		String dir = SyntheticData.generateABA("f", 0.025, 0.1, 100);
+		Map<String,List<Instance>> map = Utils.load(dir, SyntheticData.PREFIX, SequenceType.allen);
 		for (String key : map.keySet()) { 
 			System.out.println("Building Signature for : " + key);
 	    	Signature s = new Signature(key, Similarity.strings);

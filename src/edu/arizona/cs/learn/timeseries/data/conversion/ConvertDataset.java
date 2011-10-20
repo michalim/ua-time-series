@@ -1,4 +1,4 @@
-package edu.arizona.cs.learn.util;
+package edu.arizona.cs.learn.timeseries.data.conversion;
 
 /**
  * This class converts the data from my Lisp based format into a format

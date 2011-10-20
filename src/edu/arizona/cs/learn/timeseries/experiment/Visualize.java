@@ -7,13 +7,12 @@ import java.util.Map;
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
 import edu.arizona.cs.learn.algorithm.render.HeatmapImage;
 import edu.arizona.cs.learn.algorithm.render.Paint;
-import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
+import edu.arizona.cs.learn.timeseries.data.generation.SyntheticData;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchSignatures;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
 import edu.arizona.cs.learn.timeseries.model.signature.Signature;
-import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
 public class Visualize {
@@ -60,14 +59,14 @@ public class Visualize {
 	}
 	
 	public static void niallData() { 
-		String pid = RandomFile.getPID();
-		String dir = "/tmp/niall-" + pid + "/";
+		String d1 = SyntheticData.generateABA("f", 0, 0, 25);
+		String d2 = SyntheticData.generateABA("g", 1.0, 0, 25);
 
-		SyntheticData.generateABA(pid, "f", 0, 0, 25);
-		SyntheticData.generateABA(pid, "g", 1.0, 0, 25);
-
-		makeImages(dir, dir, "niall-f", false);
-		makeImages(dir, dir, "niall-g", false);
+		if (!d1.equals(d2))
+			throw new RuntimeException("Broken assumption.  The directories should be equal");
+		
+		makeImages(d1, d1, SyntheticData.PREFIX + "-f", false);
+		makeImages(d1, d1, SyntheticData.PREFIX + "-g", false);
 	}
 	
 	public static void makeImages(String dataDir, String outputDir, String prefix, boolean compress) { 

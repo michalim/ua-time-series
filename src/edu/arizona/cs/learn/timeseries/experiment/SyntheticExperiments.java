@@ -19,12 +19,11 @@ import edu.arizona.cs.learn.timeseries.clustering.ClusteringResults;
 import edu.arizona.cs.learn.timeseries.clustering.kmeans.ClusterInit;
 import edu.arizona.cs.learn.timeseries.clustering.kmeans.ClusterType;
 import edu.arizona.cs.learn.timeseries.clustering.kmeans.KMeans;
-import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
+import edu.arizona.cs.learn.timeseries.data.generation.SyntheticData;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
 import edu.arizona.cs.learn.timeseries.evaluation.SplitAndTest;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
 // Some things do not change
@@ -86,9 +85,6 @@ public class SyntheticExperiments {
 	}
 		
 	public static void learningCurve(List<Integer> lengths, List<Double> means, List<Double> pcts) throws Exception { 
-		String pid = RandomFile.getPID();
-		String dir = "/tmp/niall-" + pid + "/";
-		
 		LearningCurve curve = new LearningCurve();
 
 		for (double pct : pcts) {
@@ -96,10 +92,13 @@ public class SyntheticExperiments {
 				for (int length : lengths) { 
 					System.out.println("Mean: " + mean + " Pct: " + pct + " Length: " + length);
 
-					SyntheticData.generateABA(pid, "f", 0, 0, length);
-					SyntheticData.generateABA(pid, "g", mean, pct, length);
+					String d1 = SyntheticData.generateABA("f", 0, 0, length);
+					String d2 = SyntheticData.generateABA("g", mean, pct, length);
 
-					Map<String,List<Instance>> data = Utils.load(dir, "niall", SequenceType.allen);
+					if (!d1.equals(d2))
+						throw new RuntimeException("Directories not equal, but they should be.");
+					
+					Map<String,List<Instance>> data = Utils.load(d1, SyntheticData.PREFIX, SequenceType.allen);
 					curve.buildCurve("logs/niall-" + mean + "-" + pct + "-" + length, data);
 				}
 			}
@@ -115,7 +114,6 @@ public class SyntheticExperiments {
 	 * @throws Exception
 	 */
 	public static void cluster(List<Integer> episodeLengths, List<Double> means, List<Double> pcts) throws Exception { 
-		String pid = RandomFile.getPID();
 		String key = System.currentTimeMillis() + "";
 
 		PrintStream out = new PrintStream(new File("logs/synthetic-kmeans-" + key + ".csv"));
@@ -123,10 +121,13 @@ public class SyntheticExperiments {
 		for (double pct : pcts) { 
 			for (double mean : means) { 
 				for (int length : episodeLengths) { 
-					SyntheticData.generateABA(pid, "f", 0, 0, length);
-					SyntheticData.generateABA(pid, "g", mean, pct, length);
-					
-					Map<String,List<Instance>> data = Utils.load("/tmp/niall-" + pid + "/", "niall", SequenceType.allen);
+					String d1 = SyntheticData.generateABA("f", 0, 0, length);
+					String d2 = SyntheticData.generateABA("g", mean, pct, length);
+
+					if (!d1.equals(d2))
+						throw new RuntimeException("Directories not equal, but they should be.");
+
+					Map<String,List<Instance>> data = Utils.load(d1, SyntheticData.PREFIX, SequenceType.allen);
 					List<Instance> all = new ArrayList<Instance>();
 					for (String name : data.keySet()) { 
 						all.addAll(data.get(name));
@@ -160,7 +161,6 @@ public class SyntheticExperiments {
 	 * @throws Exception
 	 */
 	public static void experiment(List<Integer> episodeLengths, List<Double> means, List<Double> pcts) throws Exception { 
-		String pid = RandomFile.getPID();
 		System.out.println("Means: " + means);
 		System.out.println("Lengths: " + episodeLengths);
 		System.out.println("Pcts: " + pcts);
@@ -176,10 +176,13 @@ public class SyntheticExperiments {
 				for (int length : episodeLengths) { 
 					System.out.println("Mean: " + mean + " Length: " + length);
 
-					SyntheticData.generateABA(pid, "f", 0, 0, length);
-					SyntheticData.generateABA(pid, "g", mean, pct, length);
+					String d1 = SyntheticData.generateABA("f", 0, 0, length);
+					String d2 = SyntheticData.generateABA("g", mean, pct, length);
 
-					Map<String,List<Instance>> data = Utils.load("/tmp/niall-" + pid + "/", "niall", SequenceType.allen);
+					if (!d1.equals(d2))
+						throw new RuntimeException("Directories not equal, but they should be.");
+
+					Map<String,List<Instance>> data = Utils.load(d1, SyntheticData.PREFIX, SequenceType.allen);
 					List<String> classNames = new ArrayList<String>(data.keySet());
 					Collections.sort(classNames);
 
@@ -243,7 +246,6 @@ public class SyntheticExperiments {
 	 * @throws Exception
 	 */
 	public static void knn(List<Integer> episodeLengths, List<Double> means, List<Double> pcts) throws Exception { 
-		String pid = RandomFile.getPID();
 		System.out.println("Means: " + means);
 		System.out.println("Lengths: " + episodeLengths);
 		System.out.println("Pcts: " + pcts);
@@ -258,10 +260,13 @@ public class SyntheticExperiments {
 				for (int length : episodeLengths) { 
 					System.out.println("Mean: " + mean + " Length: " + length);
 
-					SyntheticData.generateABA(pid, "f", 0, 0, length);
-					SyntheticData.generateABA(pid, "g", mean, pct, length);
+					String d1 = SyntheticData.generateABA("f", 0, 0, length);
+					String d2 = SyntheticData.generateABA("g", mean, pct, length);
+					
+					if (!d1.equals(d2))
+						throw new RuntimeException("Directories not equal, but they should be.");
 
-					Map<String,List<Instance>> data = Utils.load("/tmp/niall-" + pid + "/", "niall", SequenceType.allen);
+					Map<String,List<Instance>> data = Utils.load(d1, SyntheticData.PREFIX, SequenceType.allen);
 					List<String> classNames = new ArrayList<String>(data.keySet());
 					Collections.sort(classNames);
 
@@ -295,7 +300,6 @@ public class SyntheticExperiments {
 
 	
 	public static void expectedSequenceSizes(List<Integer> episodeLengths, List<Double> means) throws Exception { 
-		String pid = RandomFile.getPID();
 		System.out.println("Means: " + means);
 		System.out.println("Lengths: " + episodeLengths);
 
@@ -308,10 +312,13 @@ public class SyntheticExperiments {
 			for (int length : episodeLengths) { 
 				System.out.println("Mean: " + mean + " Length: " + length);
 				
-				SyntheticData.generateABA(pid, "f", 1, 0, length);
-				SyntheticData.generateABA(pid, "g", 2, mean, length);
+				String d1 = SyntheticData.generateABA("f", 1, 0, length);
+				String d2 = SyntheticData.generateABA("g", 2, mean, length);
+				
+				if (!d1.equals(d2))
+					throw new RuntimeException("Directories not equal, but they should be.");
 
-				Map<String,List<Instance>> data = Utils.load("/tmp/niall-" + pid + "/", "niall", SequenceType.allen);
+				Map<String,List<Instance>> data = Utils.load(d1, SyntheticData.PREFIX, SequenceType.allen);
 				List<String> classNames = new ArrayList<String>(data.keySet());
 				Collections.sort(classNames);
 				

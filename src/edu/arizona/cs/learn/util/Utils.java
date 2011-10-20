@@ -5,16 +5,17 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Vector;
 
 import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
 import edu.arizona.cs.learn.timeseries.model.Instance;
@@ -371,5 +372,33 @@ public class Utils {
 		if (list.size() == 1)
 			return true;
 		return false;
+	}
+
+	/**
+	 * Return the process id for the running process.
+	 * @return
+	 */
+	public static String getPID()  {  
+		String defaultStr = ((int) Math.floor(Math.random() * 1000)) + "";
+		try { 
+			Vector<String> commands=new Vector<String>();  
+			commands.add("/bin/bash");  
+			commands.add("-c");
+			commands.add("echo $PPID");  
+			ProcessBuilder pb=new ProcessBuilder(commands);  
+	
+			Process pr=pb.start();  
+			pr.waitFor();  
+			if (pr.exitValue()==0) {  
+				BufferedReader outReader=new BufferedReader(new InputStreamReader(pr.getInputStream()));  
+				return outReader.readLine().trim();  
+			} else {  
+				System.err.println("Error while getting PID - " + pr.exitValue());  
+				return defaultStr;
+			}  
+		} catch (Exception e) { 
+			System.err.println("Error while getting PID " + e.getMessage());
+		}
+		return defaultStr;
 	}
 }

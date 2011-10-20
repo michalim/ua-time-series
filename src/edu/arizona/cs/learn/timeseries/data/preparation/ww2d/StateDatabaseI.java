@@ -1,4 +1,4 @@
-package edu.arizona.cs.learn.timeseries.prep.ww2d;
+package edu.arizona.cs.learn.timeseries.data.preparation.ww2d;
 
 
 public interface StateDatabaseI {

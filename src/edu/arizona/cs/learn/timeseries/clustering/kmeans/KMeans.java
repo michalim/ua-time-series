@@ -13,10 +13,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import edu.arizona.cs.learn.timeseries.clustering.ClusteringResults;
-import edu.arizona.cs.learn.timeseries.datageneration.SyntheticData;
+import edu.arizona.cs.learn.timeseries.data.generation.SyntheticData;
 import edu.arizona.cs.learn.timeseries.model.Instance;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.util.RandomFile;
 import edu.arizona.cs.learn.util.Utils;
 
 public class KMeans {
@@ -278,14 +277,15 @@ public class KMeans {
 	 */
 	public static void cluster(List<ClusterType> types, List<ClusterInit> inits, int repeats,
 			List<Integer> episodeLengths, List<Double> means, List<Double> pcts) throws Exception { 
-		String pid = RandomFile.getPID();
-
 		for (double pct : pcts) { 
 			for (double mean : means) { 
 				for (int length : episodeLengths) { 
 					for (int i = 0; i < repeats; ++i) { 
-						SyntheticData.generateABA(pid, "f", 0, 0, length);
-						SyntheticData.generateABA(pid, "g", mean, pct, length);
+						String d1 = SyntheticData.generateABA("f", 0, 0, length);
+						String d2 = SyntheticData.generateABA("g", mean, pct, length);
+						
+						if (!d1.equals(d2))
+							throw new RuntimeException("Broken assumption.  The directories should be equal");
 
 						String params = pct + "-" + mean + "-" + length;
 						String rowString = pct + "," + mean + "," + length;
@@ -294,7 +294,7 @@ public class KMeans {
 								PrintStream out = new PrintStream(new File("logs/cluster-synthetic-" + 
 										type + "-" + init + "-" + params + ".csv"));
 								out.println("cluster_type,cluster_init,pct,mean,length,run,tp,fp,fn,tn,accuracy");
-								doCluster(out, "/tmp/niall-" + pid + "/", "niall", init, type, rowString);
+								doCluster(out, d1, SyntheticData.PREFIX, init, type, rowString);
 							}
 						}
 					}

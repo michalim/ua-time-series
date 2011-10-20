@@ -18,6 +18,7 @@ import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
 import edu.arizona.cs.learn.timeseries.classification.Classifier;
 import edu.arizona.cs.learn.timeseries.classification.Classify;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyParams;
+import edu.arizona.cs.learn.timeseries.data.generation.SyntheticData;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
 import edu.arizona.cs.learn.timeseries.evaluation.SplitAndTest;
 import edu.arizona.cs.learn.timeseries.model.Instance;
@@ -164,6 +165,16 @@ public class Classification {
 		rParams.incPrune = true;
 		rParams.type = SequenceType.allen;
 		Classifier c1 = Classify.prune.getClassifier(rParams);
+		
+		// Generate 10 different datasets to get a good estimate
+		// on the average performance.
+		int datasets = 10;
+		for (int i = 0; i < datasets; ++i) { 
+			String d1 = SyntheticData.generateABCA("class1", new double[] { 0, 0 }, new double[] { 0, 0.5 }, 75);
+			String d2 = SyntheticData.generateABCA("class2", new double[] { 0, 0 }, new double[] { 0.5, 0 }, 75);
+			
+			
+		}
 		performance(Utils.load("/tmp/niall-5407/", "niall", SequenceType.allen), c1, "logs/proportion.csv");
 //		performance(Utils.load("global-ww2d", SequenceType.proportionOn), c1, "logs/proportion.csv");	
 //		performance(Utils.load("global-internal", SequenceType.proportionOn), c1, "logs/proportion.csv");	

@@ -1,4 +1,4 @@
-package edu.arizona.cs.learn.timeseries.prep.ww2d;
+package edu.arizona.cs.learn.timeseries.data.preparation.ww2d;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.arizona.cs.learn.timeseries.data.preparation.TimeSeries;
 import edu.arizona.cs.learn.timeseries.model.Interval;
-import edu.arizona.cs.learn.timeseries.prep.TimeSeries;
 import edu.arizona.cs.learn.util.DataMap;
 
 
