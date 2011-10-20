@@ -38,6 +38,42 @@ public class SyntheticData {
 	
 	/**
 	 * Call the Rscript that generates instances of a specific class
+	 * @param id - an identifer specified by the user to appended to the end of the directory name
+	 * @param className -- the name we are planning to give to the generated class of instances
+	 * @param mean -- the mean of the p-dimensional gaussian
+	 * @param pct -- the covariance as a percentage interpolated between two covariance matrices
+	 * @param eLength -- the length of each episodes
+	 * @return the directory where the data is stored
+	 */
+	public static String generateABA(String id, String className, int streams, double mean, double pct, int eLength) { 
+		String pid = Utils.getPID();
+		String prefix = "/tmp/" + PREFIX + "-" + pid + "/";
+		
+		// if the user specifies that they want something added to the end, we will
+		// respect their wish.
+		if (id != null && id.length() > 0) 
+			prefix = "/tmp/" + PREFIX + "-" + pid + "-" + id + "/";
+
+		File f = new File(prefix);
+		if (!f.exists())
+			f.mkdir();
+		
+		try {			
+			String cmd = "scripts/sim.R " + prefix + className + " " + streams + " " + eLength + " " + mean + " " + pct + " " + N;
+			System.out.println(cmd);
+			Process p = Runtime.getRuntime().exec("Rscript " + cmd);
+			p.waitFor();
+		} catch (Exception e) { 
+			e.printStackTrace();
+		}
+		
+		SymbolicData.convert(prefix + className, prefix + PREFIX + "-" + className +".lisp", N);
+		return prefix;
+
+	}
+	
+	/**
+	 * Call the Rscript that generates instances of a specific class
 	 * @param className -- the name we are planning to give to the generated class of instances
 	 * @param mean -- the mean of the p-dimensional gaussian
 	 * @param pct -- the covariance as a percentage interpolated between two covariance matrices
@@ -45,29 +81,54 @@ public class SyntheticData {
 	 * @return the directory where the data is stored
 	 */
 	public static String generateABA(String className, double mean, double pct, int eLength) { 		
-		return generateABA(className, STREAMS, mean, pct, eLength);
+		return generateABA(null, className, STREAMS, mean, pct, eLength);
 	}
-	
+
 	/**
 	 * Call the Rscript that generates instances of a specific class
+	 * @param id - an identifer specified by the user to appended to the end of the directory name
+	 * @param className -- the name we are planning to give to the generated class of instances
+	 * @param mean -- the mean of the p-dimensional gaussian
+	 * @param pct -- the covariance as a percentage interpolated between two covariance matrices
+	 * @param eLength -- the length of each episodes
+	 * @return the directory where the data is stored
+	 */
+	public static String generateABA(String id, String className, double mean, double pct, int eLength) { 		
+		return generateABA(null, className, STREAMS, mean, pct, eLength);
+	}
+		
+	/**
+	 * Call the Rscript that generates instances of a specific class
+	 * @param id - an identifer specified by the user to appended to the end of the directory name
 	 * @param className - the name we are planning to give to the generated class of instances
-	 * @param streams - the number of streams
-	 * @param mean - the mean of the p-dimensional gaussian
-	 * @param pct - the covariance as a percentage interpolated between two covariance matrices
+	 * @param streams - the number of streams.
+	 * @param means - the means of the p-dimensional gaussians -- need two of them
+	 * @param pcts - covariance as a percentage interpolated between two covariance matrices
 	 * @param eLength - the length of each episode
 	 * @return the directory where the data is stored
 	 */
-	public static String generateABA(String className, int streams, double mean, double pct, int eLength) { 	
+	public static String generateABCA(String id, String className, int streams, double[] means, double[] pcts, int eLength) {
 		String pid = Utils.getPID();
-		String prefix = "/tmp/" + PREFIX + "-" + pid + "/";
+		String prefix = "/tmp/synthetic-" + pid + "/";
+		
+		// if the user specifies that they want something added to the end, we will
+		// respect their wish.
+		if (id != null && id.length() > 0) 
+			prefix = "/tmp/" + PREFIX + "-" + pid + "-" + id + "/";
+
+
 		File f = new File(prefix);
 		if (!f.exists())
 			f.mkdir();
 		
 		try {			
-			String cmd = "scripts/sim.R " + prefix + className + " " + streams + " " + eLength + " " + mean + " " + pct;
+			StringBuffer cmd = new StringBuffer("scripts/sim2.R ");
+			cmd.append(prefix + className + " " + streams + " " + eLength + " ");
+			cmd.append(means[0] + " " + pcts[0] + " ");
+			cmd.append(means[1] + " " + pcts[1] + " ");
+			cmd.append(N);
 			System.out.println(cmd);
-			Process p = Runtime.getRuntime().exec("Rscript " + cmd);
+			Process p = Runtime.getRuntime().exec("Rscript " + cmd.toString());
 			p.waitFor();
 		} catch (Exception e) { 
 			e.printStackTrace();
@@ -86,39 +147,19 @@ public class SyntheticData {
 	 * @return the directory where the data is stored
 	 */
 	public static String generateABCA(String className, double[] means, double[] pcts, int eLength) { 		
-		return generateABCA(className, STREAMS, means, pcts, eLength);
+		return generateABCA(null, className, STREAMS, means, pcts, eLength);
 	}
-	
-	
+
 	/**
 	 * Call the Rscript that generates instances of a specific class
-	 * @param className - the name we are planning to give to the generated class of instances
-	 * @param streams - the number of streams.
-	 * @param means - the means of the p-dimensional gaussians -- need two of them
-	 * @param pcts - covariance as a percentage interpolated between two covariance matrices
-	 * @param eLength - the length of each episode
+	 * @param id - an identifer specified by the user to appended to the end of the directory name
+	 * @param className -- the name we are planning to give to the generated class of instances
+	 * @param means -- the means of the p-dimensional gaussian -- need two of them
+	 * @param pcts -- the covariance as a percentage interpolated between two covariance matrices
+	 * @param eLength -- the length of each episodes
 	 * @return the directory where the data is stored
 	 */
-	public static String generateABCA(String className, int streams, double[] means, double[] pcts, int eLength) {
-		String pid = Utils.getPID();
-		String prefix = "/tmp/synthetic-" + pid + "/";
-		File f = new File(prefix);
-		if (!f.exists())
-			f.mkdir();
-		
-		try {			
-			StringBuffer cmd = new StringBuffer("scripts/sim2.R ");
-			cmd.append(prefix + className + " " + streams + " " + eLength + " ");
-			cmd.append(means[0] + " " + pcts[0] + " ");
-			cmd.append(means[1] + " " + pcts[1] + " ");
-			System.out.println(cmd);
-			Process p = Runtime.getRuntime().exec("Rscript " + cmd.toString());
-			p.waitFor();
-		} catch (Exception e) { 
-			e.printStackTrace();
-		}
-		
-		SymbolicData.convert(prefix + className, prefix + PREFIX + "-" + className +".lisp", N);
-		return prefix;
+	public static String generateABCA(String id, String className, double[] means, double[] pcts, int eLength) { 		
+		return generateABCA(id, className, STREAMS, means, pcts, eLength);
 	}
 }

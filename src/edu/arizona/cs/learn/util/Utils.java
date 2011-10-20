@@ -244,6 +244,29 @@ public class Utils {
 		}
 		return map;
 	}
+	
+	/**
+	 * Load in *all* of the files with a given prefix.  It is assumed that each file
+	 * contains a set of instances that are examples of the *same* activity.  
+	 * 
+	 * Use this method when you do not need to generate a sequence, but you want to 
+	 * load all of the files (each file is a different activity) for a given prefix.
+	 * @param directory
+	 * @param prefix
+	 * @return
+	 */
+	public static Map<String,List<Instance>> load(String directory, String prefix) { 
+		Map<String,List<Instance>> map = new HashMap<String,List<Instance>>();
+		for (File f : new File(directory).listFiles()) {
+			if (f.getName().startsWith(prefix) && f.getName().endsWith("lisp")) { 
+				String name = f.getName();
+				String label = name.substring(0, name.indexOf(".lisp"));
+
+				map.put(label, Instance.load(label, f));
+			}
+		}
+		return map;
+	}
 
 	public static Map<String, List<Integer>> getTestSet(String prefix, int k, int fold) {
 		Map<String,List<Integer>> map = new TreeMap<String,List<Integer>>();

@@ -31,9 +31,9 @@ import edu.arizona.cs.learn.util.Utils;
  * @author wkerr
  *
  */
-public class BuildWekaVariableDataset {
+public class WekaDataset {
 
-    private static Logger logger = Logger.getLogger(BuildWekaVariableDataset.class);
+    private static Logger logger = Logger.getLogger(WekaDataset.class);
     
     public static void main(String[] args) { 
 //    	String prefix = "wes-pen";

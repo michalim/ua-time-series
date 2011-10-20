@@ -8,23 +8,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.math.stat.descriptive.SummaryStatistics;
 
 import edu.arizona.cs.learn.algorithm.alignment.Similarity;
-import edu.arizona.cs.learn.algorithm.bpp.BPPFactory;
 import edu.arizona.cs.learn.timeseries.classification.Classifier;
 import edu.arizona.cs.learn.timeseries.classification.Classify;
 import edu.arizona.cs.learn.timeseries.classification.ClassifyParams;
+import edu.arizona.cs.learn.timeseries.data.conversion.WekaDataset;
 import edu.arizona.cs.learn.timeseries.data.generation.SyntheticData;
 import edu.arizona.cs.learn.timeseries.evaluation.BatchStatistics;
 import edu.arizona.cs.learn.timeseries.evaluation.SplitAndTest;
 import edu.arizona.cs.learn.timeseries.model.Instance;
-import edu.arizona.cs.learn.timeseries.model.Interval;
 import edu.arizona.cs.learn.timeseries.model.SequenceType;
-import edu.arizona.cs.learn.timeseries.model.symbols.Symbol;
 import edu.arizona.cs.learn.util.Utils;
 
 public class Classification {
@@ -170,12 +166,17 @@ public class Classification {
 		// on the average performance.
 		int datasets = 10;
 		for (int i = 0; i < datasets; ++i) { 
-			String d1 = SyntheticData.generateABCA("class1", new double[] { 0, 0 }, new double[] { 0, 0.5 }, 75);
-			String d2 = SyntheticData.generateABCA("class2", new double[] { 0, 0 }, new double[] { 0.5, 0 }, 75);
+			String d1 = SyntheticData.generateABCA(i+"", "f", new double[] { 0, 0 }, new double[] { 0, 0.5 }, 75);
+			String d2 = SyntheticData.generateABCA(i+"", "g", new double[] { 0, 0 }, new double[] { 0.5, 0 }, 75);
+
+			if (!d1.equals(d2))
+				throw new RuntimeException("Directories not equal, but they should be.");
+
+			// Kick out the weka dataset so that we can go back and run those experiments
+			WekaDataset.makeWekaFiles(d1, SyntheticData.PREFIX);
 			
-			
+			performance(Utils.load(d1, SyntheticData.PREFIX, SequenceType.allen), c1, "logs/synthetic-" + i + ".csv");
 		}
-		performance(Utils.load("/tmp/niall-5407/", "niall", SequenceType.allen), c1, "logs/proportion.csv");
 //		performance(Utils.load("global-ww2d", SequenceType.proportionOn), c1, "logs/proportion.csv");	
 //		performance(Utils.load("global-internal", SequenceType.proportionOn), c1, "logs/proportion.csv");	
 	}

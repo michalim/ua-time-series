@@ -46,7 +46,7 @@ mean.2 <- as.real(args[6])
 means.2 <- rep(mean.2, p)
 cov.pct.2 <- as.real(args[7])
 
-ntrain <- 60
+ntrain <- as.integer(args[8])
 alphabet.size <- 7
 n.episodes <- 4 
 

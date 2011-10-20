@@ -41,7 +41,7 @@ mean <- as.real(args[4])       # Mean value to shift the middle episode
 means <- rep(mean, p)          
 cov.pct <- as.real(args[5])    # Amount to modify covariance for middle episode (0-1)
 
-ntrain <- 60
+ntrain <- as.integer(args[6])
 alphabet.size <- 7
 n.episodes <- 3 # used to be 5
 
