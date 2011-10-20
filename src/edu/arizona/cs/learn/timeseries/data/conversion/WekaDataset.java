@@ -94,7 +94,7 @@ public class WekaDataset {
 		}
 
 		try { 
-			BufferedWriter out = new BufferedWriter(new FileWriter("data/weka/" + prefix + "-b.arff"));
+			BufferedWriter out = new BufferedWriter(new FileWriter(dir + prefix + "-b.arff"));
 			out.write("% This a simple demonstration that variables have for classification \n");
 			out.write("% dataset generated for " + prefix + "\n");
 			out.write("% from files ---- \n");
@@ -170,7 +170,7 @@ public class WekaDataset {
     	}
 
 		try { 
-			BufferedWriter out = new BufferedWriter(new FileWriter("data/weka/" + prefix + "-i.arff"));
+			BufferedWriter out = new BufferedWriter(new FileWriter(dir + prefix + "-i.arff"));
 			out.write("% This a simple demonstration that variables have for classification \n");
 			out.write("% dataset generated for " + prefix + "\n");
 			out.write("% from files ---- \n");
@@ -247,7 +247,7 @@ public class WekaDataset {
     	}
 
 		try { 
-			BufferedWriter out = new BufferedWriter(new FileWriter("data/weka/" + prefix + "-r.arff"));
+			BufferedWriter out = new BufferedWriter(new FileWriter(dir + prefix + "-r.arff"));
 			out.write("% This a simple demonstration that variables have for classification \n");
 			out.write("% dataset generated for " + prefix + "\n");
 			out.write("% from files ---- \n");
